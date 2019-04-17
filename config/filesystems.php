@@ -64,6 +64,12 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'resources' => [
+            'driver' => 'local',
+            'root' => base_path('resources'),
+            'visibility' => 'public',
+        ],
+
     ],
 
 ];
