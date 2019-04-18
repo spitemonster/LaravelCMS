@@ -11,7 +11,7 @@
 
       <button @click="addField">Add Field</button>
       <draggable element="form" :list="fields" id="test">
-            <fieldCard :field="field" v-for="field in fields" :key="field.id"></fieldCard>
+            <fieldCard :field="field" v-for="field in fields" :key="field.id" :deletable="true"></fieldCard>
       </draggable>
       <button @click="saveTemplate">Save Template</button>
     </main>
@@ -36,11 +36,10 @@
             addField () {
                 let sel = document.getElementById('fieldSelector')
                 this.fields.push({field_id: this.generateId(), name: '', type: sel.value, required: false});
-                // console.log(this.fields);
             },
             removeField (targetId) {
                 this.fields = this.fields.filter((field) => {
-                    return field.id !== targetId
+                    return field.field_id !== targetId
                 })
             },
             saveTemplate () {
@@ -54,17 +53,14 @@
                     fields: JSON.stringify(this.fields)
                 }
 
-                console.log(template);
-
                 axios.post('/template', template, headers)
                     .then((res) => {
-                        console.log(res.data);
 
-                        // let growlerData = {
-                        //     mode: 'success',
-                        //     message: 'Template successfully created'
-                        // }
-                        // Bus.$emit('growl', growlerData)
+                        let growlerData = {
+                            mode: 'success',
+                            message: 'Template successfully created'
+                        }
+                        Bus.$emit('growl', growlerData)
                     })
             }
         },
@@ -94,8 +90,6 @@
             })
 
             Bus.$on('nameField', (field) => {
-                console.log(field);
-
                 this.fields.forEach((f) => {
                     if (f.field_id === field.field_id) {
                         f.name = field.name;

@@ -10,12 +10,12 @@ class Page extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(Page::class, 'parent_id', 'page_id');
     }
 
     public function children()
     {
-        return $this->hasMany(Page::class, 'parent_id');
+        return $this->hasMany(Page::class, 'parent_id', 'page_id');
     }
 
     public function values()

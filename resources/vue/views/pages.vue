@@ -1,7 +1,9 @@
 <template>
     <div>
         <h1>View Pages</h1>
-        <h3 v-for="page, k in pages" :key="k">{{ page.title }} <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link><span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)">Delete Page</button></h3>
+        <h3 class="page" v-for="page, k in pages" :key="k">{{ page.title }} <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link><span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)">Delete Page</button>
+            <h4 class="child" v-for="child, l in page.children"> {{ child.title }} <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link><span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(child.page_id)">Delete Page</button></h4>
+        </h3>
     </div>
 </template>
 <script>
@@ -18,20 +20,22 @@
         props: [],
         methods: {
             deletePage(pageId) {
-
-                // console.log(pageId)
-                this.pages = this.pages.filter((page) => {
-                    return page.page_id !== pageId
-                })
-
-
+                // make the delete request and then refresh this.pages to reflect the new list of pages, post-delete.
+                // probably a better way to do this but this works for now.
                 axios.delete(`/page?page_id=${pageId}`)
                     .then((res) => {
-                        let growlerData = {
-                            mode: 'success',
-                            message: 'Page successfully deleted'
-                        }
-                        Bus.$emit('growl', growlerData)
+
+                        axios.get('/page')
+                            .then((response) => {
+                                console.log(response.data)
+                                this.pages = response.data
+
+                                let growlerData = {
+                                    mode: 'success',
+                                    message: 'Page successfully deleted'
+                                }
+                                Bus.$emit('growl', growlerData)
+                            })
                     })
             }
         },
@@ -44,4 +48,15 @@
     }
 </script>
 <style lang="css">
+.child {
+    margin-left: 2rem;
+    position: relative;
+}
+
+.child::before {
+    content: "˪";
+    position: relative;
+    left: 0;
+    /*font-size: 32px;*/
+}
 </style>

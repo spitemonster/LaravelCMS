@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>View Templates</h1>
-    <h3 v-for="template, k in templates" > {{ template.name }} <button @click="deleteTemplate(template.template_id)">Delete</button> <router-link tag="span" :to="'/admin/template/' + template.template_id + '/edit'"><a>Edit Template</a></router-link></h3>
+    <h3 v-for="template, k in templates"> {{ template.name }} <button @click="deleteTemplate(template.template_id)">Delete</button> <router-link tag="span" :to="'/admin/template/' + template.template_id + '/edit'"><a>Edit Template</a></router-link></h3>
   </div>
 </template>
 <script>
@@ -26,7 +26,6 @@
                             mode: 'success',
                             message: 'Template successfully deleted'
                         }
-                        // this.$delete(this.templates, templateId)
 
                         this.templates = this.templates.filter((template) => {
                             return template.template_id !== templateId;
@@ -48,7 +47,6 @@
             axios.get('/template')
               .then((res) => {
                     this.templates = res.data
-                    console.log(this.templates);
               })
         }
     }

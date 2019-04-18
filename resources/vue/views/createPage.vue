@@ -21,6 +21,8 @@
                     :key="field.id"></inputField>
 
         <button @click="createPage">Create Page</button>
+
+        <input type="text" id="tags" />
     </div>
 </template>
 <script>
@@ -40,7 +42,8 @@
                 pageName: '',
                 generatedUrl: '',
                 urlAvailable: false,
-                iterator: 0
+                iterator: 0,
+                baseUrl: '',
             }
         },
         props: [],
@@ -61,26 +64,20 @@
             },
             selectParent (e) {
                 let parent = e.target.value
-
                 axios.get(`/page?page_id=${parent}`)
                     .then((res) => {
                         let parentSlug = res.data.url;
-
                         this.selectedParent = parent;
-
-                        this.getUrl(`${parentSlug}${this.generatedUrl}`);
+                        this.getUrl(`${parentSlug ? parentSlug : ''}${this.baseUrl}`);
                     })
-            },
-            filterInput(e) {
-                e.target.value = e.target.value.replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '')
             },
             generateUrl(e) {
                 // get page name and generate a url based on it, where e is the page name input
                 let pageName = e.target.value
-                let url = pageName.replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '').toLowerCase();
+                let url = this.baseUrl = pageName.replace(/[\s]+/g, '-').replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '').toLowerCase();
 
                 if (url.split('')[0] !== '/') {
-                    url = `/${url}`;
+                    url = this.baseUrl = `/${url}`;
                 }
 
                 this.getUrl(url);
@@ -94,7 +91,7 @@
             createPage () {
                 let url = document.querySelector('#pageUrl')
                 let headers = { 'Content-Type': 'application/json' }
-
+                let tags = document.querySelector('#tags').value;
 
                 let pageData = {}
 
@@ -103,6 +100,7 @@
                 pageData.template_id = this.selectedTemplate.template_id
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''
                 pageData.page_id = uuidv4();
+                pageData.tags = tags;
 
                 pageData.fields = [];
 

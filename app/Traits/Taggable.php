@@ -7,6 +7,6 @@ trait Taggable
 {
     public function Tags()
     {
-        return $this->hasMany(Tag::class, 'tag_id');
+        return $this->belongsTo(Tag::class, 'page_id', 'page_id');
     }
 }

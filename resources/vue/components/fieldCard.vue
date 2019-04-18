@@ -5,7 +5,7 @@
               <span>Type: {{ field.type }}</span>
               <span>ID: {{ field.field_id }}</span>
           </div>
-          <span @click="deleteField">Delete Field</span>
+          <span @click="deleteField" v-if="deletable">Delete Field</span>
     </fieldset>
 </template>
 <script>
@@ -21,7 +21,7 @@
                 fieldType: this.field.text
             }
         },
-        props: ['field'],
+        props: ['field', 'deletable'],
         methods: {
             deleteField () {
                 Bus.$emit('delete', this.fieldId)

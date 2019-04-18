@@ -10,7 +10,7 @@
 
         <button @click="addField">Add Field</button>
         <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;" v-model="templateName">
-        <fieldCard v-for="field in fields" :key="field.id" :field="field"></fieldCard>
+        <fieldCard v-for="field in fields" :key="field.id" :field="field" :deletable="false"></fieldCard>
         <button @click="saveTemplate">Save Template</button>
     </div>
 </template>
