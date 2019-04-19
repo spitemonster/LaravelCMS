@@ -1768,11 +1768,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./views/createTemplate.vue */ "./resources/vue/views/createTemplate.vue");
 /* harmony import */ var _components_loggedOut_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/loggedOut.vue */ "./resources/vue/components/loggedOut.vue");
 /* harmony import */ var _views_createPage_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./views/createPage.vue */ "./resources/vue/views/createPage.vue");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.umd.min.js");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../js/admin.js */ "./resources/js/admin.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../js/admin.js */ "./resources/js/admin.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
 //
 //
 //
@@ -1801,7 +1799,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 
 
@@ -1837,15 +1834,14 @@ __webpack_require__.r(__webpack_exports__);
     fieldCard: _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     createTemplate: _views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
     createPage: _views_createPage_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-    draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_5___default.a,
-    router: _js_admin_js__WEBPACK_IMPORTED_MODULE_6__["default"],
+    router: _js_admin_js__WEBPACK_IMPORTED_MODULE_5__["default"],
     loggedOut: _components_loggedOut_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
     growler: _components_growler_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
     var _this = this;
 
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_6__["default"].$on('growl', function (growler) {
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_5__["default"].$on('growl', function (growler) {
       _this.growl(growler);
     });
   },
@@ -2062,6 +2058,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2141,6 +2140,7 @@ __webpack_require__.r(__webpack_exports__);
       pageData.parent_id = this.selectedParent ? this.selectedParent : '';
       pageData.page_id = uuid_v4__WEBPACK_IMPORTED_MODULE_3___default()();
       pageData.tags = tags;
+      pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
       pageData.fields = [];
       this.fields.forEach(function (field) {
         var obj = {};
@@ -2163,14 +2163,22 @@ __webpack_require__.r(__webpack_exports__);
           _this4.$router.push({
             name: 'viewPages'
           });
+
+          var growlerData = {
+            mode: 'success',
+            message: res.data
+          };
+          return _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
         }
 
+        console.log(res.status);
+      }).catch(function (err) {
         var growlerData = {
-          mode: 'success',
-          message: 'Page successfully created'
+          mode: 'error',
+          message: err
         };
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
-      }).catch(function (err) {});
+        return _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
+      });
     }
   },
   components: {
@@ -2220,13 +2228,11 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/fieldCard.vue */ "./resources/vue/components/fieldCard.vue");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.umd.min.js");
-/* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! uuid/v4 */ "./node_modules/uuid/v4.js");
-/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! uuid/v4 */ "./node_modules/uuid/v4.js");
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_3__);
 //
 //
 //
@@ -2243,9 +2249,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-
 
 
 
@@ -2258,7 +2261,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     generateId: function generateId() {
-      return uuid_v4__WEBPACK_IMPORTED_MODULE_4___default()();
+      return uuid_v4__WEBPACK_IMPORTED_MODULE_3___default()();
     },
     addField: function addField() {
       var sel = document.getElementById('fieldSelector');
@@ -2284,18 +2287,17 @@ __webpack_require__.r(__webpack_exports__);
         template_id: this.generateId(),
         fields: JSON.stringify(this.fields)
       };
-      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/template', template, headers).then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/template', template, headers).then(function (res) {
         var growlerData = {
           mode: 'success',
           message: 'Template successfully created'
         };
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('growl', growlerData);
       });
     }
   },
   components: {
-    fieldCard: _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
-    draggable: vuedraggable__WEBPACK_IMPORTED_MODULE_1___default.a
+    fieldCard: _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   mounted: function mounted() {
     var _this = this;
@@ -2307,17 +2309,17 @@ __webpack_require__.r(__webpack_exports__);
         _this.saveTemplate();
       }
     });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('delete', function (fieldId) {
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('delete', function (fieldId) {
       _this.removeField(fieldId);
     });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('requireField', function (field) {
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('requireField', function (field) {
       _this.fields.filter(function (f) {
         if (f.id === field.id) {
           f.required = !f.required;
         }
       });
     });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('nameField', function (field) {
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('nameField', function (field) {
       _this.fields.forEach(function (f) {
         if (f.field_id === field.field_id) {
           f.name = field.name;
@@ -2392,6 +2394,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2402,20 +2407,13 @@ __webpack_require__.r(__webpack_exports__);
     return {
       title: '',
       url: '',
+      menu: false,
       fields: [],
       revisions: []
     };
   },
   props: [],
-  computed: {
-    hasRevisions: function hasRevisions() {
-      if (typeof this.revisions === "undefined" || this.revisions.length === 0) {
-        return false;
-      }
-
-      return true;
-    }
-  },
+  computed: {},
   methods: {
     savePage: function savePage() {
       var headers = {
@@ -2424,6 +2422,7 @@ __webpack_require__.r(__webpack_exports__);
       var pageData = {};
       pageData.title = document.querySelector('#pageName').value;
       pageData.url = document.querySelector('#pageUrl').value;
+      pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
       pageData.fields = [];
       this.fields.forEach(function (field) {
         var obj = {};
@@ -2455,6 +2454,7 @@ __webpack_require__.r(__webpack_exports__);
       _this.title = res.data.title;
       _this.url = res.data.url;
       _this.revisions = res.data.revisions;
+      _this.menu = res.data.menu;
     });
   },
   mounted: function mounted() {
@@ -2587,10 +2587,7 @@ __webpack_require__.r(__webpack_exports__);
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('nameField', function (f) {
       _this2.fields.forEach(function (field) {
-        console.log('looking');
-
         if (f.field_id === field.field_id) {
-          console.log('found it');
           return field.name = f.name;
         }
       });
@@ -2627,6 +2624,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2641,18 +2641,14 @@ __webpack_require__.r(__webpack_exports__);
     deletePage: function deletePage(pageId) {
       var _this = this;
 
-      // make the delete request and then refresh this.pages to reflect the new list of pages, post-delete.
-      // probably a better way to do this but this works for now.
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.delete("/page?page_id=".concat(pageId)).then(function (res) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/page').then(function (response) {
-          console.log(response.data);
-          _this.pages = response.data;
-          var growlerData = {
-            mode: 'success',
-            message: 'Page successfully deleted'
-          };
-          _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('growl', growlerData);
-        });
+        console.log(res.data);
+        _this.pages = res.data;
+        var growlerData = {
+          mode: 'success',
+          message: 'Page successfully deleted'
+        };
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('growl', growlerData);
       });
     }
   },
@@ -6979,6 +6975,12 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
+      _c("label", { attrs: { for: "showInMenu" } }, [_vm._v("Show in Menu?")]),
+      _vm._v(" "),
+      _c("input", {
+        attrs: { type: "checkbox", name: "menu", id: "showInMenu" }
+      }),
+      _vm._v(" "),
       _vm._l(_vm.fields, function(field) {
         return _c("inputField", {
           key: field.id,
@@ -7037,23 +7039,18 @@ var render = function() {
       _vm._v(" "),
       _c("button", { on: { click: _vm.addField } }, [_vm._v("Add Field")]),
       _vm._v(" "),
-      _c(
-        "draggable",
-        { attrs: { element: "form", list: _vm.fields, id: "test" } },
-        _vm._l(_vm.fields, function(field) {
-          return _c("fieldCard", {
-            key: field.id,
-            attrs: { field: field, deletable: true }
-          })
-        }),
-        1
-      ),
+      _vm._l(_vm.fields, function(field) {
+        return _c("fieldCard", {
+          key: field.id,
+          attrs: { field: field, deletable: true }
+        })
+      }),
       _vm._v(" "),
       _c("button", { on: { click: _vm.saveTemplate } }, [
         _vm._v("Save Template")
       ])
     ],
-    1
+    2
   )
 }
 var staticRenderFns = [
@@ -7145,6 +7142,44 @@ var render = function() {
       _c("input", {
         attrs: { type: "text", id: "pageUrl" },
         domProps: { value: _vm.url }
+      }),
+      _vm._v(" "),
+      _c("label", { attrs: { for: "showInMenu" } }, [_vm._v("Show in Menu?")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.menu,
+            expression: "menu"
+          }
+        ],
+        attrs: { type: "checkbox", name: "menu", id: "showInMenu" },
+        domProps: {
+          checked: Array.isArray(_vm.menu)
+            ? _vm._i(_vm.menu, null) > -1
+            : _vm.menu
+        },
+        on: {
+          change: function($event) {
+            var $$a = _vm.menu,
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false
+            if (Array.isArray($$a)) {
+              var $$v = null,
+                $$i = _vm._i($$a, $$v)
+              if ($$el.checked) {
+                $$i < 0 && (_vm.menu = $$a.concat([$$v]))
+              } else {
+                $$i > -1 &&
+                  (_vm.menu = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+              }
+            } else {
+              _vm.menu = $$c
+            }
+          }
+        }
       }),
       _vm._v(" "),
       _vm._l(_vm.fields, function(field) {
@@ -10200,55 +10235,6 @@ if (inBrowser && window.Vue) {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (VueRouter);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-sortable/vue-sortable.js":
-/*!***************************************************!*\
-  !*** ./node_modules/vue-sortable/vue-sortable.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-;(function () {
-
-  var vSortable = {}
-  var Sortable =  true
-      ? __webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/Sortable.js")
-      : undefined
-
-  if (!Sortable) {
-    throw new Error('[vue-sortable] cannot locate Sortable.js.')
-  }
-
-  // exposed global options
-  vSortable.config = {}
-
-  vSortable.install = function (Vue) {
-    Vue.directive('sortable', function (options) {
-      options = options || {}
-
-      var sortable = new Sortable(this.el, options)
-
-      if (this.arg && !this.vm.sortable) {
-        this.vm.sortable = {}
-      }
-
-      //  Throw an error if the given ID is not unique
-      if (this.arg && this.vm.sortable[this.arg]) {
-        console.warn('[vue-sortable] cannot set already defined sortable id: \'' + this.arg + '\'')
-      } else if( this.arg ) {
-        this.vm.sortable[this.arg] = sortable
-      }
-    })
-  }
-
-  if (true) {
-    module.exports = vSortable
-  } else {}
-
-})()
 
 
 /***/ }),
@@ -22272,16 +22258,13 @@ module.exports = g;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _vue_App_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../vue/App.vue */ "./resources/vue/App.vue");
-/* harmony import */ var vue_sortable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-sortable */ "./node_modules/vue-sortable/vue-sortable.js");
-/* harmony import */ var vue_sortable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_sortable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _vue_views_dashboard_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../vue/views/dashboard.vue */ "./resources/vue/views/dashboard.vue");
-/* harmony import */ var _vue_views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../vue/views/createTemplate.vue */ "./resources/vue/views/createTemplate.vue");
-/* harmony import */ var _vue_views_createPage_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../vue/views/createPage.vue */ "./resources/vue/views/createPage.vue");
-/* harmony import */ var _vue_views_pages_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vue/views/pages.vue */ "./resources/vue/views/pages.vue");
-/* harmony import */ var _vue_views_templates_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vue/views/templates.vue */ "./resources/vue/views/templates.vue");
-/* harmony import */ var _vue_views_editPage_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../vue/views/editPage.vue */ "./resources/vue/views/editPage.vue");
-/* harmony import */ var _vue_views_editTemplate_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../vue/views/editTemplate.vue */ "./resources/vue/views/editTemplate.vue");
-
+/* harmony import */ var _vue_views_dashboard_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../vue/views/dashboard.vue */ "./resources/vue/views/dashboard.vue");
+/* harmony import */ var _vue_views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../vue/views/createTemplate.vue */ "./resources/vue/views/createTemplate.vue");
+/* harmony import */ var _vue_views_createPage_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../vue/views/createPage.vue */ "./resources/vue/views/createPage.vue");
+/* harmony import */ var _vue_views_pages_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../vue/views/pages.vue */ "./resources/vue/views/pages.vue");
+/* harmony import */ var _vue_views_templates_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vue/views/templates.vue */ "./resources/vue/views/templates.vue");
+/* harmony import */ var _vue_views_editPage_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vue/views/editPage.vue */ "./resources/vue/views/editPage.vue");
+/* harmony import */ var _vue_views_editTemplate_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../vue/views/editTemplate.vue */ "./resources/vue/views/editTemplate.vue");
 
  // import views
 
@@ -22298,7 +22281,6 @@ var Vue = window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/v
 
 var Bus = new Vue();
 /* harmony default export */ __webpack_exports__["default"] = (Bus);
-Vue.use(vue_sortable__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 Vue.config.ignoredElements = ['trix-editor'];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -22306,31 +22288,31 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: [{
     path: '/admin',
     name: 'admin',
-    component: _vue_views_dashboard_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    component: _vue_views_dashboard_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   }, {
     path: '/admin/create/template',
     name: 'createTemplate',
-    component: _vue_views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+    component: _vue_views_createTemplate_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   }, {
     path: '/admin/create/page',
     name: 'createPage',
-    component: _vue_views_createPage_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+    component: _vue_views_createPage_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   }, {
     path: '/admin/view/pages',
     name: 'viewPages',
-    component: _vue_views_pages_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+    component: _vue_views_pages_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
   }, {
     path: '/admin/view/templates',
     name: 'viewTemplates',
-    component: _vue_views_templates_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
+    component: _vue_views_templates_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
   }, {
     path: '/admin/page/:page_id/edit',
     name: 'editPages',
-    component: _vue_views_editPage_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
+    component: _vue_views_editPage_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
   }, {
     path: '/admin/template/:template_id/edit',
     name: 'editTemplates',
-    component: _vue_views_editTemplate_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
+    component: _vue_views_editTemplate_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
   }]
 });
 new Vue({

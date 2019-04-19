@@ -1,6 +1,5 @@
 import Router from 'vue-router'
 import App from '../vue/App.vue'
-import Sortable from 'vue-sortable'
 
 // import views
 import dashboard from '../vue/views/dashboard.vue'
@@ -19,7 +18,6 @@ const Bus = new Vue()
 
 export default Bus
 
-Vue.use(Sortable)
 Vue.use(Router)
 Vue.config.ignoredElements = ['trix-editor']
 

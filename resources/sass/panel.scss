@@ -1,5 +1,10 @@
 @import 'field-card';
 
+::selection,
+::-moz-selection {
+    background: CornflowerBlue !important;
+}
+
 .dashboard {
     display: flex;
     height: 100%;

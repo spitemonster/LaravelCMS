@@ -90,9 +90,7 @@
 
             Bus.$on('nameField', (f) => {
                 this.fields.forEach((field) => {
-                    console.log('looking')
                     if (f.field_id === field.field_id) {
-                        console.log('found it')
                         return field.name = f.name
                     }
                 })

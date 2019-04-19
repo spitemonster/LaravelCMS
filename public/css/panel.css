@@ -24,6 +24,16 @@
   margin-top: 0.5rem;
 }
 
+::-moz-selection,
+::-moz-selection {
+  background: CornflowerBlue !important;
+}
+
+::selection,
+::-moz-selection {
+  background: CornflowerBlue !important;
+}
+
 .dashboard {
   display: flex;
   height: 100%;

@@ -4,6 +4,9 @@
         <input type="text" id="pageName" :value="title">
         <input type="text" id="pageUrl" :value="url">
 
+        <label for="showInMenu">Show in Menu?</label>
+        <input type="checkbox" name="menu" id="showInMenu" v-model="menu" />
+
         <inputField v-for="field in fields"
                         :fieldType="field.type"
                         :fieldId="field.field_id"
@@ -31,19 +34,13 @@ export default {
         return {
             title: '',
             url: '',
+            menu: false,
             fields: [],
             revisions: []
         }
     },
     props: [],
     computed: {
-        hasRevisions() {
-            if (typeof this.revisions === "undefined" || this.revisions.length === 0) {
-                return false
-            }
-
-            return true
-        }
     },
     methods: {
         savePage () {
@@ -52,6 +49,7 @@ export default {
             let pageData = {}
             pageData.title = document.querySelector('#pageName').value
             pageData.url = document.querySelector('#pageUrl').value
+            pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
             pageData.fields = []
 
             this.fields.forEach((field) => {
@@ -89,6 +87,7 @@ export default {
                 this.title = res.data.title
                 this.url = res.data.url
                 this.revisions = res.data.revisions
+                this.menu = res.data.menu
             })
     },
     mounted() {

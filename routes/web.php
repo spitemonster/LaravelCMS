@@ -54,4 +54,6 @@ Auth::routes();
 
 Route::get('/admin', 'DashboardController@index')->name('admin');
 
+Route::get('/admin/{any}', 'DashboardController@redirect')->where('any', '.*');
+
 Route::get('/{url}', 'PageController@showPage')->where('url', '.*');

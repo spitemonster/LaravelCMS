@@ -25,7 +25,8 @@ class PageCreationRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'url' => 'required'
+            'url' => 'required',
+            'menu' => 'required'
         ];
     }
 }

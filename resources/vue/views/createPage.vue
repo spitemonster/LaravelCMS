@@ -13,6 +13,9 @@
             <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
         </select>
 
+        <label for="showInMenu">Show in Menu?</label>
+        <input type="checkbox" name="menu" id="showInMenu" />
+
         <inputField v-for="field in fields"
                     :fieldType="field.type"
                     :fieldId="field.id"
@@ -101,6 +104,7 @@
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''
                 pageData.page_id = uuidv4();
                 pageData.tags = tags;
+                pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
 
                 pageData.fields = [];
 
@@ -126,16 +130,24 @@
                 .then((res) => {
                     if (res.status === 200) {
                         this.$router.push({ name: 'viewPages' })
+                        let growlerData = {
+                            mode: 'success',
+                            message: res.data
+                        }
+
+                        return Bus.$emit('growl', growlerData);
                     }
 
-                    let growlerData = {
-                        mode: 'success',
-                        message: 'Page successfully created'
-                    }
+                    console.log(res.status)
 
-                    Bus.$emit('growl', growlerData)
+
                 }).catch((err) => {
+                    let growlerData = {
+                        mode: 'error',
+                        message: err
+                    }
 
+                    return Bus.$emit('growl', growlerData);
                 })
             },
         },

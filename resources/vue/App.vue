@@ -32,7 +32,6 @@
     import createTemplate from './views/createTemplate.vue'
     import loggedOut from './components/loggedOut.vue'
     import createPage from './views/createPage.vue'
-    import draggable from 'vuedraggable'
     import router from '../js/admin.js'
     import axios from 'axios'
     import Bus from '../js/admin.js'
@@ -67,7 +66,6 @@
             fieldCard,
             createTemplate,
             createPage,
-            draggable,
             router,
             loggedOut,
             growler

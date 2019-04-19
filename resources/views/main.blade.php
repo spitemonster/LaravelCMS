@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ $title }}</title>
-</head>
-<body>
-    <h1>{{ $title }}</h1>
-    <p>{!! $body !!}</p>
+@component('head')
+    @slot('title')
+        {{ $title }}
+    @endslot
+@endcomponent
 
-    @foreach ($children as $child)
-        {{ $child->title }}
-    @endforeach
-</body>
-</html>
+    <h1>{{ $title }}</h1>
+    {!! $body !!}
+
+@component('footer')
+@endcomponent

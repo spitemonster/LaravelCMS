@@ -1,24 +1,21 @@
 <template>
     <main>
-      <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;">
+        <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;">
 
-      <select name="field-type" id="fieldSelector">
-          <option value="text">Text</option>
-          <option value="textarea">Text Area</option>
-          <option value="wysiwyg">WYSIWYG</option>
-          <option value="postIndex">Post Index</option>
-      </select>
+        <select name="field-type" id="fieldSelector">
+            <option value="text">Text</option>
+            <option value="textarea">Text Area</option>
+            <option value="wysiwyg">WYSIWYG</option>
+            <option value="postIndex">Post Index</option>
+        </select>
 
-      <button @click="addField">Add Field</button>
-      <draggable element="form" :list="fields" id="test">
-            <fieldCard :field="field" v-for="field in fields" :key="field.id" :deletable="true"></fieldCard>
-      </draggable>
-      <button @click="saveTemplate">Save Template</button>
+        <button @click="addField">Add Field</button>
+        <fieldCard :field="field" v-for="field in fields" :key="field.id" :deletable="true"></fieldCard>
+        <button @click="saveTemplate">Save Template</button>
     </main>
 </template>
 <script>
     import fieldCard from '../components/fieldCard.vue'
-    import draggable from 'vuedraggable'
     import Bus from '../../js/admin.js'
     import axios from 'axios'
     import uuidv4 from 'uuid/v4'
@@ -65,8 +62,7 @@
             }
         },
         components: {
-            fieldCard,
-            draggable
+            fieldCard
         },
         mounted () {
             document.addEventListener('keydown', (e) => {
