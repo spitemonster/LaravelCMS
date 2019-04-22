@@ -2348,7 +2348,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     collectTemplateData: function collectTemplateData() {
       var template_name = document.querySelector('#templateName').value;
-      var template_fields = JSON.stringify(this.fields);
+      var template_fields = this.fields;
       var template = {
         template_name: template_name,
         template_fields: template_fields
@@ -2476,6 +2476,8 @@ __webpack_require__.r(__webpack_exports__);
   computed: {},
   methods: {
     savePage: function savePage() {
+      var _this = this;
+
       var headers = {
         'Content-Type': 'application/json'
       };
@@ -2524,6 +2526,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.fieldsValid) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch("/page?page_id=".concat(this.$route.params.page_id), pageData, headers).then(function (res) {
+          _this.$router.push({
+            name: 'viewPages'
+          });
+
           var growlerData = {
             mode: res.data.status,
             message: res.data.message
@@ -2546,30 +2552,30 @@ __webpack_require__.r(__webpack_exports__);
     inputField: _components_inputField_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   beforeCreate: function beforeCreate() {
-    var _this = this;
+    var _this2 = this;
 
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/page?page_id=".concat(this.$route.params.page_id)).then(function (res) {
-      _this.fields = res.data.values;
-      _this.title = res.data.title;
-      _this.url = res.data.url;
-      _this.revisions = res.data.revisions;
-      _this.menu = res.data.menu;
+      _this2.fields = res.data.values;
+      _this2.title = res.data.title;
+      _this2.url = res.data.url;
+      _this2.revisions = res.data.revisions;
+      _this2.menu = res.data.menu;
     });
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     document.addEventListener('keydown', function (e) {
       if (e.metaKey && e.which == 83) {
         e.preventDefault();
 
-        _this2.savePage();
+        _this3.savePage();
       }
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('fieldFill', function (field) {
       var targetField = field.dataset.fieldid;
 
-      _this2.fields.forEach(function (f) {
+      _this3.fields.forEach(function (f) {
         if (f.field_id == targetField) {
           f.value = field.value;
         }
@@ -2625,6 +2631,8 @@ __webpack_require__.r(__webpack_exports__);
   props: [],
   methods: {
     saveTemplate: function saveTemplate() {
+      var _this = this;
+
       var templateData = {};
       var headers = {
         'Content-Type': 'application/json'
@@ -2632,6 +2640,10 @@ __webpack_require__.r(__webpack_exports__);
       templateData.name = this.templateName;
       templateData.fields = this.fields;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch("/template?template_id=".concat(this.$route.params.template_id), templateData, headers).then(function (res) {
+        _this.$router.push({
+          name: 'viewTemplates'
+        });
+
         var growlerData = {
           mode: res.data.status,
           message: res.data.message
@@ -2652,37 +2664,37 @@ __webpack_require__.r(__webpack_exports__);
     fieldCard: _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   beforeCreate: function beforeCreate() {
-    var _this = this;
+    var _this2 = this;
 
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/template/?template_id=".concat(this.$route.params.template_id)).then(function (res) {
-      _this.fields = res.data.fields;
-      _this.templateName = res.data.name;
+      _this2.fields = res.data.fields;
+      _this2.templateName = res.data.name;
     });
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     document.addEventListener('keydown', function (e) {
       if (e.metaKey && e.which == 83) {
         e.preventDefault();
 
-        _this2.saveTemplate();
+        _this3.saveTemplate();
       }
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('deleteField', function (targetField) {
-      _this2.fields = _this2.fields.filter(function (field) {
+      _this3.fields = _this3.fields.filter(function (field) {
         return field !== targetField;
       });
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('requireField', function (targetField) {
-      _this2.fields.forEach(function (field) {
+      _this3.fields.forEach(function (field) {
         if (field === targetField.field) {
           field.required = targetField.required;
         }
       });
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('nameField', function (targetField) {
-      _this2.fields.forEach(function (field) {
+      _this3.fields.forEach(function (field) {
         if (field === targetField.field) {
           field.name = targetField.name;
         }

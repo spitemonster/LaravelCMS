@@ -20,14 +20,14 @@ class TemplateController extends Controller
         $template->name = $request->input('template_name');
         $template->template_id = Uuid::generate(4)->string;
 
-        foreach (json_decode($request->input('template_fields')) as $template_field) {
+        foreach ($request->input('template_fields') as $template_field) {
             $f = new Field;
 
             $f->field_id = Uuid::generate(4)->string;
-            $f->name = $template_field->name;
-            $f->type = $template_field->type;
-            $f->required = $template_field->required ? true : false;
-            $f->template_id = $template->template_id;
+            $f->name = $template_field['name'];
+            $f->type = $template_field['type'];
+            $f->required = $template_field['required'] ? true : false;
+            $f->template_id = $template['template_id'];
             $f->save();
         }
 
@@ -67,7 +67,7 @@ class TemplateController extends Controller
             return $template;
         }
 
-        return json_encode(Template::all());
+        return Template::all();
     }
 
     // update

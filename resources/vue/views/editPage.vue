@@ -95,6 +95,7 @@ export default {
             if (this.fieldsValid) {
                 axios.patch(`/page?page_id=${this.$route.params.page_id}`, pageData, headers)
                 .then((res) => {
+                    this.$router.push({ name: 'viewPages' })
                     let growlerData = {
                         mode: res.data.status,
                         message: res.data.message

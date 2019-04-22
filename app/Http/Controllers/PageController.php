@@ -40,17 +40,17 @@ class PageController extends Controller
         $page = new Page;
         $parent = null;
 
-        if ($request->parent_id) {
-            $parent = Page::where('page_id', $request->parent_id)->firstOrFail();
+        if ($request->input('parent_id')) {
+            $parent = Page::where('page_id', $request->input('parent_id'))->firstOrFail();
         }
 
-        $page->title = $request->title;
-        $page->template_id = $request->template_id;
-        $page->parent_id = $request->parent_id;
-        $page->url = $request->url;
+        $page->title = $request->input('title');
+        $page->template_id = $request->input('template_id');
+        $page->parent_id = $request->input('parent_id');
+        $page->url = $request->input('url');
         $page->page_id = Uuid::generate(4)->string;
-        $page->menu = $request->menu;
-        $tags = explode(',', $request->tags);
+        $page->menu = $request->input('menu');
+        $tags = explode(',', $request->input('tags'));
 
         foreach ($tags as $t) {
             if ($t !== '') {
@@ -64,7 +64,7 @@ class PageController extends Controller
             }
         }
 
-        foreach ($request->fields as $field) {
+        foreach ($request->input('fields') as $field) {
             $fieldValue = new FieldValue;
 
             $fieldValue->field_id = $field['field_id'];
@@ -104,10 +104,10 @@ class PageController extends Controller
 
         $page = Page::where('page_id', $request->query('page_id'))->first();
 
-        $page->title = $request->title;
-        $page->url = $request->url;
+        $page->title = $request->input('title');
+        $page->url = $request->input('url');
 
-        foreach ($request->fields as $field) {
+        foreach ($request->input('fields') as $field) {
             $fieldValue = FieldValue::where('field_id', $field['field_id'])->first();
 
             $fieldValue->value = $field['content'];

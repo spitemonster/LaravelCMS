@@ -48,7 +48,7 @@
             },
             collectTemplateData() {
                 let template_name = document.querySelector('#templateName').value
-                let template_fields = JSON.stringify(this.fields)
+                let template_fields = this.fields
 
                 let template = {
                     template_name: template_name,

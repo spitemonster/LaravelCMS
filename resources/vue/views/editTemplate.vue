@@ -38,6 +38,7 @@
 
                 axios.patch(`/template?template_id=${this.$route.params.template_id}`, templateData, headers)
                     .then((res) => {
+                        this.$router.push({ name: 'viewTemplates' })
                         let growlerData = {
                             mode: res.data.status,
                             message: res.data.message
