@@ -23,8 +23,8 @@
                 axios.delete(`/template?template_id=${templateId}`)
                     .then((res) => {
                         let growlerData = {
-                            mode: 'success',
-                            message: 'Template successfully deleted'
+                            mode: res.data.status,
+                            message: res.data.message
                         }
 
                         this.templates = this.templates.filter((template) => {
@@ -35,8 +35,8 @@
                     })
                     .catch((err) => {
                         let growlerData = {
-                            mode: 'alert',
-                            message: err.response.data
+                            mode: err.response.data.status,
+                            message: err.response.data.message
                         }
 
                         Bus.$emit('growl', growlerData)

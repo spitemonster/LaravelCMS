@@ -1,6 +1,6 @@
 <template>
     <main>
-        <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;">
+        <input type="text" name="templateName" placeholder="Template Name" id="templateName" style="display: block;">
 
         <select name="field-type" id="fieldSelector">
             <option value="text">Text</option>
@@ -10,7 +10,7 @@
         </select>
 
         <button @click="addField">Add Field</button>
-        <fieldCard :field="field" v-for="field in fields" :key="field.id" :deletable="true"></fieldCard>
+            <fieldCard :field="field" v-for="field in fields" :key="field.name" :deletable="true"></fieldCard>
         <button @click="saveTemplate">Save Template</button>
     </main>
 </template>
@@ -18,7 +18,6 @@
     import fieldCard from '../components/fieldCard.vue'
     import Bus from '../../js/admin.js'
     import axios from 'axios'
-    import uuidv4 from 'uuid/v4'
 
     export default {
         data () {
@@ -27,70 +26,71 @@
             }
         },
         methods: {
-            generateId () {
-                return uuidv4()
-            },
             addField () {
-                let sel = document.getElementById('fieldSelector')
-                this.fields.push({field_id: this.generateId(), name: '', type: sel.value, required: false});
-            },
-            removeField (targetId) {
-                this.fields = this.fields.filter((field) => {
-                    return field.field_id !== targetId
-                })
+                let sel = document.querySelector('#fieldSelector')
+                this.fields.push({name: '', required: false, type: sel.value});
             },
             saveTemplate () {
-                let templateName = document.querySelector('#template-name').value
+                let template = this.collectTemplateData()
 
                 let headers = { 'Content-Type': 'application/json' }
 
-                let template = {
-                    name: templateName,
-                    template_id: this.generateId(),
-                    fields: JSON.stringify(this.fields)
-                }
-
                 axios.post('/template', template, headers)
                     .then((res) => {
+                        this.$router.push({ name: 'viewTemplates' })
 
                         let growlerData = {
-                            mode: 'success',
-                            message: 'Template successfully created'
+                            mode: res.data.status,
+                            message: res.data.message
                         }
                         Bus.$emit('growl', growlerData)
                     })
+            },
+            collectTemplateData() {
+                let template_name = document.querySelector('#templateName').value
+                let template_fields = JSON.stringify(this.fields)
+
+                let template = {
+                    template_name: template_name,
+                    template_fields: template_fields
+                }
+
+                return template;
             }
         },
         components: {
             fieldCard
         },
         mounted () {
+            // command/control + s save the template
             document.addEventListener('keydown', (e) => {
                 if (e.metaKey && e.which == 83) {
                     e.preventDefault()
-
                     this.saveTemplate()
                 }
             })
 
-            Bus.$on('delete', (fieldId) => {
-                this.removeField(fieldId)
+            Bus.$on('deleteField', (targetField) => {
+                this.fields = this.fields.filter((field) => {
+                    return field !== targetField;
+                })
             })
 
-            Bus.$on('requireField', (field) => {
-                this.fields.filter((f) => {
-                    if (f.id === field.id) {
-                        f.required = !f.required
+            Bus.$on('requireField', (targetField) => {
+                this.fields.forEach((field) => {
+                    if (field === targetField.field) {
+                        field.required = targetField.required;
                     }
                 })
             })
 
-            Bus.$on('nameField', (field) => {
-                this.fields.forEach((f) => {
-                    if (f.field_id === field.field_id) {
-                        f.name = field.name;
+            Bus.$on('nameField', (targetField) => {
+                this.fields.forEach((field) => {
+                    if (field === targetField.field) {
+                        field.name = targetField.name;
                     }
                 })
+
             })
         },
         updated () {

@@ -25,13 +25,11 @@
             deletePage(pageId) {
                 axios.delete(`/page?page_id=${pageId}`)
                     .then((res) => {
-                        console.log(res.data)
-
                         this.pages = res.data;
 
                         let growlerData = {
-                            mode: 'success',
-                            message: 'Page successfully deleted'
+                            mode: res.data.status,
+                            message: res.data.message
                         }
                         Bus.$emit('growl', growlerData)
                     })

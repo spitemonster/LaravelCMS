@@ -13,4 +13,9 @@ class Field extends Model
     {
         return $this->belongsTo(Template::class, 'template_id', 'template_id');
     }
+
+    public function getRequiredAttribute($value)
+    {
+        return (bool) $value;
+    }
 }

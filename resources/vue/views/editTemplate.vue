@@ -10,7 +10,7 @@
 
         <button @click="addField">Add Field</button>
         <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;" v-model="templateName">
-        <fieldCard v-for="field in fields" :key="field.id" :field="field" :deletable="false"></fieldCard>
+            <fieldCard :field="field" v-for="field in fields" :key="field.name" :deletable="false"></fieldCard>
         <button @click="saveTemplate">Save Template</button>
     </div>
 </template>
@@ -34,35 +34,22 @@
                 let headers = { 'Content-Type': 'application/json' }
 
                 templateData.name = this.templateName
-                templateData.fields = JSON.stringify(this.fields);
+                templateData.fields = this.fields;
 
                 axios.patch(`/template?template_id=${this.$route.params.template_id}`, templateData, headers)
                     .then((res) => {
                         let growlerData = {
-                            mode: 'success',
-                            message: 'Template successfully updated'
+                            mode: res.data.status,
+                            message: res.data.message
                         }
+
                         Bus.$emit('growl', growlerData)
                     })
 
             },
-            generateId () {
-                return uuidv4()
-            },
             addField () {
-                let sel = document.getElementById('fieldSelector')
-
-                this.fields.push({field_id: this.generateId(), name: '', type: sel.value, required: false})
-            },
-            removeField (targetId) {
-                this.fields = this.fields.filter((field) => {
-                    return field.field_id !== targetId
-                })
-
-                axios.delete(`/field?field_id=${targetId}`)
-                    .then((res) => {
-                        console.log(res)
-                    })
+                let sel = document.querySelector('#fieldSelector')
+                this.fields.push({name: '', required: false, type: sel.value});
             },
         },
         components: {
@@ -84,24 +71,27 @@
                 }
             })
 
-            Bus.$on('delete', (fieldId) => {
-                this.removeField(fieldId)
+            Bus.$on('deleteField', (targetField) => {
+                this.fields = this.fields.filter((field) => {
+                    return field !== targetField;
+                })
             })
 
-            Bus.$on('nameField', (f) => {
+            Bus.$on('requireField', (targetField) => {
                 this.fields.forEach((field) => {
-                    if (f.field_id === field.field_id) {
-                        return field.name = f.name
+                    if (field === targetField.field) {
+                        field.required = targetField.required
                     }
                 })
             })
 
-            Bus.$on('requireField', (f) => {
+            Bus.$on('nameField', (targetField) => {
                 this.fields.forEach((field) => {
-                    if (f.id === field.id) {
-                        field.required = f.required
+                    if (field === targetField.field) {
+                        field.name = targetField.name;
                     }
                 })
+
             })
         }
     }

@@ -1,9 +1,12 @@
 <template>
     <fieldset class="field-card">
           <input type="text" v-model="fieldName" placeholder="Enter Field Name" class="field-card__name" @change="nameField"/>
+
+          <label for="fieldRequired">Required?</label>
+          <input type="checkbox" name="required" id="fieldRequired" @change="requireField" v-model="fieldRequired">
+
           <div class="field-card__meta">
               <span>Type: {{ field.type }}</span>
-              <span>ID: {{ field.field_id }}</span>
           </div>
           <span @click="deleteField" v-if="deletable">Delete Field</span>
     </fieldset>
@@ -15,23 +18,26 @@
         name: 'inputField',
         data () {
             return {
-                fieldName: this.field.name ? this.field.name : '',
-                fieldId: this.field.field_id,
-                fieldRequired: this.field.required ? this.field.required : false,
-                fieldType: this.field.text
+                fieldName: '',
+                fieldRequired: this.field.required,
+                fieldType: this.field.type
             }
         },
         props: ['field', 'deletable'],
         methods: {
             deleteField () {
-                Bus.$emit('delete', this.fieldId)
+                Bus.$emit('deleteField', this.field)
             },
             requireField () {
-                Bus.$emit('requireField', { id: this.fieldId, required: this.fieldRequired })
+                Bus.$emit('requireField', { field: this.field, required: this.fieldRequired })
             },
             nameField () {
-                Bus.$emit('nameField', { field_id: this.fieldId, name: this.fieldName })
+                Bus.$emit('nameField', { field: this.field, name: this.fieldName })
             }
+        },
+        mounted() {
+            this.fieldName = this.field.name ? this.field.name : ''
+            this.fieldRequired = this.field.required
         }
     }
 </script>

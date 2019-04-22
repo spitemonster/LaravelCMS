@@ -18,10 +18,11 @@
 
         <inputField v-for="field in fields"
                     :fieldType="field.type"
-                    :fieldId="field.id"
+                    :fieldId="field.field_id"
                     :fieldName="field.name"
                     :fieldRequired="field.required"
-                    :key="field.id"></inputField>
+                    :key="field.id"
+                    :content="field.value"></inputField>
 
         <button @click="createPage">Create Page</button>
 
@@ -47,6 +48,7 @@
                 urlAvailable: false,
                 iterator: 0,
                 baseUrl: '',
+                fieldsValid: false
             }
         },
         props: [],
@@ -57,11 +59,14 @@
                 let sel = e.target.value
 
                 if (sel !== '') {
+                    if (e.target.classList.contains('invalid')) {
+                        e.target.classList.remove('invalid')
+                    }
+
                     axios.get(`/template?template_id=${sel}`)
-                        .then((data) => {
-                            console.log(data.data.fields)
-                            this.fields = data.data.fields
-                            this.selectedTemplate = data.data
+                        .then((res) => {
+                            this.fields = res.data.fields
+                            this.selectedTemplate = res.data.template_id
                         })
                 }
             },
@@ -76,6 +81,10 @@
             },
             generateUrl(e) {
                 // get page name and generate a url based on it, where e is the page name input
+                if (e.target.classList.contains('invalid')) {
+                    e.target.classList.remove('invalid')
+                }
+
                 let pageName = e.target.value
                 let url = this.baseUrl = pageName.replace(/[\s]+/g, '-').replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '').toLowerCase();
 
@@ -88,68 +97,113 @@
             getUrl(slug) {
                 axios.get(`/url?slug=${slug}`)
                     .then((res) => {
+                        let url = document.querySelector('#pageUrl')
+
+                        if (url.classList.contains('invalid')) {
+                            url.classList.remove('invalid')
+                        }
+
                         return this.generatedUrl = res.data;
                     })
             },
             createPage () {
-                let url = document.querySelector('#pageUrl')
                 let headers = { 'Content-Type': 'application/json' }
-                let tags = document.querySelector('#tags').value;
+                let name = document.querySelector('#pageName')
+                let url = document.querySelector('#pageUrl')
+                let template = document.querySelector('#template')
 
+                if (!name.value || !url.value || !template.value) {
+
+                    if (!name.value) {
+                        name.classList.add('invalid')
+                    }
+
+                    if (!url.value) {
+                        url.classList.add('invalid')
+                    }
+
+                    if (!template.value) {
+                        template.classList.add('invalid')
+                    }
+
+                    let growlerData = {
+                        mode: 'error',
+                        message: `Please fill in marked fields and try again.`
+                    }
+
+                    return Bus.$emit('growl', growlerData);
+                }
+
+                let tags = document.querySelector('#tags').value;
                 let pageData = {}
 
-                pageData.title = document.querySelector('#pageName').value
+                pageData.title = name.value
                 pageData.url = url.value.toLowerCase()
-                pageData.template_id = this.selectedTemplate.template_id
+                pageData.template_id = this.selectedTemplate
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''
-                pageData.page_id = uuidv4();
                 pageData.tags = tags;
                 pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
 
                 pageData.fields = [];
 
-                this.fields.forEach((field) => {
-                    let obj = {};
+                for (let i = 0; i < this.fields.length; i++) {
+                    let field = this.fields[i];
 
-                    obj.content = field.content;
-                    obj.field_id = field.field_id;
-                    obj.page_id = pageData.page_id;
-                    obj.field_name = field.name;
-                    obj.type = field.type;
-                    pageData.fields.push(obj);
-                });
+                    let f = {};
 
-                pageData.fields = pageData.fields;
+                    if (!field.content && field.required) {
+                        this.invalidField(field.field_id);
+                        break
+                    }
+
+                    f.content = field.content;
+                    f.field_id = field.field_id;
+                    f.field_name = field.name;
+                    f.type = field.type;
+
+                    pageData.fields.push(f)
+                }
+
+                this.fieldsValid = true;
 
                 if (!url.checkValidity) {
                     url.classList.add('invalid')
                     return
                 }
 
-                axios.post('/page', pageData, headers)
-                .then((res) => {
-                    if (res.status === 200) {
-                        this.$router.push({ name: 'viewPages' })
-                        let growlerData = {
-                            mode: 'success',
-                            message: res.data
-                        }
+                if (this.fieldsValid) {
+                    return axios.post('/page', pageData, headers)
+                        .then((res) => {
+                            if (res.status === 200) {
+                                this.$router.push({ name: 'viewPages' })
+                                let growlerData = {
+                                    mode: res.data.status,
+                                    message: res.data.message
+                                }
 
-                        return Bus.$emit('growl', growlerData);
-                    }
+                                return Bus.$emit('growl', growlerData);
+                            }
+                        }).catch((err) => {
+                            let growlerData = {
+                                mode: res.data.status,
+                                message: res.data.message
+                            }
 
-                    console.log(res.status)
-
-
-                }).catch((err) => {
-                    let growlerData = {
-                        mode: 'error',
-                        message: err
-                    }
-
-                    return Bus.$emit('growl', growlerData);
-                })
+                            return Bus.$emit('growl', growlerData);
+                        })
+                }
             },
+            invalidField(fieldId) {
+                this.fieldsValid = false
+
+                let growlerData = {
+                    mode: 'error',
+                    message: 'Please fill in highlighted fields and try again'
+                }
+
+                Bus.$emit('growl', growlerData);
+                Bus.$emit('invalidField', fieldId);
+            }
         },
         components: {
             inputField
@@ -177,7 +231,7 @@
                 let targetField = field.dataset.fieldid
 
                 this.fields.forEach((f) => {
-                    if (f.id == targetField) {
+                    if (f.field_id == targetField) {
                         f.content = field.value
                     }
                 })
@@ -186,4 +240,7 @@
     }
 </script>
 <style lang="css">
+.invalid {
+    border: 3px solid red;
+}
 </style>

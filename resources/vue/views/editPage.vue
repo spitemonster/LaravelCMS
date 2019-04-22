@@ -15,10 +15,6 @@
                         :key="field.field_id"
                         :content="field.value"></inputField>
 
-        <select v-if="hasRevisions" name="revisions" @change="loadRevision">
-            <option v-for="revision in revisions.slice().reverse()" :value="revision.id">{{ revision.name }} - {{ revision.createdAt }} - {{ revision.updatedBy }}</option>
-        </select>
-
         <button @click="savePage">Save Page</button>
     </div>
 </template>
@@ -36,7 +32,8 @@ export default {
             url: '',
             menu: false,
             fields: [],
-            revisions: []
+            revisions: [],
+            fieldsValid: false
         }
     },
     props: [],
@@ -45,36 +42,78 @@ export default {
     methods: {
         savePage () {
             let headers = { 'Content-Type': 'application/json' }
+            let name = document.querySelector('#pageName')
+            let url = document.querySelector('#pageUrl')
 
-            let pageData = {}
-            pageData.title = document.querySelector('#pageName').value
-            pageData.url = document.querySelector('#pageUrl').value
-            pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
-            pageData.fields = []
+            if (!name.value || !url.value) {
 
-            this.fields.forEach((field) => {
-                let obj = {};
-
-                obj.value = field.value;
-                obj.field_id = field.field_id;
-                obj.page_id = pageData.page_id;
-                obj.field_name = field.field_name;
-                obj.type = field.type;
-
-                pageData.fields.push(obj);
-            });
-
-            pageData.fields = pageData.fields;
-
-            axios.patch(`/page?page_id=${this.$route.params.page_id}`, pageData, headers)
-            .then((res) => {
-                let growlerData = {
-                    mode: 'success',
-                    message: 'Page successfully updated'
+                if (!name.value) {
+                    name.classList.add('invalid')
                 }
 
-                Bus.$emit('growl', growlerData)
-            })
+                if (!url.value) {
+                    url.classList.add('invalid')
+                }
+
+                let growlerData = {
+                    mode: 'error',
+                    message: `Please fill in marked fields and try again.`
+                }
+
+                return Bus.$emit('growl', growlerData);
+            }
+
+            let pageData = {}
+
+            pageData.title = name.value
+            pageData.url = url.value.toLowerCase()
+            pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
+
+            pageData.fields = []
+
+            //
+            for (let i = 0; i < this.fields.length; i++) {
+                let field = this.fields[i];
+
+                let f = {};
+
+                if (!field.content && field.required) {
+                    this.invalidField(field.field_id);
+                    break
+                }
+
+                f.content = field.value;
+                f.field_id = field.field_id;
+                f.field_name = field.name;
+                f.type = field.type;
+
+                pageData.fields.push(f)
+            }
+
+            this.fieldsValid = true;
+
+            if (this.fieldsValid) {
+                axios.patch(`/page?page_id=${this.$route.params.page_id}`, pageData, headers)
+                .then((res) => {
+                    let growlerData = {
+                        mode: res.data.status,
+                        message: res.data.message
+                    }
+
+                    Bus.$emit('growl', growlerData)
+                })
+            }
+        },
+        invalidField(fieldId) {
+            this.fieldsValid = false
+
+            let growlerData = {
+                mode: 'error',
+                message: 'Please fill in highlighted fields and try again'
+            }
+
+            Bus.$emit('growl', growlerData);
+            Bus.$emit('invalidField', fieldId);
         }
     },
     components: {
@@ -102,6 +141,7 @@ export default {
 
         Bus.$on('fieldFill', (field) => {
             let targetField = field.dataset.fieldid
+
             this.fields.forEach((f) => {
                 if (f.field_id == targetField) {
                     f.value = field.value
