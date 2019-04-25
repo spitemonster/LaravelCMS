@@ -10,6 +10,9 @@ import viewTemplates from '../vue/views/templates.vue'
 import editPage from '../vue/views/editPage.vue'
 import editTemplate from '../vue/views/editTemplate.vue'
 
+import wysiwyg from "vue-wysiwyg";
+
+
 const Vue = window.Vue = require('vue')
 
 // import components
@@ -19,6 +22,7 @@ const Bus = new Vue()
 export default Bus
 
 Vue.use(Router)
+Vue.use(wysiwyg, {});
 Vue.config.ignoredElements = ['trix-editor']
 
 const router = new Router({

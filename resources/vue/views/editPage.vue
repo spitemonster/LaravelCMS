@@ -1,21 +1,26 @@
 <template>
     <div>
-        <h1>Edit Page</h1>
-        <input type="text" id="pageName" :value="title">
-        <input type="text" id="pageUrl" :value="url">
+        <template v-if="!pageLoaded"><p>Loading</p></template>
+        <template v-if="pageLoaded">
+            <h1>Edit Page</h1>
+            <input type="text" id="pageName" :value="page.title">
+            <input type="text" id="pageUrl" :value="page.url">
 
-        <label for="showInMenu">Show in Menu?</label>
-        <input type="checkbox" name="menu" id="showInMenu" v-model="menu" />
+            <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
 
-        <inputField v-for="field in fields"
-                        :fieldType="field.type"
-                        :fieldId="field.field_id"
-                        :fieldName="field.name"
-                        :fieldRequired="field.required"
-                        :key="field.field_id"
-                        :content="field.value"></inputField>
+            <p>Created By: {{ page.created_by.name }}</p>
+            <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
 
-        <button @click="savePage">Save Page</button>
+            <inputField v-for="field in page.values"
+                            :fieldType="field.type"
+                            :fieldId="field.field_id"
+                            :fieldName="field.name"
+                            :fieldRequired="field.required"
+                            :key="field.field_id"
+                            :content="field.content"></inputField>
+
+            <button @click="savePage">Save Page</button>
+        </template>
     </div>
 </template>
 <script>
@@ -28,12 +33,9 @@ export default {
     name: '',
     data () {
         return {
-            title: '',
-            url: '',
-            menu: false,
-            fields: [],
-            revisions: [],
-            fieldsValid: false
+            pageLoaded: false,
+            page: {},
+            fieldsValid: false,
         }
     },
     props: [],
@@ -41,17 +43,21 @@ export default {
     },
     methods: {
         savePage () {
-            let headers = { 'Content-Type': 'application/json' }
+            // set variables to confirm fields are filled
             let name = document.querySelector('#pageName')
             let url = document.querySelector('#pageUrl')
 
-            if (!name.value || !url.value) {
+            // start pageData variable
+            let pageData = {}
 
-                if (!name.value) {
+            // check that the page title and url are set, otherwise growl
+            if (!this.page.title || !this.page.url) {
+
+                if (!this.page.title) {
                     name.classList.add('invalid')
                 }
 
-                if (!url.value) {
+                if (!this.page.url) {
                     url.classList.add('invalid')
                 }
 
@@ -63,17 +69,24 @@ export default {
                 return Bus.$emit('growl', growlerData);
             }
 
-            let pageData = {}
+            // get pageID from the route param. my general thought is that this is trustworthy.
+            pageData.page_id = this.$route.params.page_id
+            pageData.title = this.page.title
 
-            pageData.title = name.value
-            pageData.url = url.value.toLowerCase()
-            pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
+            // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
+            pageData.url = this.page.url.toLowerCase()
+            pageData.menu = this.page.menu
 
+            // set fields object
             pageData.fields = []
 
-            //
-            for (let i = 0; i < this.fields.length; i++) {
-                let field = this.fields[i];
+            // language here is a little tricky. field content is stored as 'values' in the database and returned as such
+            // but it's easier to refer to them as 'fields' in this context
+            // it makes sense to me.
+
+            // used a for loop so that I could break out of it if a field is invalid, which is not doable with a foreach
+            for (let i = 0; i < this.page.values.length; i++) {
+                let field = this.page.values[i];
 
                 let f = {};
 
@@ -82,7 +95,7 @@ export default {
                     break
                 }
 
-                f.content = field.value;
+                f.content = field.content;
                 f.field_id = field.field_id;
                 f.field_name = field.name;
                 f.type = field.type;
@@ -90,19 +103,13 @@ export default {
                 pageData.fields.push(f)
             }
 
+            // if it makes it through collecting fields, set fieldsValid to true
             this.fieldsValid = true;
 
+            // just to double confirm, if fields valid is true, emit the updatePage event with pageData
+            // and the event listener on App.vue takes care of everything else
             if (this.fieldsValid) {
-                axios.patch(`/page?page_id=${this.$route.params.page_id}`, pageData, headers)
-                .then((res) => {
-                    this.$router.push({ name: 'viewPages' })
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    Bus.$emit('growl', growlerData)
-                })
+                Bus.$emit('updatePage', pageData)
             }
         },
         invalidField(fieldId) {
@@ -115,23 +122,26 @@ export default {
 
             Bus.$emit('growl', growlerData);
             Bus.$emit('invalidField', fieldId);
-        }
+        },
     },
     components: {
         inputField
     },
     beforeCreate() {
+
+        // as the page is loading, request the page data
+        // once it's loaded, set pageLoaded to true and Robert is your mother's uncle
         axios.get(`/page?page_id=${this.$route.params.page_id}`)
             .then((res) => {
+                this.page = res.data
                 this.fields = res.data.values
-                this.title = res.data.title
-                this.url = res.data.url
-                this.revisions = res.data.revisions
-                this.menu = res.data.menu
+
+                this.pageLoaded = true
             })
     },
     mounted() {
 
+        // sets CMD/CTRL+S as save
         document.addEventListener('keydown', (e) => {
             if (e.metaKey && e.which == 83) {
                 e.preventDefault()
@@ -140,12 +150,14 @@ export default {
             }
         })
 
+        // because of how I opted to do input fields, this is how data is filled
+        // get the field, compare to the page's fields; once it finds a match update its content
         Bus.$on('fieldFill', (field) => {
             let targetField = field.dataset.fieldid
 
-            this.fields.forEach((f) => {
-                if (f.field_id == targetField) {
-                    f.value = field.value
+            this.page.values.forEach((f) => {
+                if (f.field_id === targetField) {
+                    f.content = field.value
                 }
             })
         })

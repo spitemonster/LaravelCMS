@@ -14,7 +14,7 @@
         </select>
 
         <label for="showInMenu">Show in Menu?</label>
-        <input type="checkbox" name="menu" id="showInMenu" />
+        <input type="checkbox" name="menu" id="showInMenu" v-model="menu"/>
 
         <inputField v-for="field in fields"
                     :fieldType="field.type"
@@ -48,7 +48,8 @@
                 urlAvailable: false,
                 iterator: 0,
                 baseUrl: '',
-                fieldsValid: false
+                fieldsValid: false,
+                menu: false
             }
         },
         props: [],
@@ -142,7 +143,7 @@
                 pageData.template_id = this.selectedTemplate
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''
                 pageData.tags = tags;
-                pageData.menu = document.querySelector('#showInMenu').value === 'on' ? true : false;
+                pageData.menu = this.menu
 
                 pageData.fields = [];
 
@@ -172,25 +173,7 @@
                 }
 
                 if (this.fieldsValid) {
-                    return axios.post('/page', pageData, headers)
-                        .then((res) => {
-                            if (res.status === 200) {
-                                this.$router.push({ name: 'viewPages' })
-                                let growlerData = {
-                                    mode: res.data.status,
-                                    message: res.data.message
-                                }
-
-                                return Bus.$emit('growl', growlerData);
-                            }
-                        }).catch((err) => {
-                            let growlerData = {
-                                mode: res.data.status,
-                                message: res.data.message
-                            }
-
-                            return Bus.$emit('growl', growlerData);
-                        })
+                    Bus.$emit('createPage', pageData)
                 }
             },
             invalidField(fieldId) {
@@ -227,12 +210,13 @@
                     this.createPage()
                 }
             })
+
             Bus.$on('fieldFill', (field) => {
                 let targetField = field.dataset.fieldid
-
                 this.fields.forEach((f) => {
                     if (f.field_id == targetField) {
                         f.content = field.value
+
                     }
                 })
             })

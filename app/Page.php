@@ -22,4 +22,14 @@ class Page extends Model
     {
         return $this->hasMany(FieldValue::class, 'page_id', 'page_id');
     }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id')->select(['user_id', 'name']);
+    }
+
+    public function updated_by()
+    {
+        return $this->belongsTo(User::class, 'updated_user_id', 'user_id')->select(['user_id', 'name']);;
+    }
 }

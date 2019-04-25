@@ -8,15 +8,16 @@
                 <router-link tag="li" to="/admin/create/template">
                     <a>Create New Template</a>
                 </router-link>
-                <router-link tag="li" to="/admin/create/page">
-                    <a>Create New Page</a>
-                </router-link>
                 <router-link tag="li" to="/admin/view/templates">
                     <a>View Templates</a>
+                </router-link>
+                <router-link tag="li" to="/admin/create/page">
+                    <a>Create New Page</a>
                 </router-link>
                 <router-link tag="li" to="/admin/view/pages">
                     <a>View Pages</a>
                 </router-link>
+                <a href="/logout">Log Out</a>
             </ul>
         </nav>
         <div class="dashboard__body l-auto">
@@ -43,7 +44,8 @@
                 fields: [],
                 logInError: false,
                 growlerMessage: '',
-                growlerMode: ''
+                growlerMode: '',
+                user: {}
             }
         },
         methods: {
@@ -60,7 +62,7 @@
                 setTimeout(() => {
                     growler.classList.remove('show')
                 }, 5000)
-            }
+            },
         },
         components: {
             fieldCard,
@@ -70,10 +72,98 @@
             loggedOut,
             growler
         },
+        beforeMount() {
+            axios.get('/user')
+                .then((res) => {
+                    this.api_token = res.data.api_token
+                })
+        },
         mounted () {
             Bus.$on('growl', (growler) => {
                 this.growl(growler)
             })
+
+            // Page Functionality
+            Bus.$on('createPage', (pageData) => {
+                // console.log(pageData)
+                axios.post(`/page?api_token=${this.api_token}`, pageData)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        this.$router.push({ name: 'viewPages' })
+                        Bus.$emit('growl', growlerData);
+                    })
+            })
+
+            Bus.$on('updatePage', (pageData) => {
+                axios.patch(`/page?page_id=${pageData.page_id}&api_token=${this.api_token}`, pageData)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        this.$router.push({ name: 'viewPages' })
+                        Bus.$emit('growl', growlerData)
+                    })
+            })
+
+            Bus.$on('deletePage', (pageId) => {
+                axios.delete(`/page?page_id=${pageId}&api_token=${this.api_token}`)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        Bus.$emit('pageDeleted')
+                        Bus.$emit('growl', growlerData)
+                    })
+            })
+
+            Bus.$on('createTemplate', (templateData) => {
+                axios.post(`/template?api_token=${this.api_token}`, templateData)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        this.$router.push({ name: 'viewTemplates' })
+                        Bus.$emit('growl', growlerData)
+                        Bus.$emit('templateCreated')
+                    })
+            })
+
+            Bus.$on('updateTemplate', (templateData) => {
+                axios.patch(`/template?template_id=${templateData.template_id}&api_token=${this.api_token}`, templateData)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        this.$router.push({ name: 'viewTemplates' })
+                        Bus.$emit('growl', growlerData)
+                        Bus.$emit('templateCreated')
+                    })
+            })
+
+            Bus.$on('deleteTemplate', (templateId) => {
+                axios.delete(`/template?template_id=${templateId}&api_token=${this.api_token}`)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        Bus.$emit('growl', growlerData)
+                        Bus.$emit('templateDeleted')
+                    })
+            });
         },
         beforeDestroy () {
         }

@@ -1,4 +1,6 @@
 @import 'field-card';
+@import 'reset';
+@import 'layout';
 
 ::selection,
 ::-moz-selection {
@@ -19,10 +21,15 @@
         left: 0;
         top: 0;
         flex-shrink: 0;
+        padding: 1rem;
 
         ul {
             display: flex;
             flex-direction: column;
+        }
+
+        li {
+            margin-bottom: .5rem;
         }
 
         a {
@@ -38,6 +45,7 @@
         background: rgba(222,222,222,1);
         left: 200px;
         top: 0;
+        padding: 1rem;
     }
 }
 

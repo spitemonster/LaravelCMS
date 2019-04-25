@@ -6,7 +6,7 @@
             <option value="text">Text</option>
             <option value="textarea">Text Area</option>
             <option value="wysiwyg">WYSIWYG</option>
-            <option value="postIndex">Post Index</option>
+            <option value="media">Media</option>
         </select>
 
         <button @click="addField">Add Field</button>
@@ -33,18 +33,7 @@
             saveTemplate () {
                 let template = this.collectTemplateData()
 
-                let headers = { 'Content-Type': 'application/json' }
-
-                axios.post('/template', template, headers)
-                    .then((res) => {
-                        this.$router.push({ name: 'viewTemplates' })
-
-                        let growlerData = {
-                            mode: res.data.status,
-                            message: res.data.message
-                        }
-                        Bus.$emit('growl', growlerData)
-                    })
+                Bus.$emit('createTemplate', template)
             },
             collectTemplateData() {
                 let template_name = document.querySelector('#templateName').value

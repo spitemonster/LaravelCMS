@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>View Templates</h1>
+    <h1>View Templates <router-link tag="span" to="/admin/create/template"><a>Add New</a></router-link></h1>
     <h3 v-for="template, k in templates"> {{ template.name }} <button @click="deleteTemplate(template.template_id)">Delete</button> <router-link tag="span" :to="'/admin/template/' + template.template_id + '/edit'"><a>Edit Template</a></router-link></h3>
   </div>
 </template>
@@ -20,27 +20,7 @@
         props: [],
         methods: {
             deleteTemplate(templateId) {
-                axios.delete(`/template?template_id=${templateId}`)
-                    .then((res) => {
-                        let growlerData = {
-                            mode: res.data.status,
-                            message: res.data.message
-                        }
-
-                        this.templates = this.templates.filter((template) => {
-                            return template.template_id !== templateId;
-                        })
-
-                        Bus.$emit('growl', growlerData)
-                    })
-                    .catch((err) => {
-                        let growlerData = {
-                            mode: err.response.data.status,
-                            message: err.response.data.message
-                        }
-
-                        Bus.$emit('growl', growlerData)
-                    })
+                Bus.$emit('deleteTemplate', templateId);
             }
         },
         beforeCreate () {
@@ -48,6 +28,14 @@
               .then((res) => {
                     this.templates = res.data
               })
+        },
+        mounted() {
+            Bus.$on('templateDeleted', () => {
+                axios.get('/template')
+                .then((res) => {
+                    this.templates = res.data
+                })
+            });
         }
     }
 </script>

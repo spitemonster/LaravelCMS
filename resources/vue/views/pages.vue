@@ -23,16 +23,7 @@
         props: [],
         methods: {
             deletePage(pageId) {
-                axios.delete(`/page?page_id=${pageId}`)
-                    .then((res) => {
-                        this.pages = res.data;
-
-                        let growlerData = {
-                            mode: res.data.status,
-                            message: res.data.message
-                        }
-                        Bus.$emit('growl', growlerData)
-                    })
+                Bus.$emit('deletePage', pageId);
             }
         },
         beforeCreate () {
@@ -40,6 +31,14 @@
                 .then((res) => {
                     this.pages = res.data
                 })
+        },
+        mounted() {
+            Bus.$on('pageDeleted', () => {
+                axios.get('/page')
+                    .then((res) => {
+                        this.pages = res.data
+                    })
+            })
         }
     }
 </script>

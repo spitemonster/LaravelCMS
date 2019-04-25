@@ -5,7 +5,9 @@ use App\Page;
 use App\FieldValue;
 use App\Template;
 use App\Tag;
+use App\User;
 use Uuid;
+use Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\PageCreationRequest;
@@ -27,7 +29,7 @@ class PageController extends Controller
         $data['tags'] = $page->tags()->get();
 
         foreach($page->values as $field) {
-            $data[strtolower($field->field_name)] = $field->value;
+            $data[strtolower($field->field_name)] = $field->content;
         }
 
         return view(strtolower(str_replace(' ', '_', $templateName)), $data);
@@ -35,8 +37,6 @@ class PageController extends Controller
 
     public function createPage(PageCreationRequest $request)
     {
-
-        // dd($request->all());
         $page = new Page;
         $parent = null;
 
@@ -52,6 +52,8 @@ class PageController extends Controller
         $page->menu = $request->input('menu');
         $tags = explode(',', $request->input('tags'));
 
+        $page->user_id = Auth::user()->user_id;
+
         foreach ($tags as $t) {
             if ($t !== '') {
                 $tag = new Tag;
@@ -64,12 +66,14 @@ class PageController extends Controller
             }
         }
 
+        // dd($request->input('fields'));
+
         foreach ($request->input('fields') as $field) {
             $fieldValue = new FieldValue;
 
             $fieldValue->field_id = $field['field_id'];
             $fieldValue->page_id = $page->page_id;
-            $fieldValue->value = $field['content'];
+            $fieldValue->content = $field['content'];
             $fieldValue->field_name = $field['field_name'];
             $fieldValue->type = $field['type'];
 
@@ -80,7 +84,7 @@ class PageController extends Controller
 
         $successMsg = array(
             'status' => 'success',
-            'message' => 'Page successfully updated'
+            'message' => 'Page successfully created'
         );
 
         return $successMsg;
@@ -89,7 +93,10 @@ class PageController extends Controller
     public function getPage(Request $request) {
         // if a single page is requested, get it.
         if ($request->query('page_id')) {
-            $page = Page::where('page_id', $request->query('page_id'))->with('values')->with('children')->first();
+
+            $page = Page::where('page_id', $request->query('page_id'))
+                ->with(['values', 'children', 'created_by', 'updated_by'])
+                ->first();
             return $page;
         }
 
@@ -106,11 +113,13 @@ class PageController extends Controller
 
         $page->title = $request->input('title');
         $page->url = $request->input('url');
+        $page->menu = $request->input('menu');
+        $page->updated_user_id = Auth::user()->user_id;
 
         foreach ($request->input('fields') as $field) {
             $fieldValue = FieldValue::where('field_id', $field['field_id'])->first();
 
-            $fieldValue->value = $field['content'];
+            $fieldValue->content = $field['content'];
 
             $fieldValue->save();
         }
@@ -139,11 +148,20 @@ class PageController extends Controller
 
         $page->delete();
 
+        $pages = Page::where('parent_id', null)->with('children')->get();
         // return all remaining pages, specifically for the function in the createPages vue template
-        return Page::where('parent_id', null)->with('children')->get();
+        $data = array(
+            'status' => 'success',
+            'message' => 'Page successfully deleted',
+            'pages' => $pages
+        );
+
+        return $data;
     }
 
     public function makeMenu() {
-
+        return Page::where('menu', true)->with(['children' => function ($query) {
+            $query->where('menu', true);
+        }])->get();
     }
 }

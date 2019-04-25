@@ -33,19 +33,22 @@
                 let templateData = {}
                 let headers = { 'Content-Type': 'application/json' }
 
+                templateData.template_id = this.$route.params.template_id;
                 templateData.name = this.templateName
                 templateData.fields = this.fields;
 
-                axios.patch(`/template?template_id=${this.$route.params.template_id}`, templateData, headers)
-                    .then((res) => {
-                        this.$router.push({ name: 'viewTemplates' })
-                        let growlerData = {
-                            mode: res.data.status,
-                            message: res.data.message
-                        }
+                Bus.$emit('updateTemplate', templateData)
 
-                        Bus.$emit('growl', growlerData)
-                    })
+                // axios.patch(`/template?template_id=${this.$route.params.template_id}`, templateData, headers)
+                //     .then((res) => {
+                //         this.$router.push({ name: 'viewTemplates' })
+                //         let growlerData = {
+                //             mode: res.data.status,
+                //             message: res.data.message
+                //         }
+
+                //         Bus.$emit('growl', growlerData)
+                //     })
 
             },
             addField () {
@@ -92,7 +95,6 @@
                         field.name = targetField.name;
                     }
                 })
-
             })
         }
     }
