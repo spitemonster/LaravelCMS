@@ -1,6 +1,7 @@
 @import 'field-card';
 @import 'reset';
 @import 'layout';
+@import 'variables';
 
 ::selection,
 ::-moz-selection {
@@ -17,7 +18,7 @@
         display: block;
         height: 100%;
         width: 200px;
-        background: rgba(22,22,22,1);
+        background: $black;
         left: 0;
         top: 0;
         flex-shrink: 0;
@@ -33,7 +34,7 @@
         }
 
         a {
-            color: rgba(222,222,222, 1);
+            color: $gray;
         }
     }
 
@@ -42,7 +43,7 @@
         flex-grow: 1;
         height: 100%;
         width: auto;
-        background: rgba(222,222,222,1);
+        background: $gray;
         left: 200px;
         top: 0;
         padding: 1rem;
@@ -58,7 +59,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,.25);
+    background: $black;
 
     &--error {
         color: red;
@@ -73,5 +74,66 @@
         align-items: center;
         text-align: center;
         background: white;
+    }
+}
+
+.input {
+
+    &--text {
+        font-family: sans-serif;
+        width: 960px;
+        position: relative;
+
+        label {
+            position: absolute;
+            font-size: 24px;
+            left: 12px;
+            top: calc(50% - 14px);
+            color: $gray;
+        }
+
+        input {
+            width: 100%;
+            height: 48px;
+            font-size: 24px;
+            margin: 1rem 0;
+            padding: 12px 15px;
+
+            &:valid,
+            &:focus,
+            &:focus-within,
+            &.focus-within {
+                & ~ label {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: $black;
+    height: 24px;
+    width: auto;
+    font-size: 18px;
+    padding: 1rem 2rem;
+    background: $white;
+    border-radius: 0;
+    margin: 1rem 0;
+    border: none;
+}
+
+.ql {
+
+    &-snow {
+        background: $white;
+        width: 960px;
+    }
+
+    &-editor {
+        height: 480px;
     }
 }

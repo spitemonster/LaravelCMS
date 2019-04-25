@@ -99,6 +99,7 @@
             })
 
             Bus.$on('updatePage', (pageData) => {
+                // console.log(pageData.page_id);
                 axios.patch(`/page?page_id=${pageData.page_id}&api_token=${this.api_token}`, pageData)
                     .then((res) => {
                         let growlerData = {

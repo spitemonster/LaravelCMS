@@ -14,12 +14,12 @@
             <inputField v-for="field in page.values"
                             :fieldType="field.type"
                             :fieldId="field.field_id"
-                            :fieldName="field.name"
+                            :fieldName="field.field_name"
                             :fieldRequired="field.required"
                             :key="field.field_id"
                             :content="field.content"></inputField>
 
-            <button @click="savePage">Save Page</button>
+            <button @click="savePage" class="btn">Save Page</button>
         </template>
     </div>
 </template>
@@ -108,6 +108,7 @@ export default {
 
             // just to double confirm, if fields valid is true, emit the updatePage event with pageData
             // and the event listener on App.vue takes care of everything else
+
             if (this.fieldsValid) {
                 Bus.$emit('updatePage', pageData)
             }
@@ -145,7 +146,6 @@ export default {
         document.addEventListener('keydown', (e) => {
             if (e.metaKey && e.which == 83) {
                 e.preventDefault()
-
                 this.savePage()
             }
         })

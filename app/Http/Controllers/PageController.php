@@ -52,7 +52,7 @@ class PageController extends Controller
         $page->menu = $request->input('menu');
         $tags = explode(',', $request->input('tags'));
 
-        $page->user_id = Auth::user()->user_id;
+        $page->user_id = $page->updated_user_id = Auth::user()->user_id;
 
         foreach ($tags as $t) {
             if ($t !== '') {
@@ -109,7 +109,7 @@ class PageController extends Controller
             return response('Requested action cannot be completed', 403);
         }
 
-        $page = Page::where('page_id', $request->query('page_id'))->first();
+        $page = Page::where('page_id', $request->query('page_id'))->get()->first();
 
         $page->title = $request->input('title');
         $page->url = $request->input('url');
@@ -117,7 +117,7 @@ class PageController extends Controller
         $page->updated_user_id = Auth::user()->user_id;
 
         foreach ($request->input('fields') as $field) {
-            $fieldValue = FieldValue::where('field_id', $field['field_id'])->first();
+            $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
 
             $fieldValue->content = $field['content'];
 
