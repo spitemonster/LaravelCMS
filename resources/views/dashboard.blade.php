@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <title>Dashboard</title>
-    <link rel="preload" href="/css/panel.css">
-    <link rel="preload" href="https://cdn.quilljs.com/1.3.6/quill.snow.css" onload="this.rel='stylesheet'">
+    <link rel="preload" href="/css/quill.css" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="/css/panel.css" as="style" onload="this.rel='stylesheet'">
 
     <noscript>
-        <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+        <link rel="stylesheet" href="/css/quill.css">
         <link rel=stylesheet href="/css/panel.css">
     </noscript>
 

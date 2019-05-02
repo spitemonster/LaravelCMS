@@ -348,6 +348,10 @@ textarea,
   background: white;
 }
 
+.input--wysiwyg {
+  position: relative;
+}
+
 .input--text {
   font-family: sans-serif;
   width: 960px;

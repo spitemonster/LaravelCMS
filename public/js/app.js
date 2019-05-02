@@ -49408,16 +49408,28 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/sass/quill.scss":
+/*!***********************************!*\
+  !*** ./resources/sass/quill.scss ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
 /***/ 0:
-/*!*****************************************************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/panel.scss ***!
-  \*****************************************************************************************/
+/*!*********************************************************************************************************************!*\
+  !*** multi ./resources/js/app.js ./resources/sass/app.scss ./resources/sass/panel.scss ./resources/sass/quill.scss ***!
+  \*********************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! /Users/kirbyjohnston/sites/laravel/resources/js/app.js */"./resources/js/app.js");
 __webpack_require__(/*! /Users/kirbyjohnston/sites/laravel/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /Users/kirbyjohnston/sites/laravel/resources/sass/panel.scss */"./resources/sass/panel.scss");
+__webpack_require__(/*! /Users/kirbyjohnston/sites/laravel/resources/sass/panel.scss */"./resources/sass/panel.scss");
+module.exports = __webpack_require__(/*! /Users/kirbyjohnston/sites/laravel/resources/sass/quill.scss */"./resources/sass/quill.scss");
 
 
 /***/ })

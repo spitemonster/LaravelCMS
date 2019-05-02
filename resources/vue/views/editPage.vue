@@ -46,9 +46,14 @@ export default {
             // set variables to confirm fields are filled
             let name = document.querySelector('#pageName')
             let url = document.querySelector('#pageUrl')
+            let selected = document.querySelectorAll('.selected-image')
 
             // start pageData variable
             let pageData = {}
+
+            selected.forEach((img) => {
+                img.classList.remove('selected-image');
+            })
 
             // check that the page title and url are set, otherwise growl
             if (!this.page.title || !this.page.url) {

@@ -8,6 +8,11 @@
             <div id="quillEditor">
                 <div class="ql-editor" data-gramm="false" contenteditable="true"><span v-html="content"></span></div>
             </div>
+            <div class="image-details">
+                <label>Image Width <input type="text" name="img-width"></label>
+                <label>Image Height <input type="text" name="img-height"></label>
+                <label>Alt Text <input type="text" name="img-alt" /></label>
+            </div>
         </template>
         <template v-else-if="fieldType === 'media'">
             <form action="/media" method="POST" enctype="multipart/form-data" >
@@ -76,7 +81,7 @@
                             name: 'file',
                             headers: {},
                             customUploader: (file, next) => {
-                                // the out of the box upload was not working in the slightest, so I switched to the good ol fashioned axios upload that works so well.
+                                // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
                                 let formData = new FormData();
                                 let imageFile = file
 
@@ -127,11 +132,87 @@
                     this.invalid = true;
                 }
             })
+
+            if (this.fieldType === 'wysiwyg') {
+                let q = this.$el.querySelector('.ql-editor')
+                let qimg = q.querySelectorAll('img')
+                let box = document.querySelector('.image-details')
+                let media = box.querySelector("input[name='img-alt']")
+                let width = box.querySelector("input[name='img-width']")
+                let height = box.querySelector("input[name='img-height']")
+
+                q.addEventListener('click', (e) => {
+                    let t = e.target
+                    if (t.tagName === 'IMG') {
+
+                        let selected = document.querySelectorAll('.selected-image');
+
+                        selected.forEach((image) => {
+                            image.classList.remove('selected-image');
+                        });
+
+                        t.classList.add('selected-image');
+
+                        box.classList.add('active');
+
+                        media.value = document.querySelector('.selected-image').getAttribute('alt')
+                        width.value = document.querySelector('.selected-image').offsetWidth
+                        height.value = document.querySelector('.selected-image').offsetHeight
+                    }
+                })
+
+                media.addEventListener('change', () => {
+                    let targetImg = document.querySelector('.selected-image');
+
+                    targetImg.setAttribute('alt', media.value);
+                })
+
+                media.addEventListener('blur', () => {
+                    box.classList.remove('active');
+                })
+
+                width.addEventListener('change', () => {
+                    let targetImg = document.querySelector('.selected-image')
+
+                    targetImg.setAttribute('width', width.value)
+                    height.value = targetImg.offsetHeight
+                })
+
+                height.addEventListener('change', () => {
+                    let targetImg = document.querySelector('.selected-image')
+
+                    targetImg.setAttribute('height', height.value)
+                    width.value = targetImg.offsetWidth
+                })
+            }
         }
     }
 </script>
 <style lang="css">
 .err {
     border: 2px solid red;
+}
+
+.ql-editor img, p {
+    position: relative;
+}
+
+.image-details {
+    position: absolute;
+    bottom: 50%;
+    left: 960px;
+    height: 72px;
+    width: 250px;
+    background: red;
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+.selected-image {
+    box-sizing: content-box;
+    border: 2px solid slateblue;
 }
 </style>
