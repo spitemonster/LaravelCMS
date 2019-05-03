@@ -17,4 +17,11 @@ class UpdatePagesTable extends Migration
             $table->string('url');
         });
     }
+
+    public function down()
+    {
+        Schema::table('pages', function (Blueprint $table) {
+            $table->dropColumn('url');
+        });
+    }
 }

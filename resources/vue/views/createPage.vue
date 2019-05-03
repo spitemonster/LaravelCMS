@@ -5,7 +5,7 @@
         <input type="radio" name="tab" id="tabTwo">
 
         <fieldset>
-            <input type="text" id="pageName" v-model="pageName" @change="generateUrl" required />
+            <input type="text" id="pageName" v-model="pageTitle" @change="generateUrl" required />
             <label for="pageName">Page Name</label>
         </fieldset>
 
@@ -41,7 +41,10 @@
 
                 <button @click="createPage">Create Page</button>
 
-                <input type="text" id="tags" />
+                <fieldset>
+                    <input type="text" id="tags" v-model="tags" required />
+                    <label for="tags">Tags (Comma Separated)</label>
+                </fieldset>
             </div>
 
             <div class="content" id="tabContentTwo">
@@ -72,14 +75,15 @@
                 selectedTemplate: {},
                 pages: {},
                 selectedParent: '',
-                pageName: '',
+                pageTitle: '',
                 generatedUrl: '',
                 urlAvailable: false,
                 iterator: 0,
                 baseUrl: '',
                 fieldsValid: false,
                 menu: false,
-                pageDescription: ''
+                pageDescription: '',
+                tags: ''
             }
         },
         props: [],
@@ -87,14 +91,14 @@
         },
         methods: {
             selectTemplate (e) {
-                let sel = e.target.value
+                let sel = e.target
 
-                if (sel !== '') {
-                    if (e.target.classList.contains('invalid')) {
-                        e.target.classList.remove('invalid')
+                if (sel.value !== '') {
+                    if (sel.classList.contains('invalid')) {
+                        sel.classList.remove('invalid')
                     }
 
-                    axios.get(`/template?template_id=${sel}`)
+                    axios.get(`/template?template_id=${sel.value}`)
                         .then((res) => {
                             this.fields = res.data.fields
                             this.selectedTemplate = res.data.template_id
@@ -102,22 +106,25 @@
                 }
             },
             selectParent (e) {
-                let parent = e.target.value
-                axios.get(`/page?page_id=${parent}`)
+                let parent = e.target
+
+                axios.get(`/page?page_id=${parent.value}`)
                     .then((res) => {
                         let parentSlug = res.data.url;
-                        this.selectedParent = parent;
+
+                        this.selectedParent = parent.value;
                         this.getUrl(`${parentSlug ? parentSlug : ''}${this.baseUrl}`);
                     })
             },
             generateUrl(e) {
-                // get page name and generate a url based on it, where e is the page name input
-                if (e.target.classList.contains('invalid')) {
-                    e.target.classList.remove('invalid')
-                }
-
-                let pageName = e.target.value
+                let t = e.target
+                let pageName = t.value
                 let url = this.baseUrl = pageName.replace(/[\s]+/g, '-').replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '').toLowerCase();
+
+                // get page name and generate a url based on it, where e is the page name input
+                if (t.classList.contains('invalid')) {
+                    t.classList.remove('invalid')
+                }
 
                 if (url.split('')[0] !== '/') {
                     url = this.baseUrl = `/${url}`;
@@ -139,22 +146,19 @@
             },
             createPage () {
                 let headers = { 'Content-Type': 'application/json' }
-                let name = document.querySelector('#pageName')
-                let url = document.querySelector('#pageUrl')
-                let template = document.querySelector('#template')
 
-                if (!name.value || !url.value || !template.value) {
+                if (!this.pageTitle || !this.generatedUrl || !this.selectedTemplate) {
 
-                    if (!name.value) {
-                        name.classList.add('invalid')
+                    if (!this.pageTitle) {
+                        document.querySelector('#pageName').classList.add('invalid')
                     }
 
-                    if (!url.value) {
-                        url.classList.add('invalid')
+                    if (!this.generatedUrl) {
+                        document.querySelector('#pageUrl').classList.add('invalid')
                     }
 
-                    if (!template.value) {
-                        template.classList.add('invalid')
+                    if (!this.selectedTemplate) {
+                        document.querySelector('#template').classList.add('invalid')
                     }
 
                     let growlerData = {
@@ -165,16 +169,22 @@
                     return Bus.$emit('growl', growlerData);
                 }
 
-                let tags = document.querySelector('#tags').value;
+                let pageData = this.collectPageData();
+
+                if (this.fieldsValid) {
+                    Bus.$emit('createPage', pageData)
+                }
+            },
+            collectPageData() {
                 let pageData = {}
 
-                pageData.title = name.value
+                pageData.title = this.pageTitle
+                pageData.url = this.generatedUrl
                 pageData.description = this.pageDescription
-                pageData.url = url.value.toLowerCase()
                 pageData.template_id = this.selectedTemplate
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''
-                pageData.tags = tags;
-                pageData.menu = this.menu
+                pageData.tags = this.tags;
+                pageData.menu = this.menu;
 
                 pageData.fields = [];
 
@@ -198,14 +208,7 @@
 
                 this.fieldsValid = true;
 
-                if (!url.checkValidity) {
-                    url.classList.add('invalid')
-                    return
-                }
-
-                if (this.fieldsValid) {
-                    Bus.$emit('createPage', pageData)
-                }
+                return pageData
             },
             invalidField(fieldId) {
                 this.fieldsValid = false
@@ -255,7 +258,5 @@
     }
 </script>
 <style lang="css">
-.invalid {
-    border: 3px solid red;
-}
+
 </style>

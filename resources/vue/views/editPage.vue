@@ -3,23 +3,46 @@
         <template v-if="!pageLoaded"><p>Loading</p></template>
         <template v-if="pageLoaded">
             <h1>Edit Page</h1>
-            <input type="text" id="pageName" :value="page.title">
-            <input type="text" id="pageUrl" :value="page.url">
-            <input type="text" id="pageDescription" :value="page.description">
-            <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
 
-            <p>Created By: {{ page.created_by.name }}</p>
-            <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
+            <input type="radio" name="tab" id="tabOne" checked>
+            <input type="radio" name="tab" id="tabTwo">
 
-            <inputField v-for="field in page.values"
-                            :fieldType="field.type"
-                            :fieldId="field.field_id"
-                            :fieldName="field.field_name"
-                            :fieldRequired="field.required"
-                            :key="field.field_id"
-                            :content="field.content"></inputField>
+            <fieldset>
+                <input type="text" id="pageName" :value="page.title" required />
+                <label for="pageName">Page Name</label>
+            </fieldset>
 
-            <button @click="savePage" class="btn">Save Page</button>
+            <fieldset>
+                <input type="text" id="pageUrl" :value="page.url" required />
+                <label for="pageUrl">Page URL</label>
+            </fieldset>
+
+            <label for="tabOne" class="tab">Page Content</label>
+            <label for="tabTwo" class="tab">Page Details</label>
+
+            <div class="content--wrapper">
+                <div class="content" id="tabContentOne">
+                    <inputField v-for="field in page.values"
+                                    :fieldType="field.type"
+                                    :fieldId="field.field_id"
+                                    :fieldName="field.field_name"
+                                    :fieldRequired="field.required"
+                                    :key="field.field_id"
+                                    :content="field.content"></inputField>
+                    <button @click="savePage" class="btn">Save Page</button>
+                </div>
+                <div class="content" id="tabContentTwo">
+                    <p>Created By: {{ page.created_by.name }}</p>
+                    <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
+
+                    <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
+
+                    <fieldset>
+                        <textarea id="pageDescription" :value="page.description" required></textarea>
+                        <label for="pageDescription">Meta Description</label>
+                    </fieldset>
+                </div>
+            </div>
         </template>
     </div>
 </template>
@@ -77,7 +100,7 @@ export default {
 
             // get pageID from the route param. my general thought is that this is trustworthy.
             pageData.page_id = this.$route.params.page_id
-            pageData.title = this.page.title
+            pageData.title = name.value
             pageData.description = pageDescription.value
             // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
             pageData.url = this.page.url.toLowerCase()

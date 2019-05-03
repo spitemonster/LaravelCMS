@@ -29,6 +29,8 @@ class UpdatePagesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('pages', function(Blueprint $table) {
+            $table->dropColumn('updated_user_id');
+        });
     }
 }

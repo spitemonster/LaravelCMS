@@ -2,6 +2,7 @@
 @import 'reset';
 @import 'layout';
 @import 'variables';
+@import 'growler';
 
 ::selection,
 ::-moz-selection {
@@ -19,6 +20,15 @@ html {
 a {
     color: $main-accent;
     text-decoration: none;
+    transition: all 120ms ease-in-out;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus, &:hover {
+        color: darken($main-accent, 20%);
+    }
 }
 
 .dashboard {
@@ -105,11 +115,12 @@ a {
     }
 
     &__body {
+        position: absolute;
         display: block;
         flex-grow: 1;
         height: 100%;
-        width: auto;
-        background: $light-accent;
+        width: 100%;
+        background: $white;
         left: 200px;
         top: 0;
         padding: 1rem;
@@ -213,9 +224,14 @@ fieldset {
     }
 
     textarea {
+        background: none;
+        border: none;
+        border-bottom: 1px solid $main-accent;
         width: 100%;
-        height: 5rem;
-        font-size: 1rem;
+        font-size: 1.5rem;
+        min-height: 2.5rem;
+        padding-left: 12px;
+        font-family: 'PT Sans', sans-serif;
     }
 
     input:focus ~ label,
@@ -276,4 +292,32 @@ input[type=radio] {
     display: none;
     position: absolute;
   }
+}
+
+.invalid {
+    border: 1px solid $red;
+    transition: all 120ms linear;
+}
+
+button.delete {
+    background: none;
+    color: $red;
+    height: 1.5rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $red;
+    font-family: 'PT Sans', sans-serif;
+    transition: all 120ms ease-in-out;
+    padding: 0 .5rem;
+    cursor: pointer;
+
+    &:hover {
+        background: $red;
+        color: $white;
+    }
+}
+
+.page {
+    margin-bottom: 1rem;
 }

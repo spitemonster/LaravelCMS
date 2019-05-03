@@ -4,6 +4,9 @@
     <title>Dashboard</title>
     <link rel="preload" href="/css/quill.css" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="/css/panel.css" as="style" onload="this.rel='stylesheet'">
+
+    <link rel="preload" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" as="style" onload="this.rel='stylesheet'">
+
     <link rel="preload" href="/fonts/PTSans.ttc" as="font" type="font/woff2" crossorigin>
 
     <noscript>

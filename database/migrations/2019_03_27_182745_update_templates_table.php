@@ -25,6 +25,8 @@ class UpdateTemplatesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('templates', function(Blueprint $table) {
+            $table->dropColumn('template_id');
+        });
     }
 }

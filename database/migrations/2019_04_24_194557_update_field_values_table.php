@@ -25,6 +25,8 @@ class UpdateFieldValuesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('field_values', function (Blueprint $table) {
+            $table->renameColumn('content', 'value');
+        });
     }
 }

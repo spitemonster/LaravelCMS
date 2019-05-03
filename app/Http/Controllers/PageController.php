@@ -103,7 +103,7 @@ class PageController extends Controller
         }
 
         // if not, return all TOP LEVEL pages with their children
-        return Page::where('parent_id', null)->with('children')->get();
+        return Page::where('parent_id', null)->with(['values', 'children', 'created_by', 'updated_by'])->get();
     }
 
     public function updatePage(Request $request) {

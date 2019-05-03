@@ -15,7 +15,7 @@ class Page extends Model
 
     public function children()
     {
-        return $this->hasMany(Page::class, 'parent_id', 'page_id');
+        return $this->hasMany(Page::class, 'parent_id', 'page_id')->with('updated_by');
     }
 
     public function values()

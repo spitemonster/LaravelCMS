@@ -27,6 +27,10 @@ class UpdateFieldValuesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('field_values', function(Blueprint $table) {
+            $table->dropColumn('field_id');
+            $table->dropColumn('page_id');
+            $table->dropColumn('value');
+        });
     }
 }

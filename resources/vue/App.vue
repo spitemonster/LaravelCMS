@@ -167,8 +167,6 @@
                         Bus.$emit('templateDeleted')
                     })
             });
-        },
-        beforeDestroy () {
         }
     }
 </script>

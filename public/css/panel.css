@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 .field-card {
   display: block;
   height: auto;
@@ -269,6 +271,54 @@ textarea,
   }
 }
 
+.growler {
+  position: absolute;
+  bottom: 2rem;
+  right: -100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  max-width: 500px;
+  padding: 1rem 2rem;
+  transition: all 250ms linear;
+}
+
+.growler.show {
+  right: 2rem;
+}
+
+.growler.success {
+  color: #00a305;
+}
+
+.growler.success::before {
+  content: "\2713";
+  padding: 0 2rem 0 0;
+  font-size: 3rem;
+}
+
+.growler.alert {
+  color: #fc9714;
+}
+
+.growler.alert::before {
+  content: "!";
+  padding: 0 2rem 0 0;
+  font-size: 3rem;
+}
+
+.growler.error {
+  color: #fc325e;
+}
+
+.growler.error::before {
+  content: "X";
+  padding: 0 2rem 0 0;
+  font-size: 3rem;
+}
+
 ::-moz-selection,
 ::-moz-selection {
   background: CornflowerBlue !important;
@@ -281,15 +331,25 @@ textarea,
 
 html {
   font-family: "PT Sans", sans-serif;
-  color: #211729;
+  color: #3A4755;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #211729;
+  background: #3A4755;
 }
 
 a {
-  color: #702A4C;
+  color: #BF68A0;
   text-decoration: none;
+  transition: all 120ms ease-in-out;
+}
+
+a:focus {
+  outline: none;
+}
+
+a:focus,
+a:hover {
+  color: #88396c;
 }
 
 .dashboard {
@@ -303,7 +363,7 @@ a {
   display: block;
   height: 100%;
   width: 200px;
-  background: #211729;
+  background: #3A4755;
   left: 0;
   top: 0;
   flex-shrink: 0;
@@ -343,20 +403,20 @@ a {
 .dashboard__nav li::after {
   height: 100%;
   width: 0%;
-  background: -moz-linear-gradient(left, rgba(112, 42, 76, 0.25) 0%, rgba(131, 131, 124, 0) 100%);
+  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(200, 143, 138, 0) 100%);
   z-index: 0;
 }
 
 .dashboard__nav li.router-link-exact-active::before {
   height: 100%;
   width: 3px;
-  background: -moz-linear-gradient(top, #702A4C 0%, #8559AC 100%);
+  background: -moz-linear-gradient(top, #BF68A0 0%, #CA9CAB 100%);
 }
 
 .dashboard__nav li.router-link-exact-active::after {
   height: 100%;
   width: 100%;
-  background: -moz-linear-gradient(left, rgba(112, 42, 76, 0.25) 0%, rgba(131, 131, 124, 0) 100%);
+  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(200, 143, 138, 0) 100%);
   z-index: 0;
 }
 
@@ -374,11 +434,12 @@ a {
 }
 
 .dashboard__body {
+  position: absolute;
   display: block;
   flex-grow: 1;
   height: 100%;
-  width: auto;
-  background: #83837C;
+  width: 100%;
+  background: #F6F6F2;
   left: 200px;
   top: 0;
   padding: 1rem;
@@ -401,7 +462,7 @@ a {
   font-size: 24px;
   left: 12px;
   top: calc(50% - 14px);
-  color: rgba(112, 42, 76, 0.5);
+  color: rgba(191, 104, 160, 0.5);
 }
 
 .input--text input {
@@ -412,7 +473,7 @@ a {
   padding: 12px 15px;
   background: none;
   border: none;
-  border-bottom: 1px solid #702A4C;
+  border-bottom: 1px solid #BF68A0;
 }
 
 .input--text input:valid ~ label,
@@ -426,19 +487,19 @@ a {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  color: #211729;
+  color: #3A4755;
   height: 24px;
   width: auto;
   font-size: 18px;
   padding: 1rem 2rem;
-  background: #FAF9F8;
+  background: #F6F6F2;
   border-radius: 0;
   margin: 1rem 0;
   border: none;
 }
 
 .ql-snow {
-  background: #FAF9F8;
+  background: #F6F6F2;
   width: 960px;
 }
 
@@ -458,7 +519,7 @@ fieldset label {
   position: absolute;
   left: 0;
   top: 4px;
-  color: rgba(112, 42, 76, 0.5);
+  color: rgba(191, 104, 160, 0.5);
   font-size: 1.5rem;
   padding-left: 12px;
 }
@@ -466,7 +527,7 @@ fieldset label {
 fieldset input {
   background: none;
   border: none;
-  border-bottom: 1px solid #702A4C;
+  border-bottom: 1px solid #BF68A0;
   width: 100%;
   height: 2.5rem;
   font-size: 1.5rem;
@@ -474,9 +535,14 @@ fieldset input {
 }
 
 fieldset textarea {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #BF68A0;
   width: 100%;
-  height: 5rem;
-  font-size: 1rem;
+  font-size: 1.5rem;
+  min-height: 2.5rem;
+  padding-left: 12px;
+  font-family: "PT Sans", sans-serif;
 }
 
 fieldset input:focus ~ label,
@@ -527,5 +593,33 @@ input[type=radio] {
 .content--wrapper .content {
   display: none;
   position: absolute;
+}
+
+.invalid {
+  border: 1px solid #fc325e;
+  transition: all 120ms linear;
+}
+
+button.delete {
+  background: none;
+  color: #fc325e;
+  height: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #fc325e;
+  font-family: "PT Sans", sans-serif;
+  transition: all 120ms ease-in-out;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+
+button.delete:hover {
+  background: #fc325e;
+  color: #F6F6F2;
+}
+
+.page {
+  margin-bottom: 1rem;
 }
 

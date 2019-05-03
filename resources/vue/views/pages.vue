@@ -1,9 +1,20 @@
 <template>
     <div>
         <h1>View Pages</h1>
-        <h3 class="page" v-for="page, k in pages" :key="k">{{ page.title }} <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)">Delete Page</button>
-                <h4 class="child" v-for="child, l in page.children"> {{ child.title }} <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(child.page_id)">Delete Page</button></h4>
-        </h3>
+        <div class="page" v-for="page, k in pages" :key="k">
+            <div>
+                <h3>{{ page.title }}</h3> Last Updated: <span> {{ page.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ page.updated_by.name }} </span>
+            </div>
+            <div>
+                <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)" class="delete">Delete Page <i class="la la-trash"></i></button>
+            </div>
+            <div class="child" v-for="child, l in page.children">
+                <h4>{{ child.title }}</h4> Last Updated: <span> {{ child.updated_at | moment("dddd, MMMM Do YYYY")  }} </span> by <span> {{ child.updated_by.name }} </span>
+                <div>
+                    <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(child.page_id)" class="delete">Delete Page</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
