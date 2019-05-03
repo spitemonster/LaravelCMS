@@ -279,6 +279,19 @@ textarea,
   background: CornflowerBlue !important;
 }
 
+html {
+  font-family: "PT Sans", sans-serif;
+  color: #211729;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #211729;
+}
+
+a {
+  color: #702A4C;
+  text-decoration: none;
+}
+
 .dashboard {
   display: flex;
   height: 100%;
@@ -290,24 +303,74 @@ textarea,
   display: block;
   height: 100%;
   width: 200px;
-  background: #161616;
+  background: #211729;
   left: 0;
   top: 0;
   flex-shrink: 0;
-  padding: 1rem;
 }
 
 .dashboard__nav ul {
   display: flex;
   flex-direction: column;
+  padding-top: 1rem;
 }
 
 .dashboard__nav li {
+  height: 2rem;
   margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.dashboard__nav li:hover::after,
+.dashboard__nav li:focus::after {
+  width: 100%;
+}
+
+.dashboard__nav li::before,
+.dashboard__nav li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  transition: all 120ms ease-in-out;
+  top: 0;
+}
+
+.dashboard__nav li::before {
+  height: 0%;
+}
+
+.dashboard__nav li::after {
+  height: 100%;
+  width: 0%;
+  background: -moz-linear-gradient(left, rgba(112, 42, 76, 0.25) 0%, rgba(131, 131, 124, 0) 100%);
+  z-index: 0;
+}
+
+.dashboard__nav li.router-link-exact-active::before {
+  height: 100%;
+  width: 3px;
+  background: -moz-linear-gradient(top, #702A4C 0%, #8559AC 100%);
+}
+
+.dashboard__nav li.router-link-exact-active::after {
+  height: 100%;
+  width: 100%;
+  background: -moz-linear-gradient(left, rgba(112, 42, 76, 0.25) 0%, rgba(131, 131, 124, 0) 100%);
+  z-index: 0;
 }
 
 .dashboard__nav a {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
   color: #dedede;
+  text-decoration: none;
+  transition: all 120ms linear;
+  z-index: 2;
 }
 
 .dashboard__body {
@@ -315,37 +378,12 @@ textarea,
   flex-grow: 1;
   height: 100%;
   width: auto;
-  background: #dedede;
+  background: #83837C;
   left: 200px;
   top: 0;
   padding: 1rem;
-}
-
-.modal {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #161616;
-}
-
-.modal--error {
-  color: red;
-}
-
-.modal__card {
-  height: 450px;
-  width: 450px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: white;
+  overflow: scroll;
+  border-top-left-radius: 25px;
 }
 
 .input--wysiwyg {
@@ -363,7 +401,7 @@ textarea,
   font-size: 24px;
   left: 12px;
   top: calc(50% - 14px);
-  color: #dedede;
+  color: rgba(112, 42, 76, 0.5);
 }
 
 .input--text input {
@@ -372,6 +410,9 @@ textarea,
   font-size: 24px;
   margin: 1rem 0;
   padding: 12px 15px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #702A4C;
 }
 
 .input--text input:valid ~ label,
@@ -385,23 +426,106 @@ textarea,
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  color: #161616;
+  color: #211729;
   height: 24px;
   width: auto;
   font-size: 18px;
   padding: 1rem 2rem;
-  background: white;
+  background: #FAF9F8;
   border-radius: 0;
   margin: 1rem 0;
   border: none;
 }
 
 .ql-snow {
-  background: white;
+  background: #FAF9F8;
   width: 960px;
 }
 
 .ql-editor {
   height: 480px;
+}
+
+fieldset {
+  position: relative;
+  border: 0;
+  padding: 0;
+  width: 960px;
+  margin: 1rem 0;
+}
+
+fieldset label {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: rgba(112, 42, 76, 0.5);
+  font-size: 1.5rem;
+  padding-left: 12px;
+}
+
+fieldset input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #702A4C;
+  width: 100%;
+  height: 2.5rem;
+  font-size: 1.5rem;
+  padding-left: 12px;
+}
+
+fieldset textarea {
+  width: 100%;
+  height: 5rem;
+  font-size: 1rem;
+}
+
+fieldset input:focus ~ label,
+fieldset input:focus-within ~ label,
+fieldset input.focus-within ~ label,
+fieldset input:valid ~ label,
+fieldset textarea:focus ~ label,
+fieldset textarea:focus-within ~ label,
+fieldset textarea.focus-within ~ label,
+fieldset textarea:valid ~ label {
+  display: none;
+}
+
+input[type=radio] {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  height: 4rem;
+  width: 8rem;
+  justify-content: center;
+  align-items: center;
+  background: lightgrey;
+  cursor: pointer;
+}
+
+#tabOne:checked ~ .content--wrapper #tabContentOne {
+  display: block;
+}
+
+#tabOne:checked ~ label[for=tabOne] {
+  background: gray;
+}
+
+#tabTwo:checked ~ .content--wrapper #tabContentTwo {
+  display: block;
+}
+
+#tabTwo:checked ~ label[for=tabTwo] {
+  background: gray;
+}
+
+.content--wrapper {
+  position: relative;
+}
+
+.content--wrapper .content {
+  display: none;
+  position: absolute;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>View Templates <router-link tag="span" to="/admin/create/template"><a>Add New</a></router-link></h1>
-    <h3 v-for="template, k in templates"> {{ template.name }} <button @click="deleteTemplate(template.template_id)">Delete</button> <router-link tag="span" :to="'/admin/template/' + template.template_id + '/edit'"><a>Edit Template</a></router-link></h3>
+    <h3 v-for="template, k in templates"> {{ template.name }} <router-link tag="span" :to="'/admin/template/' + template.template_id + '/edit'"><a>Edit Template</a> <button @click="deleteTemplate(template.template_id)">Delete</button> </router-link></h3>
   </div>
 </template>
 <script>

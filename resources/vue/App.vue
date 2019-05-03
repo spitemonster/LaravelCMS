@@ -17,7 +17,9 @@
                 <router-link tag="li" to="/admin/view/pages">
                     <a>View Pages</a>
                 </router-link>
-                <a href="/logout">Log Out</a>
+                <li>
+                    <a href="/logout">Log Out</a>
+                </li>
             </ul>
         </nav>
         <div class="dashboard__body l-auto">

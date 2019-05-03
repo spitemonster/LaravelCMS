@@ -4,6 +4,7 @@
     <title>Dashboard</title>
     <link rel="preload" href="/css/quill.css" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="/css/panel.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="/fonts/PTSans.ttc" as="font" type="font/woff2" crossorigin>
 
     <noscript>
         <link rel="stylesheet" href="/css/quill.css">

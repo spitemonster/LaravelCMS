@@ -24,9 +24,12 @@ class PageController extends Controller
 
         $templateName = Template::where('template_id', $page->template_id)->first()->name;
 
+        // $data represents the fields and values. splitting them into the $data array allows them to be accessed by just the field name on the front end
         $data = [];
+
         $data['children'] = $page->children()->get();
         $data['tags'] = $page->tags()->get();
+        $data['description'] = $page->description;
 
         foreach($page->values as $field) {
             $data[strtolower($field->field_name)] = $field->content;
@@ -50,6 +53,7 @@ class PageController extends Controller
         $page->url = $request->input('url');
         $page->page_id = Uuid::generate(4)->string;
         $page->menu = $request->input('menu');
+        $page->description = $request->input('description');
         $tags = explode(',', $request->input('tags'));
 
         $page->user_id = $page->updated_user_id = Auth::user()->user_id;
@@ -65,8 +69,6 @@ class PageController extends Controller
                 $tag->save();
             }
         }
-
-        // dd($request->input('fields'));
 
         foreach ($request->input('fields') as $field) {
             $fieldValue = new FieldValue;
@@ -114,6 +116,7 @@ class PageController extends Controller
         $page->title = $request->input('title');
         $page->url = $request->input('url');
         $page->menu = $request->input('menu');
+        $page->description = $request->input('description');
         $page->updated_user_id = Auth::user()->user_id;
 
         foreach ($request->input('fields') as $field) {

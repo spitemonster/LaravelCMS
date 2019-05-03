@@ -5,7 +5,7 @@
             <h1>Edit Page</h1>
             <input type="text" id="pageName" :value="page.title">
             <input type="text" id="pageUrl" :value="page.url">
-
+            <input type="text" id="pageDescription" :value="page.description">
             <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
 
             <p>Created By: {{ page.created_by.name }}</p>
@@ -47,6 +47,7 @@ export default {
             let name = document.querySelector('#pageName')
             let url = document.querySelector('#pageUrl')
             let selected = document.querySelectorAll('.selected-image')
+            let description = document.querySelector('#pageDescription')
 
             // start pageData variable
             let pageData = {}
@@ -77,7 +78,7 @@ export default {
             // get pageID from the route param. my general thought is that this is trustworthy.
             pageData.page_id = this.$route.params.page_id
             pageData.title = this.page.title
-
+            pageData.description = pageDescription.value
             // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
             pageData.url = this.page.url.toLowerCase()
             pageData.menu = this.page.menu

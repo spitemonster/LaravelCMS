@@ -84,6 +84,7 @@
                                 // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
                                 let formData = new FormData();
                                 let imageFile = file
+                                let url;
 
                                 formData.append('file', imageFile)
 
@@ -98,8 +99,20 @@
                                     }
 
                                     Bus.$emit('growl', growlerData);
+                                    url = res.data.url
+                                    next(url);
+                                }).then(() => {
+                                    let box = this.$el.querySelector('.image-details')
+                                    let media = box.querySelector("input[name='img-alt']")
+                                    let width = box.querySelector("input[name='img-width']")
+                                    let height = box.querySelector("input[name='img-height']")
+                                    let targetImg = this.$el.querySelector(`img[src="${url}"]`)
 
-                                    next(res.data.url);
+                                    targetImg.classList.add('selected-image');
+                                    box.classList.add('active')
+
+                                    width.value = targetImg.offsetWidth
+                                    height.value = targetImg.offsetHeight
                                 })
                             },
                             callbackOK: (serverResponse, next) => {

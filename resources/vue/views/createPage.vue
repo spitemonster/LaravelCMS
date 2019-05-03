@@ -1,32 +1,61 @@
 <template>
     <div>
         <h1>Create Page</h1>
-        <input type="text" id="pageName" v-model="pageName" @change="generateUrl">
-        <input type="text" id="pageUrl" v-model="generatedUrl" value="/" @change="getUrl(generatedUrl)">
-        <select id="template" @change="selectTemplate">
-            <option value="">Choose Template</option>
-            <option v-for="template, k in templates" :value="template.template_id">{{ template.name }}</option>
-        </select>
+        <input type="radio" name="tab" id="tabOne" checked>
+        <input type="radio" name="tab" id="tabTwo">
 
-        <select id="parentPage" @change="selectParent" v-if="pages">
-            <option value="">No Parent</option>
-            <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
-        </select>
+        <fieldset>
+            <input type="text" id="pageName" v-model="pageName" @change="generateUrl" required />
+            <label for="pageName">Page Name</label>
+        </fieldset>
 
-        <label for="showInMenu">Show in Menu?</label>
-        <input type="checkbox" name="menu" id="showInMenu" v-model="menu"/>
+        <fieldset>
+            <input type="text" id="pageUrl" v-model="generatedUrl" @change="getUrl(generatedUrl)" required />
+            <label for="pageUrl">Page URL</label>
+        </fieldset>
 
-        <inputField v-for="field in fields"
-                    :fieldType="field.type"
-                    :fieldId="field.field_id"
-                    :fieldName="field.name"
-                    :fieldRequired="field.required"
-                    :key="field.id"
-                    :content="field.value"></inputField>
+        <fieldset>
+            <select id="parentPage" @change="selectParent" v-if="pages">
+                <option value="">No Parent</option>
+                <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
+            </select>
+        </fieldset>
 
-        <button @click="createPage">Create Page</button>
+        <label for="tabOne" class="tab">Page Content</label>
+        <label for="tabTwo" class="tab">Page Details</label>
 
-        <input type="text" id="tags" />
+        <div class="content--wrapper">
+            <div class="content" id="tabContentOne">
+                <select id="template" @change="selectTemplate">
+                    <option value="">Choose Template</option>
+                    <option v-for="template, k in templates" :value="template.template_id">{{ template.name }}</option>
+                </select>
+
+                <inputField v-for="field in fields"
+                            :fieldType="field.type"
+                            :fieldId="field.field_id"
+                            :fieldName="field.name"
+                            :fieldRequired="field.required"
+                            :key="field.id"
+                            :content="field.value"></inputField>
+
+                <button @click="createPage">Create Page</button>
+
+                <input type="text" id="tags" />
+            </div>
+
+            <div class="content" id="tabContentTwo">
+
+                <label for="showInMenu">Show in Menu?</label>
+                <input type="checkbox" name="menu" id="showInMenu" v-model="menu"/>
+
+                <fieldset>
+                    <textarea id="pageDescription" v-model="pageDescription" name="description" required></textarea>
+                    <label for="pageDescription">Meta Description</label>
+                </fieldset>
+            </div>
+        </div>
+
     </div>
 </template>
 <script>
@@ -49,7 +78,8 @@
                 iterator: 0,
                 baseUrl: '',
                 fieldsValid: false,
-                menu: false
+                menu: false,
+                pageDescription: ''
             }
         },
         props: [],
@@ -139,6 +169,7 @@
                 let pageData = {}
 
                 pageData.title = name.value
+                pageData.description = this.pageDescription
                 pageData.url = url.value.toLowerCase()
                 pageData.template_id = this.selectedTemplate
                 pageData.parent_id = this.selectedParent ? this.selectedParent : ''

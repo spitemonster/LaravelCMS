@@ -1800,6 +1800,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2130,6 +2132,7 @@ __webpack_require__.r(__webpack_exports__);
               // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
               var formData = new FormData();
               var imageFile = file;
+              var url;
               formData.append('file', imageFile);
               axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/media', formData, {
                 headers: {
@@ -2141,7 +2144,21 @@ __webpack_require__.r(__webpack_exports__);
                   message: res.data.message
                 };
                 _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('growl', growlerData);
-                next(res.data.url);
+                url = res.data.url;
+                next(url);
+              }).then(function () {
+                var box = _this.$el.querySelector('.image-details');
+
+                var media = box.querySelector("input[name='img-alt']");
+                var width = box.querySelector("input[name='img-width']");
+                var height = box.querySelector("input[name='img-height']");
+
+                var targetImg = _this.$el.querySelector("img[src=\"".concat(url, "\"]"));
+
+                targetImg.classList.add('selected-image');
+                box.classList.add('active');
+                width.value = targetImg.offsetWidth;
+                height.value = targetImg.offsetHeight;
               });
             },
             callbackOK: function callbackOK(serverResponse, next) {
@@ -2292,6 +2309,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2310,7 +2356,8 @@ __webpack_require__.r(__webpack_exports__);
       iterator: 0,
       baseUrl: '',
       fieldsValid: false,
-      menu: false
+      menu: false,
+      pageDescription: ''
     };
   },
   props: [],
@@ -2402,6 +2449,7 @@ __webpack_require__.r(__webpack_exports__);
       var tags = document.querySelector('#tags').value;
       var pageData = {};
       pageData.title = name.value;
+      pageData.description = this.pageDescription;
       pageData.url = url.value.toLowerCase();
       pageData.template_id = this.selectedTemplate;
       pageData.parent_id = this.selectedParent ? this.selectedParent : '';
@@ -2669,7 +2717,8 @@ __webpack_require__.r(__webpack_exports__);
       // set variables to confirm fields are filled
       var name = document.querySelector('#pageName');
       var url = document.querySelector('#pageUrl');
-      var selected = document.querySelectorAll('.selected-image'); // start pageData variable
+      var selected = document.querySelectorAll('.selected-image');
+      var description = document.querySelector('#pageDescription'); // start pageData variable
 
       var pageData = {};
       selected.forEach(function (img) {
@@ -2694,7 +2743,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
       pageData.page_id = this.$route.params.page_id;
-      pageData.title = this.page.title; // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
+      pageData.title = this.page.title;
+      pageData.description = pageDescription.value; // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
 
       pageData.url = this.page.url.toLowerCase();
       pageData.menu = this.page.menu; // set fields object
@@ -20687,7 +20737,7 @@ var render = function() {
               [_c("a", [_vm._v("View Pages")])]
             ),
             _vm._v(" "),
-            _c("a", { attrs: { href: "/logout" } }, [_vm._v("Log Out")])
+            _vm._m(0)
           ],
           1
         )
@@ -20709,7 +20759,16 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { attrs: { href: "/logout" } }, [_vm._v("Log Out")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -21030,11 +21089,16 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h1", [_vm._v("Create Page")]),
-      _vm._v(" "),
+  return _c("div", [
+    _c("h1", [_vm._v("Create Page")]),
+    _vm._v(" "),
+    _c("input", {
+      attrs: { type: "radio", name: "tab", id: "tabOne", checked: "" }
+    }),
+    _vm._v(" "),
+    _c("input", { attrs: { type: "radio", name: "tab", id: "tabTwo" } }),
+    _vm._v(" "),
+    _c("fieldset", [
       _c("input", {
         directives: [
           {
@@ -21044,7 +21108,7 @@ var render = function() {
             expression: "pageName"
           }
         ],
-        attrs: { type: "text", id: "pageName" },
+        attrs: { type: "text", id: "pageName", required: "" },
         domProps: { value: _vm.pageName },
         on: {
           change: _vm.generateUrl,
@@ -21057,6 +21121,10 @@ var render = function() {
         }
       }),
       _vm._v(" "),
+      _c("label", { attrs: { for: "pageName" } }, [_vm._v("Page Name")])
+    ]),
+    _vm._v(" "),
+    _c("fieldset", [
       _c("input", {
         directives: [
           {
@@ -21066,7 +21134,7 @@ var render = function() {
             expression: "generatedUrl"
           }
         ],
-        attrs: { type: "text", id: "pageUrl", value: "/" },
+        attrs: { type: "text", id: "pageUrl", required: "" },
         domProps: { value: _vm.generatedUrl },
         on: {
           change: function($event) {
@@ -21081,21 +21149,10 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c(
-        "select",
-        { attrs: { id: "template" }, on: { change: _vm.selectTemplate } },
-        [
-          _c("option", { attrs: { value: "" } }, [_vm._v("Choose Template")]),
-          _vm._v(" "),
-          _vm._l(_vm.templates, function(template, k) {
-            return _c("option", { domProps: { value: template.template_id } }, [
-              _vm._v(_vm._s(template.name))
-            ])
-          })
-        ],
-        2
-      ),
-      _vm._v(" "),
+      _c("label", { attrs: { for: "pageUrl" } }, [_vm._v("Page URL")])
+    ]),
+    _vm._v(" "),
+    _c("fieldset", [
       _vm.pages
         ? _c(
             "select",
@@ -21113,65 +21170,133 @@ var render = function() {
             ],
             2
           )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("label", { attrs: { for: "showInMenu" } }, [_vm._v("Show in Menu?")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.menu,
-            expression: "menu"
-          }
-        ],
-        attrs: { type: "checkbox", name: "menu", id: "showInMenu" },
-        domProps: {
-          checked: Array.isArray(_vm.menu)
-            ? _vm._i(_vm.menu, null) > -1
-            : _vm.menu
-        },
-        on: {
-          change: function($event) {
-            var $$a = _vm.menu,
-              $$el = $event.target,
-              $$c = $$el.checked ? true : false
-            if (Array.isArray($$a)) {
-              var $$v = null,
-                $$i = _vm._i($$a, $$v)
-              if ($$el.checked) {
-                $$i < 0 && (_vm.menu = $$a.concat([$$v]))
-              } else {
-                $$i > -1 &&
-                  (_vm.menu = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _c("label", { staticClass: "tab", attrs: { for: "tabOne" } }, [
+      _vm._v("Page Content")
+    ]),
+    _vm._v(" "),
+    _c("label", { staticClass: "tab", attrs: { for: "tabTwo" } }, [
+      _vm._v("Page Details")
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "content--wrapper" }, [
+      _c(
+        "div",
+        { staticClass: "content", attrs: { id: "tabContentOne" } },
+        [
+          _c(
+            "select",
+            { attrs: { id: "template" }, on: { change: _vm.selectTemplate } },
+            [
+              _c("option", { attrs: { value: "" } }, [
+                _vm._v("Choose Template")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.templates, function(template, k) {
+                return _c(
+                  "option",
+                  { domProps: { value: template.template_id } },
+                  [_vm._v(_vm._s(template.name))]
+                )
+              })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _vm._l(_vm.fields, function(field) {
+            return _c("inputField", {
+              key: field.id,
+              attrs: {
+                fieldType: field.type,
+                fieldId: field.field_id,
+                fieldName: field.name,
+                fieldRequired: field.required,
+                content: field.value
               }
-            } else {
-              _vm.menu = $$c
+            })
+          }),
+          _vm._v(" "),
+          _c("button", { on: { click: _vm.createPage } }, [
+            _vm._v("Create Page")
+          ]),
+          _vm._v(" "),
+          _c("input", { attrs: { type: "text", id: "tags" } })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "content", attrs: { id: "tabContentTwo" } }, [
+        _c("label", { attrs: { for: "showInMenu" } }, [
+          _vm._v("Show in Menu?")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.menu,
+              expression: "menu"
+            }
+          ],
+          attrs: { type: "checkbox", name: "menu", id: "showInMenu" },
+          domProps: {
+            checked: Array.isArray(_vm.menu)
+              ? _vm._i(_vm.menu, null) > -1
+              : _vm.menu
+          },
+          on: {
+            change: function($event) {
+              var $$a = _vm.menu,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.menu = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.menu = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.menu = $$c
+              }
             }
           }
-        }
-      }),
-      _vm._v(" "),
-      _vm._l(_vm.fields, function(field) {
-        return _c("inputField", {
-          key: field.id,
-          attrs: {
-            fieldType: field.type,
-            fieldId: field.field_id,
-            fieldName: field.name,
-            fieldRequired: field.required,
-            content: field.value
-          }
-        })
-      }),
-      _vm._v(" "),
-      _c("button", { on: { click: _vm.createPage } }, [_vm._v("Create Page")]),
-      _vm._v(" "),
-      _c("input", { attrs: { type: "text", id: "tags" } })
-    ],
-    2
-  )
+        }),
+        _vm._v(" "),
+        _c("fieldset", [
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.pageDescription,
+                expression: "pageDescription"
+              }
+            ],
+            attrs: { id: "pageDescription", name: "description", required: "" },
+            domProps: { value: _vm.pageDescription },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.pageDescription = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("label", { attrs: { for: "pageDescription" } }, [
+            _vm._v("Meta Description")
+          ])
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21319,6 +21444,11 @@ var render = function() {
             _c("input", {
               attrs: { type: "text", id: "pageUrl" },
               domProps: { value: _vm.page.url }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: { type: "text", id: "pageDescription" },
+              domProps: { value: _vm.page.description }
             }),
             _vm._v(" "),
             _c("label", [
@@ -21655,18 +21785,6 @@ var render = function() {
           [
             _vm._v(" " + _vm._s(template.name) + " "),
             _c(
-              "button",
-              {
-                on: {
-                  click: function($event) {
-                    return _vm.deleteTemplate(template.template_id)
-                  }
-                }
-              },
-              [_vm._v("Delete")]
-            ),
-            _vm._v(" "),
-            _c(
               "router-link",
               {
                 attrs: {
@@ -21674,7 +21792,21 @@ var render = function() {
                   to: "/admin/template/" + template.template_id + "/edit"
                 }
               },
-              [_c("a", [_vm._v("Edit Template")])]
+              [
+                _c("a", [_vm._v("Edit Template")]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteTemplate(template.template_id)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ]
             )
           ],
           1
