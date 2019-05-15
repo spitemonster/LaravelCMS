@@ -1,0 +1,174 @@
+// styling for various inputs
+
+input[type=checkbox] {
+    display: none;
+}
+
+input[type=checkbox] + label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 1rem;
+    color: $black;
+    font-size: 1rem;
+
+    &::before {
+        content: "";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $main-accent;
+        position: relative;
+        height: 1rem;
+        width: 1rem;
+        border: 1px solid $main-accent;
+        margin-right: .5rem
+    }
+}
+
+input[type=checkbox]:checked + label {
+
+    &::before {
+        content: "✓";
+    }
+}
+
+fieldset {
+    position: relative;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 960px;
+    margin: 1rem 0;
+
+    label {
+        position: absolute;
+        left: 0;
+        top: 4px;
+        color: rgba($main-accent, .5);
+        font-size: 1.5rem;
+        padding-left: 1rem;
+    }
+
+    input {
+        background: none;
+        border: none;
+        border-bottom: 1px solid $main-accent;
+        width: 100%;
+        height: 2.5rem;
+        font-size: 1.5rem;
+        padding-left: 1rem;
+
+        &[type=checkbox]:invalid {
+            box-shadow: none;
+            height: 1rem;
+        }
+    }
+
+    textarea {
+        background: none;
+        border: none;
+        border-bottom: 1px solid $main-accent;
+        width: 100%;
+        font-size: 1.5rem;
+        min-height: 2.5rem;
+        padding-left: 1rem;
+        font-family: 'PT Sans', sans-serif;
+    }
+
+    input:not([type=checkbox]):focus ~ label,
+    input:not([type=checkbox]):focus-within ~ label,
+    input:not([type=checkbox]).focus-within ~ label,
+    input:not([type=checkbox]):valid ~ label,
+    textarea:focus ~ label,
+    textarea:focus-within ~ label,
+    textarea.focus-within ~ label,
+    textarea:valid ~ label {
+        display: none;
+    }
+}
+
+.input {
+
+    &--wysiwyg {
+        position: relative;
+    }
+
+    &--text {
+        font-family: sans-serif;
+        width: 960px;
+        position: relative;
+
+        label {
+            position: absolute;
+            font-size: 24px;
+            left: 1rem;
+            top: calc(50% - 14px);
+            color: rgba($main-accent, .5);
+        }
+
+        input {
+            width: 100%;
+            height: 48px;
+            font-size: 24px;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: none;
+            border: none;
+            border-bottom: 1px solid $main-accent;
+
+            &:valid,
+            &:focus,
+            &:focus-within,
+            &.focus-within {
+                & ~ label {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+
+.select-wrap {
+    position: relative;
+    background: none;
+    width: 20rem;
+    height: 2rem;
+
+        &::after {
+            content: "ˇ";
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2rem;
+            width: 2rem;
+            z-index: 0;
+            font-size: 2rem;
+            padding-top: 1.25rem;
+            color: $main-accent;
+    }
+
+    select {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 2rem;
+        background: none;
+        border: 1px solid $main-accent;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        z-index: 1;
+        cursor: pointer;
+        font-size: 1rem;
+        color: $black;
+        padding-left: 1rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

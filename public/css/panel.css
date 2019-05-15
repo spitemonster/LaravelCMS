@@ -1,31 +1,5 @@
 @charset "UTF-8";
 
-.field-card {
-  display: block;
-  height: auto;
-  background: lightgray;
-  border: 2px solid darkgrey;
-  padding: 1rem;
-  margin: 1rem 0;
-  width: 480px;
-}
-
-.field-card__name {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  border-bottom: 1px solid darkgrey;
-  font-size: 1.5rem;
-}
-
-.field-card__meta {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-}
-
 *,
 *::before,
 *::after {
@@ -290,7 +264,7 @@ textarea,
 }
 
 .growler.success {
-  color: #00a305;
+  color: #59a96a;
 }
 
 .growler.success::before {
@@ -300,7 +274,7 @@ textarea,
 }
 
 .growler.alert {
-  color: #fc9714;
+  color: #de6b48;
 }
 
 .growler.alert::before {
@@ -310,7 +284,7 @@ textarea,
 }
 
 .growler.error {
-  color: #fc325e;
+  color: #d7263d;
 }
 
 .growler.error::before {
@@ -319,14 +293,343 @@ textarea,
   font-size: 3rem;
 }
 
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #F6F6F2;
+}
+
+:root {
+  font-size: 16px;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+.btn,
+.btn-primary,
+.btn-small {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+  width: auto;
+  font-size: 18px;
+  padding: 0.5rem 1rem;
+  border-radius: 0;
+  margin: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 120ms linear;
+}
+
+.btn-primary,
+.btn-small {
+  border: 1px solid #BF68A0;
+  color: #BF68A0;
+  background: #F6F6F2;
+}
+
+.btn-primary:hover,
+.btn-small:hover {
+  color: #F6F6F2;
+  background: #BF68A0;
+}
+
+.btn-small {
+  height: 2rem;
+}
+
+.btn--no-margin {
+  margin: 1rem 0;
+}
+
+button.delete {
+  background: none;
+  color: #d7263d;
+  height: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #d7263d;
+  font-family: "PT Sans", sans-serif;
+  transition: all 120ms ease-in-out;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+
+button.delete:hover {
+  background: #d7263d;
+  color: #F6F6F2;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+input[type=checkbox] + label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 1rem;
+  color: #3A4755;
+  font-size: 1rem;
+}
+
+input[type=checkbox] + label::before {
+  content: "";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #BF68A0;
+  position: relative;
+  height: 1rem;
+  width: 1rem;
+  border: 1px solid #BF68A0;
+  margin-right: 0.5rem;
+}
+
+input[type=checkbox]:checked + label::before {
+  content: "\2713";
+}
+
+fieldset {
+  position: relative;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 960px;
+  margin: 1rem 0;
+}
+
+fieldset label {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: rgba(191, 104, 160, 0.5);
+  font-size: 1.5rem;
+  padding-left: 1rem;
+}
+
+fieldset input {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #BF68A0;
+  width: 100%;
+  height: 2.5rem;
+  font-size: 1.5rem;
+  padding-left: 1rem;
+}
+
+fieldset input[type=checkbox]:invalid {
+  box-shadow: none;
+  height: 1rem;
+}
+
+fieldset textarea {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #BF68A0;
+  width: 100%;
+  font-size: 1.5rem;
+  min-height: 2.5rem;
+  padding-left: 1rem;
+  font-family: "PT Sans", sans-serif;
+}
+
+fieldset input:not([type=checkbox]):focus ~ label,
+fieldset input:not([type=checkbox]):focus-within ~ label,
+fieldset input:not([type=checkbox]).focus-within ~ label,
+fieldset input:not([type=checkbox]):valid ~ label,
+fieldset textarea:focus ~ label,
+fieldset textarea:focus-within ~ label,
+fieldset textarea.focus-within ~ label,
+fieldset textarea:valid ~ label {
+  display: none;
+}
+
+.input--wysiwyg {
+  position: relative;
+}
+
+.input--text {
+  font-family: sans-serif;
+  width: 960px;
+  position: relative;
+}
+
+.input--text label {
+  position: absolute;
+  font-size: 24px;
+  left: 1rem;
+  top: calc(50% - 14px);
+  color: rgba(191, 104, 160, 0.5);
+}
+
+.input--text input {
+  width: 100%;
+  height: 48px;
+  font-size: 24px;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #BF68A0;
+}
+
+.input--text input:valid ~ label,
+.input--text input:focus ~ label,
+.input--text input:focus-within ~ label,
+.input--text input.focus-within ~ label {
+  display: none;
+}
+
+.select-wrap {
+  position: relative;
+  background: none;
+  width: 20rem;
+  height: 2rem;
+}
+
+.select-wrap::after {
+  content: "\2C7";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 2rem;
+  width: 2rem;
+  z-index: 0;
+  font-size: 2rem;
+  padding-top: 1.25rem;
+  color: #BF68A0;
+}
+
+.select-wrap select {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2rem;
+  background: none;
+  border: 1px solid #BF68A0;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #3A4755;
+  padding-left: 1rem;
+}
+
+.select-wrap select:focus {
+  outline: none;
+}
+
+input[type=radio] {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  height: 2rem;
+  width: 8rem;
+  justify-content: center;
+  align-items: center;
+  background: #e4b7e5;
+  cursor: pointer;
+}
+
+#tabOne:checked ~ .content--wrapper #tabContentOne {
+  display: block;
+}
+
+#tabOne:checked ~ label[for=tabOne] {
+  background: #CA9CAB;
+}
+
+#tabTwo:checked ~ .content--wrapper #tabContentTwo {
+  display: block;
+}
+
+#tabTwo:checked ~ label[for=tabTwo] {
+  background: #CA9CAB;
+}
+
+.content--wrapper {
+  position: relative;
+}
+
+.content--wrapper .content {
+  display: none;
+  position: absolute;
+}
+
+.field-card {
+  position: relative;
+  display: block;
+  height: auto;
+  background: lightgray;
+  border: 2px solid darkgrey;
+  padding: 1rem;
+  margin: 1rem 0;
+  width: 480px;
+}
+
+.field-card fieldset {
+  height: 2rem;
+}
+
+.field-card fieldset label {
+  margin-left: 0;
+}
+
+.field-card__meta {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0 1rem;
+}
+
 ::-moz-selection,
 ::-moz-selection {
-  background: CornflowerBlue !important;
+  background: rgba(136, 95, 166, 0.25) !important;
+  color: #3A4755;
 }
 
 ::selection,
 ::-moz-selection {
-  background: CornflowerBlue !important;
+  background: rgba(136, 95, 166, 0.25) !important;
+  color: #3A4755;
 }
 
 html {
@@ -380,6 +683,12 @@ a:hover {
   margin-bottom: 0.5rem;
   padding-left: 1rem;
   position: relative;
+  transition: all 120ms ease-in-out;
+}
+
+.dashboard__nav li:hover,
+.dashboard__nav li:focus {
+  padding-left: 1.5rem;
 }
 
 .dashboard__nav li:hover::after,
@@ -393,30 +702,36 @@ a:hover {
   position: absolute;
   left: 0;
   transition: all 120ms ease-in-out;
-  top: 0;
 }
 
 .dashboard__nav li::before {
   height: 0%;
+  bottom: 0;
+  width: 3px;
 }
 
 .dashboard__nav li::after {
   height: 100%;
   width: 0%;
-  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(200, 143, 138, 0) 100%);
+  top: 0;
+  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(228, 183, 229, 0) 100%);
   z-index: 0;
+}
+
+.dashboard__nav li.router-link-exact-active {
+  padding-left: 2rem;
 }
 
 .dashboard__nav li.router-link-exact-active::before {
   height: 100%;
-  width: 3px;
+  top: 0;
   background: -moz-linear-gradient(top, #BF68A0 0%, #CA9CAB 100%);
 }
 
 .dashboard__nav li.router-link-exact-active::after {
   height: 100%;
   width: 100%;
-  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(200, 143, 138, 0) 100%);
+  background: -moz-linear-gradient(left, rgba(191, 104, 160, 0.25) 0%, rgba(228, 183, 229, 0) 100%);
   z-index: 0;
 }
 
@@ -427,7 +742,7 @@ a:hover {
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  color: #dedede;
+  color: #d7d0c8;
   text-decoration: none;
   transition: all 120ms linear;
   z-index: 2;
@@ -447,57 +762,6 @@ a:hover {
   border-top-left-radius: 25px;
 }
 
-.input--wysiwyg {
-  position: relative;
-}
-
-.input--text {
-  font-family: sans-serif;
-  width: 960px;
-  position: relative;
-}
-
-.input--text label {
-  position: absolute;
-  font-size: 24px;
-  left: 12px;
-  top: calc(50% - 14px);
-  color: rgba(191, 104, 160, 0.5);
-}
-
-.input--text input {
-  width: 100%;
-  height: 48px;
-  font-size: 24px;
-  margin: 1rem 0;
-  padding: 12px 15px;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #BF68A0;
-}
-
-.input--text input:valid ~ label,
-.input--text input:focus ~ label,
-.input--text input:focus-within ~ label,
-.input--text input.focus-within ~ label {
-  display: none;
-}
-
-.btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  color: #3A4755;
-  height: 24px;
-  width: auto;
-  font-size: 18px;
-  padding: 1rem 2rem;
-  background: #F6F6F2;
-  border-radius: 0;
-  margin: 1rem 0;
-  border: none;
-}
-
 .ql-snow {
   background: #F6F6F2;
   width: 960px;
@@ -507,119 +771,100 @@ a:hover {
   height: 480px;
 }
 
-fieldset {
-  position: relative;
-  border: 0;
-  padding: 0;
-  width: 960px;
-  margin: 1rem 0;
-}
-
-fieldset label {
-  position: absolute;
-  left: 0;
-  top: 4px;
-  color: rgba(191, 104, 160, 0.5);
-  font-size: 1.5rem;
-  padding-left: 12px;
-}
-
-fieldset input {
-  background: none;
-  border: none;
-  border-bottom: 1px solid #BF68A0;
-  width: 100%;
-  height: 2.5rem;
-  font-size: 1.5rem;
-  padding-left: 12px;
-}
-
-fieldset textarea {
-  background: none;
-  border: none;
-  border-bottom: 1px solid #BF68A0;
-  width: 100%;
-  font-size: 1.5rem;
-  min-height: 2.5rem;
-  padding-left: 12px;
-  font-family: "PT Sans", sans-serif;
-}
-
-fieldset input:focus ~ label,
-fieldset input:focus-within ~ label,
-fieldset input.focus-within ~ label,
-fieldset input:valid ~ label,
-fieldset textarea:focus ~ label,
-fieldset textarea:focus-within ~ label,
-fieldset textarea.focus-within ~ label,
-fieldset textarea:valid ~ label {
-  display: none;
-}
-
-input[type=radio] {
-  display: none;
-}
-
-.tab {
-  display: inline-flex;
-  height: 4rem;
-  width: 8rem;
-  justify-content: center;
-  align-items: center;
-  background: lightgrey;
-  cursor: pointer;
-}
-
-#tabOne:checked ~ .content--wrapper #tabContentOne {
-  display: block;
-}
-
-#tabOne:checked ~ label[for=tabOne] {
-  background: gray;
-}
-
-#tabTwo:checked ~ .content--wrapper #tabContentTwo {
-  display: block;
-}
-
-#tabTwo:checked ~ label[for=tabTwo] {
-  background: gray;
-}
-
-.content--wrapper {
-  position: relative;
-}
-
-.content--wrapper .content {
-  display: none;
-  position: absolute;
-}
-
 .invalid {
-  border: 1px solid #fc325e;
+  border: 1px solid #d7263d;
   transition: all 120ms linear;
 }
 
-button.delete {
-  background: none;
-  color: #fc325e;
-  height: 1.5rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #fc325e;
-  font-family: "PT Sans", sans-serif;
-  transition: all 120ms ease-in-out;
-  padding: 0 0.5rem;
-  cursor: pointer;
-}
-
-button.delete:hover {
-  background: #fc325e;
-  color: #F6F6F2;
-}
-
-.page {
+.page-card {
+  display: block;
+  width: 25rem;
   margin-bottom: 1rem;
+}
+
+.page-card__details {
+  border-bottom: 1px solid #3A4755;
+  padding-bottom: 0.5rem;
+}
+
+.page-card__utilities {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-field {
+  width: 960px;
+  display: flex;
+  align-items: center;
+}
+
+fieldset + * {
+  margin-top: 0 !important;
+}
+
+#pageDescription {
+  width: 960px;
+}
+
+.ql-container.ql-snow,
+.ql-toolbar.ql-snow {
+  border: 1px solid #BF68A0;
+}
+
+.ql-container.ql-snow svg,
+.ql-container.ql-snow svg path,
+.ql-container.ql-snow svg line,
+.ql-container.ql-snow svg rect,
+.ql-container.ql-snow svg polyline,
+.ql-container.ql-snow svg polygon,
+.ql-toolbar.ql-snow svg,
+.ql-toolbar.ql-snow svg path,
+.ql-toolbar.ql-snow svg line,
+.ql-toolbar.ql-snow svg rect,
+.ql-toolbar.ql-snow svg polyline,
+.ql-toolbar.ql-snow svg polygon {
+  stroke: #BF68A0;
+}
+
+.ql-container.ql-snow .ql-fill,
+.ql-toolbar.ql-snow .ql-fill {
+  fill: #BF68A0 !important;
+}
+
+.ql-container.ql-snow .ql-picker-label,
+.ql-toolbar.ql-snow .ql-picker-label {
+  color: #BF68A0;
+}
+
+.ql-container.ql-snow .ql-snow.ql-toolbar button:hover,
+.ql-container.ql-snow .ql-snow .ql-toolbar button:hover,
+.ql-container.ql-snow .ql-snow.ql-toolbar button:focus,
+.ql-container.ql-snow .ql-snow .ql-toolbar button:focus,
+.ql-container.ql-snow .ql-snow.ql-toolbar button.ql-active,
+.ql-container.ql-snow .ql-snow .ql-toolbar button.ql-active,
+.ql-container.ql-snow .ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-container.ql-snow .ql-snow .ql-toolbar .ql-picker-label:hover,
+.ql-container.ql-snow .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-container.ql-snow .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.ql-container.ql-snow .ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-container.ql-snow .ql-snow .ql-toolbar .ql-picker-item:hover,
+.ql-container.ql-snow .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+.ql-container.ql-snow .ql-snow .ql-toolbar .ql-picker-item.ql-selected,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar button:hover,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar button:hover,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar button:focus,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar button:focus,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar button.ql-active,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar button.ql-active,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar .ql-picker-label:hover,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar .ql-picker-item:hover,
+.ql-toolbar.ql-snow .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+.ql-toolbar.ql-snow .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+  color: #dark-accent;
 }
 

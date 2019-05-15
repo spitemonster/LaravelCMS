@@ -17,6 +17,9 @@
                 <router-link tag="li" to="/admin/view/pages">
                     <a>View Pages</a>
                 </router-link>
+                <router-link tag="li" to="/admin/view/users">
+                    <a>View Users</a>
+                </router-link>
                 <li>
                     <a href="/logout">Log Out</a>
                 </li>
@@ -165,6 +168,24 @@
 
                         Bus.$emit('growl', growlerData)
                         Bus.$emit('templateDeleted')
+                    })
+            });
+
+            Bus.$on('deleteUser', (user_id) => {
+                axios.delete(`/user?user_id=${user_id}&api_token=${this.api_token}`)
+                    .then((res) => {
+                        let growlerData = {
+                            mode: res.data.status,
+                            message: res.data.message
+                        }
+
+                        Bus.$emit('growl', growlerData)
+
+                        Bus.$emit('userDeleted', res.data.users)
+
+                        // setTimeout(() => {
+                        //     window.location = '/logout';
+                        // }, 5000)
                     })
             });
         }

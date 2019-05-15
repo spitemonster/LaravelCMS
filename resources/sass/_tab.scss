@@ -1,0 +1,49 @@
+// styling for css tabs, powered by radio buttons and labels
+
+input[type=radio] {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  height: 2rem;
+  width: 8rem;
+  justify-content: center;
+  align-items: center;
+  background: $light-accent;
+  cursor: pointer;
+}
+
+#tabOne {
+  &:checked {
+    & ~ .content--wrapper #tabContentOne {
+      display: block;
+    }
+
+    & ~ label[for=tabOne] {
+      background: $dark-accent;
+    }
+  }
+}
+
+#tabTwo {
+
+  &:checked {
+    & ~ .content--wrapper #tabContentTwo {
+      display: block
+    }
+
+    & ~ label[for=tabTwo] {
+      background: $dark-accent;
+    }
+  }
+}
+
+.content--wrapper {
+  position: relative;
+
+  .content {
+    display: none;
+    position: absolute;
+  }
+}

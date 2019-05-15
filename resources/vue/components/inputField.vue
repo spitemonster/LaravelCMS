@@ -86,6 +86,7 @@
                                 let imageFile = file
                                 let url;
 
+                                console.log(this.$route.params.page_id);
                                 formData.append('file', imageFile)
 
                                 axios.post('/media', formData, {

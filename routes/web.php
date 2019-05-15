@@ -45,6 +45,51 @@ Route::get('/user', function(Request $request) {
     return $user;
 });
 
+Route::get('/users', function(Request $request) {
+    return User::all();
+});
+
+Route::delete('/user', function(Request $request) {
+    $requestingUser = User::where('api_token', $request->query('api_token'))->first();
+    $targetUser = User::where('user_id', $request->query('user_id'))->first();
+
+    // check if user is NOT a superuser
+    if (!$requestingUser->superuser) {
+
+        // if they're NOT a superuser, they still are allowed to delete their own account
+        if ($requestingUser == $targetUser) {
+            $targetUser->delete();
+
+            $allowedData = array(
+                'status' => 'success',
+                'message' => 'User successfully deleted',
+                'users' => User::all()
+            );
+
+            return $allowedData;
+        }
+
+        // if they attempt to delete an account that is not their own, they can go straight to heck
+        $disallowedData = array(
+            'status' => 'error',
+            'message' => 'You do not have the required permission to complete that action',
+        );
+
+        return $disallowedData;
+    }
+
+    // if they ARE a superuser they can do whatever they darn well please
+    $targetUser->delete();
+
+    $allowedData = array(
+        'status' => 'success',
+        'message' => 'User successfully deleted',
+        'users' => User::all()
+    );
+
+    return $allowedData;
+});
+
 Route::post('/media', function(Request $request) {
     $file = $request->file('file')->store('media', 'public');
 

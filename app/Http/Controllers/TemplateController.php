@@ -62,7 +62,6 @@ class TemplateController extends Controller
             $template_id = $request->query('template_id');
 
             $template = Template::where('template_id', $template_id)->with('fields')->first();
-            // $template[0]['fields'] = Template::where('template_id', $template_id)->first()->fields;
 
             return $template;
         }

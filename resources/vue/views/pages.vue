@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <section class="view__pages">
         <h1>View Pages</h1>
-        <div class="page" v-for="page, k in pages" :key="k">
-            <div>
+        <div class="page-card" v-for="page, k in pages" :key="k">
+            <div class="page-card__details">
                 <h3>{{ page.title }}</h3> Last Updated: <span> {{ page.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ page.updated_by.name }} </span>
             </div>
-            <div>
+            <div class="page-card__utilities">
                 <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)" class="delete">Delete Page <i class="la la-trash"></i></button>
             </div>
             <div class="child" v-for="child, l in page.children">
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 <script>
     import axios from 'axios'

@@ -1,17 +1,26 @@
 <template>
     <div>
         <h2>Edit Template</h2>
-        <select name="field-type" id="fieldSelector">
-          <option value="text">Text</option>
-          <option value="textarea">Text Area</option>
-          <option value="wysiwyg">WYSIWYG</option>
-          <option value="postIndex">Post Index</option>
-        </select>
+        <fieldset>
+                <input type="text" name="templateName" id="templateName" style="display: block;" v-model:value="templateName" required>
+                <label for="templateName">Template Name</label>
+        </fieldset>
 
-        <button @click="addField">Add Field</button>
-        <input type="text" name="templateName" placeholder="Template Name" id="template-name" style="display: block;" v-model="templateName">
-            <fieldCard :field="field" v-for="field in fields" :key="field.name" :deletable="false"></fieldCard>
-        <button @click="saveTemplate">Save Template</button>
+        <div class="add-field">
+            <div class="select-wrap">
+                <select name="field-type" id="fieldSelector">
+                    <option value="text">Text</option>
+                    <option value="wysiwyg">WYSIWYG</option>
+                    <option value="media">Media</option>
+                </select>
+            </div>
+
+            <button @click="addField" class="btn btn-small">Add Field</button>
+        </div>
+
+        <fieldCard :field="field" v-for="field, i in fields" :key="field.name" :deletable="false" :index="i"></fieldCard>
+
+        <button @click="saveTemplate" class="btn btn-primary btn--no-margin">Save Template</button>
     </div>
 </template>
 <script>
@@ -38,18 +47,6 @@
                 templateData.fields = this.fields;
 
                 Bus.$emit('updateTemplate', templateData)
-
-                // axios.patch(`/template?template_id=${this.$route.params.template_id}`, templateData, headers)
-                //     .then((res) => {
-                //         this.$router.push({ name: 'viewTemplates' })
-                //         let growlerData = {
-                //             mode: res.data.status,
-                //             message: res.data.message
-                //         }
-
-                //         Bus.$emit('growl', growlerData)
-                //     })
-
             },
             addField () {
                 let sel = document.querySelector('#fieldSelector')
@@ -64,6 +61,8 @@
                 .then((res) => {
                     this.fields = res.data.fields
                     this.templateName = res.data.name
+
+                    console.log(this.fields);
                 })
         },
         mounted() {

@@ -1,0 +1,56 @@
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    width: auto;
+    font-size: 18px;
+    padding: .5rem 1rem;
+    border-radius: 0;
+    margin: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 120ms linear;
+
+    &-primary {
+        @extend .btn;
+
+        border: 1px solid $main-accent;
+        color: $main-accent;
+        background: $white;
+
+        &:hover {
+            color: $white;
+            background: $main-accent;
+        }
+    }
+
+    &-small {
+        @extend .btn-primary;
+
+        height: 2rem;
+    }
+
+    &--no-margin {
+        margin: 1rem 0;
+    }
+}
+
+button.delete {
+    background: none;
+    color: $red;
+    height: 1.5rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $red;
+    font-family: 'PT Sans', sans-serif;
+    transition: all 120ms ease-in-out;
+    padding: 0 .5rem;
+    cursor: pointer;
+
+    &:hover {
+        background: $red;
+        color: $white;
+    }
+}

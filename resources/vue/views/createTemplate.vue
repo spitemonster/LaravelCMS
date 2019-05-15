@@ -1,18 +1,25 @@
 <template>
-    <main>
-        <input type="text" name="templateName" placeholder="Template Name" id="templateName" style="display: block;">
+    <section>
+        <fieldset>
+                <input type="text" name="templateName" id="templateName" style="display: block;" required>
+                <label for="templateName">Template Name</label>
+        </fieldset>
 
-        <select name="field-type" id="fieldSelector">
-            <option value="text">Text</option>
-            <option value="textarea">Text Area</option>
-            <option value="wysiwyg">WYSIWYG</option>
-            <option value="media">Media</option>
-        </select>
+        <div class="add-field">
+            <div class="select-wrap">
+                <select name="field-type" id="fieldSelector">
+                    <option value="text">Text</option>
+                    <option value="wysiwyg">WYSIWYG</option>
+                    <option value="media">Media</option>
+                </select>
+            </div>
 
-        <button @click="addField">Add Field</button>
-            <fieldCard :field="field" v-for="field in fields" :key="field.name" :deletable="true"></fieldCard>
-        <button @click="saveTemplate">Save Template</button>
-    </main>
+            <button @click="addField" class="btn btn-small">Add Field</button>
+        </div>
+
+        <fieldCard :field="field" v-for="field, i in fields" :key="i" :deletable="true" :index="i"></fieldCard>
+        <button @click="saveTemplate" class="btn btn-primary btn--no-margin">Save Template</button>
+    </section>
 </template>
 <script>
     import fieldCard from '../components/fieldCard.vue'
@@ -28,7 +35,7 @@
         methods: {
             addField () {
                 let sel = document.querySelector('#fieldSelector')
-                this.fields.push({name: '', required: false, type: sel.value});
+                this.fields.push({name: '', required: false, type: sel.value, index: this.fields.length});
             },
             saveTemplate () {
                 let template = this.collectTemplateData()
@@ -66,15 +73,17 @@
             })
 
             Bus.$on('requireField', (targetField) => {
-                this.fields.forEach((field) => {
-                    if (field === targetField.field) {
-                        field.required = targetField.required;
-                    }
-                })
+                console.log(targetField);
+                // this.fields.forEach((field) => {
+                //     if (field === targetField.field) {
+                //         field.required = targetField.required;
+                //     }
+                // })
             })
 
             Bus.$on('nameField', (targetField) => {
                 this.fields.forEach((field) => {
+                    console.log(field);
                     if (field === targetField.field) {
                         field.name = targetField.name;
                     }

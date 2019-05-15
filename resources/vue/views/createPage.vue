@@ -15,10 +15,12 @@
         </fieldset>
 
         <fieldset>
-            <select id="parentPage" @change="selectParent" v-if="pages">
-                <option value="">No Parent</option>
-                <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
-            </select>
+            <div class="select-wrap">
+                <select id="parentPage" @change="selectParent" v-if="pages">
+                    <option value="">No Parent</option>
+                    <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
+                </select>
+            </div>
         </fieldset>
 
         <label for="tabOne" class="tab">Page Content</label>
@@ -26,10 +28,14 @@
 
         <div class="content--wrapper">
             <div class="content" id="tabContentOne">
-                <select id="template" @change="selectTemplate">
-                    <option value="">Choose Template</option>
-                    <option v-for="template, k in templates" :value="template.template_id">{{ template.name }}</option>
-                </select>
+                <fieldset>
+                    <div class="select-wrap">
+                        <select id="template" @change="selectTemplate">
+                            <option value="">Choose Template</option>
+                            <option v-for="template, k in templates" :value="template.template_id">{{ template.name }}</option>
+                        </select>
+                    </div>
+                </fieldset>
 
                 <inputField v-for="field in fields"
                             :fieldType="field.type"
@@ -39,7 +45,7 @@
                             :key="field.id"
                             :content="field.value"></inputField>
 
-                <button @click="createPage">Create Page</button>
+                <button @click="createPage" class="btn btn-primary btn--no-margin">Create Page</button>
 
                 <fieldset>
                     <input type="text" id="tags" v-model="tags" required />
@@ -49,8 +55,10 @@
 
             <div class="content" id="tabContentTwo">
 
-                <label for="showInMenu">Show in Menu?</label>
-                <input type="checkbox" name="menu" id="showInMenu" v-model="menu"/>
+                <fieldset>
+                    <input type="checkbox" name="menu" id="showInMenu" v-model="menu"/>
+                    <label for="showInMenu">Show in Menu?</label>
+                </fieldset>
 
                 <fieldset>
                     <textarea id="pageDescription" v-model="pageDescription" name="description" required></textarea>
@@ -58,7 +66,6 @@
                 </fieldset>
             </div>
         </div>
-
     </div>
 </template>
 <script>

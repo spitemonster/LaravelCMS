@@ -1,15 +1,18 @@
 <template>
-    <fieldset class="field-card">
-          <input type="text" v-model="fieldName" placeholder="Enter Field Name" class="field-card__name" @change="nameField"/>
-
-          <label for="fieldRequired">Required?</label>
-          <input type="checkbox" name="required" id="fieldRequired" @change="requireField" v-model="fieldRequired">
-
-          <div class="field-card__meta">
+    <div class="field-card">
+        <fieldset>
+            <input type="text" id="fieldName" v-model="fieldName" class="field-card__name" @change="nameField" required/>
+            <label for="fieldName">Field Name</label>
+        </fieldset>
+        <fieldset>
+            <input type="checkbox" name="required" :id="index" @change="requireField" v-model="fieldRequired" required>
+            <label :for="index">Required?</label>
+        </fieldset>
+        <div class="field-card__meta">
               <span>Type: {{ field.type }}</span>
-          </div>
-          <span @click="deleteField" v-if="deletable">Delete Field</span>
-    </fieldset>
+              <button @click="deleteField" class="delete" v-if="deletable">Delete Field</button>
+        </div>
+    </div>
 </template>
 <script>
     import Bus from '../../js/admin.js'
@@ -20,10 +23,10 @@
             return {
                 fieldName: '',
                 fieldRequired: this.field.required,
-                fieldType: this.field.type
+                fieldType: this.field.type,
             }
         },
-        props: ['field', 'deletable'],
+        props: ['field', 'deletable', 'index'],
         methods: {
             deleteField () {
                 Bus.$emit('deleteField', this.field)

@@ -29,10 +29,11 @@
                                     :fieldRequired="field.required"
                                     :key="field.field_id"
                                     :content="field.content"></inputField>
-                    <button @click="savePage" class="btn">Save Page</button>
+
+                    <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
                 </div>
                 <div class="content" id="tabContentTwo">
-                    <p>Created By: {{ page.created_by.name }}</p>
+                    <p>Created By: {{ page.created_by ? page.created_by.name : 'User Deleted' }}</p>
                     <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
 
                     <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
