@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <title>Dashboard</title>
-    <link rel="preload" href="/css/quill.css" as="style" onload="this.rel='stylesheet'">
-    <link rel="preload" href="/css/panel.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="/cms/css/quill.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'">
 
     <link rel="preload" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" as="style" onload="this.rel='stylesheet'">
 
@@ -23,6 +23,6 @@
 
 </div>
 
-<script src="/js/admin.js" defer></script>
+<script src="/cms/js/admin.js" defer></script>
 </body>
 </html>

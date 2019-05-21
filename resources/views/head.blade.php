@@ -9,3 +9,10 @@
     <link rel=stylesheet href="/css/app.css">
 </head>
 <body>
+    <nav class="">
+        <ul>
+            @foreach($menu as $item)
+                <li><a href="{{ $item->url }}">{{ $item->title }}</a></li>
+            @endforeach
+        </ul>
+    </nav>

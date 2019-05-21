@@ -31,22 +31,16 @@ class TemplateController extends Controller
             $f->save();
         }
 
-        $boilerplate = '
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <title></title>
-                </head>
-                <body>
+        // generic template data
+        $boilerplate =
+"@include('header');
 
-                </body>
-            </html>
-        ';
-
-        $template_name = strtolower(str_replace(' ', '_', $template->name));
+@include('footer');";
 
         $template->save();
-        Storage::disk('resources')->put('/views/'. $template_name . '.blade.php', $boilerplate);
+
+        // write template boilerplate to file
+        Storage::disk('resources')->put('/views/'. strtolower(str_replace(' ', '_', $template->name)) . '.blade.php', $boilerplate);
 
         $successMsg = array(
             'status' => 'success',
@@ -93,6 +87,13 @@ class TemplateController extends Controller
             return $errMsg;
         }
 
+        // if the template's name is updated, make a new blade template with the new name to ensure any pages using the template still work
+        if ($template->name !== $request->input('name')) {
+            $templateData = Storage::disk('resources')->get('/views/' . strtolower(str_replace(' ', '_', $template->name)) . '.blade.php');
+            Storage::disk('resources')->put('/views/' . strtolower(str_replace(' ', '_', $request->input('name'))) . '.blade.php', $templateData );
+            Storage::disk('resources')->delete('/views/' . strtolower(str_replace(' ', '_', $template->name)) . '.blade.php');
+        }
+
         $template->name = $request->input('name');
 
         foreach ($request->input('fields') as $field) {
@@ -122,43 +123,44 @@ class TemplateController extends Controller
 
     // delete
     public function deleteTemplate(Request $request) {
-            $validator = Validator::make(['uuid' => $request->query('template_id')], ['uuid' => 'uuid']);
+        $validator = Validator::make(['uuid' => $request->query('template_id')], ['uuid' => 'uuid']);
 
-            if (!$request->query('template_id') || !$validator->passes()) {
-                $errMsg = array(
-                    'status' => 'error',
-                    'message' => 'Requested action cannot be completed: a valid Template ID is required'
-                );
-
-                return $errMsg;
-            }
-
-            $template = Template::where('template_id', $request->query('template_id'))->first();
-
-            if (!$template) {
-                $errMsg = array(
-                    'status' => 'error',
-                    'message' => 'Requested action cannot be completed: A template with the selected ID cannot be found.'
-                );
-
-                return $errMsg;
-            }
-
-            $fields = $template->fields()->get();
-
-            foreach ($fields as $field) {
-                $field->delete();
-            }
-
-            Storage::disk('resources')->delete('/views/'. $template->name . '.blade.php');
-
-            $template->delete();
-
-            $successMsg = array(
-                'status' => 'success',
-                'message' => 'Template successfully deleted'
+        if (!$request->query('template_id') || !$validator->passes()) {
+            $errMsg = array(
+                'status' => 'error',
+                'message' => 'Requested action cannot be completed: a valid Template ID is required'
             );
 
-            return $successMsg;
+            return $errMsg;
+        }
+
+        $template = Template::where('template_id', $request->query('template_id'))->first();
+        $template_name = strtolower(str_replace(' ', '_', $template->name));
+
+        if (!$template) {
+            $errMsg = array(
+                'status' => 'error',
+                'message' => 'Requested action cannot be completed: A template with the selected ID cannot be found.'
+            );
+
+            return $errMsg;
+        }
+
+        $fields = $template->fields()->get();
+
+        foreach ($fields as $field) {
+            $field->delete();
+        }
+
+        Storage::disk('resources')->delete('/views/'. $template_name . '.blade.php');
+
+        $template->delete();
+
+        $successMsg = array(
+            'status' => 'success',
+            'message' => 'Template successfully deleted'
+        );
+
+        return $successMsg;
     }
 }

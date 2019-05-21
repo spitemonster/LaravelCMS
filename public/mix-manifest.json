@@ -1,7 +1,7 @@
 {
-    "/js/admin.js": "/js/admin.js",
+    "/cms/js/admin.js": "/cms/js/admin.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/css/panel.css": "/css/panel.css",
-    "/css/quill.css": "/css/quill.css"
+    "/cms/css/panel.css": "/cms/css/panel.css",
+    "/cms/css/quill.css": "/cms/css/quill.css"
 }

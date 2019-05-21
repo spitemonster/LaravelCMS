@@ -73,17 +73,15 @@
             })
 
             Bus.$on('requireField', (targetField) => {
-                console.log(targetField);
-                // this.fields.forEach((field) => {
-                //     if (field === targetField.field) {
-                //         field.required = targetField.required;
-                //     }
-                // })
+                this.fields.forEach((field) => {
+                    if (field === targetField.field) {
+                        field.required = targetField.required;
+                    }
+                })
             })
 
             Bus.$on('nameField', (targetField) => {
                 this.fields.forEach((field) => {
-                    console.log(field);
                     if (field === targetField.field) {
                         field.name = targetField.name;
                     }

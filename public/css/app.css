@@ -243,3 +243,11 @@ textarea,
   }
 }
 
+:root {
+  font-size: 16px;
+}
+
+nav {
+  position: absolute;
+}
+

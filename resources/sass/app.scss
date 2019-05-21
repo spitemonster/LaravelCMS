@@ -2,8 +2,12 @@
 @import 'layout';
 @import 'variables';
 
-body {
+$white: #DDD9C9;
+
+:root {
+    font-size: 16px;
 }
 
-h1 {
+nav {
+    position: absolute;
 }

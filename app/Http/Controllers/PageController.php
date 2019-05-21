@@ -18,15 +18,21 @@ class PageController extends Controller
     {
         $page = Page::where('url', '/' . $url)->with('children')->first();
 
+        // gather all menu pages and return them with every page request
+        $menu = Page::where('menu', true)->get(['title', 'url']);
+
+        // if the page doesn't exist, send that sweet sweet 404
         if (!$page) {
             return view('404');
         }
 
+        // find the template name so we know what to render with
         $templateName = Template::where('template_id', $page->template_id)->first()->name;
 
         // $data represents the fields and values. splitting them into the $data array allows them to be accessed by just the field name on the front end
         $data = [];
 
+        $data['menu'] = $menu;
         $data['children'] = $page->children()->get();
         $data['tags'] = $page->tags()->get();
         $data['description'] = $page->description;

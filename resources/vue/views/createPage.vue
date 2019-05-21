@@ -256,6 +256,7 @@
                 let targetField = field.dataset.fieldid
                 this.fields.forEach((f) => {
                     if (f.field_id == targetField) {
+
                         f.content = field.value
 
                     }

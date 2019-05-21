@@ -186,6 +186,7 @@ export default {
             let targetField = field.dataset.fieldid
 
             this.page.values.forEach((f) => {
+                console.log(f.content);
                 if (f.field_id === targetField) {
                     f.content = field.value
                 }
