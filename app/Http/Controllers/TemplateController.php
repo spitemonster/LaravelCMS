@@ -87,7 +87,7 @@ class TemplateController extends Controller
             return $errMsg;
         }
 
-        // if the template's name is updated, make a new blade template with the new name to ensure any pages using the template still work
+        // if the template's name is updated, make a new blade template with the new name to ensure any pages using the template still work but copy the content
         if ($template->name !== $request->input('name')) {
             $templateData = Storage::disk('resources')->get('/views/' . strtolower(str_replace(' ', '_', $template->name)) . '.blade.php');
             Storage::disk('resources')->put('/views/' . strtolower(str_replace(' ', '_', $request->input('name'))) . '.blade.php', $templateData );
@@ -152,6 +152,7 @@ class TemplateController extends Controller
             $field->delete();
         }
 
+        // delete the template file so it doesn't sit around
         Storage::disk('resources')->delete('/views/'. $template_name . '.blade.php');
 
         $template->delete();

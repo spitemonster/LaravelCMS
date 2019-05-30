@@ -17,11 +17,41 @@ use App\Template;
 use App\Field;
 use App\FieldValue;
 use App\Media;
+use App\PageTag;
+use App\Tag;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 // use Storage;
 // use App\Http\Middleware\CheckApiToken;
 // use Uuid;
+
+Route::get('/mail', function() {
+    Mail::to('johnstk91@gmail.com')->send(new TestEmail());
+
+    return 'Yep';
+});
+
+Route::get('/tag', function(Request $request) {
+
+    $tag = null;
+
+    if ($request->query('tag_id')) {
+        $tag = PageTag::where('tag_id', $request->query('tag_id'))->first();
+    } elseif ($request->query('tag_name')) {
+        $tag_id = Tag::where('name', $request->query('tag_name'))->first()->tag_id;
+
+        $PageTag = PageTag::where('tag_id', $tag_id)->first();
+        Page::where('page_id', $PageTag->page_id)->get();
+    }
+
+    return $tag->page;
+});
+
+Route::get('/mailable', function() {
+    return new TestEmail();
+});
 
 Route::get('/logout', function(Request $request) {
     Auth::logout();

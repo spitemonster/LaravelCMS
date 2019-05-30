@@ -12,7 +12,6 @@
         </div>
     </section>
 </template>
-
 <script>
 import axios from 'axios'
 import router from '../../js/admin.js'
@@ -20,40 +19,42 @@ import Bus from '../../js/admin.js'
 
 export default {
 
-  name: 'viewUsers',
+    name: 'viewUsers',
 
-  data() {
-    return {
-        api_token: null,
-        users: null
-    };
-  },
-  methods: {
-    deleteUser(user_id) {
-        Bus.$emit('deleteUser', user_id);
-    }
-  },
-  beforeCreate() {
-    axios.get('/user')
-        .then((res) => {
-            this.api_token = res.data.api_token
-            this.superuser = res.data.superuser
-        }).then(() => {
-            axios.get(`/users?api_token=${this.api_token}`)
-                .then((res) => {
-                    this.users = res.data
-                })
-        })
-  },
-  mounted() {
-    Bus.$on('userDeleted', (users) => {
-        if (users) {
-          this.users = users
+    data() {
+        return {
+            api_token: null,
+            user_id: null,
+            users: null
+        };
+    },
+    methods: {
+        deleteUser(user_id) {
+            Bus.$emit('deleteUser', user_id);
         }
-    })
-  }
+    },
+    beforeCreate() {
+        axios.get('/user')
+            .then((res) => {
+                this.api_token = res.data.api_token
+                this.superuser = res.data.superuser
+                this.user_id = res.data.user_id
+            }).then(() => {
+                axios.get(`/users?api_token=${this.api_token}`)
+                    .then((res) => {
+                        this.users = res.data
+                    })
+            })
+    },
+    mounted() {
+        Bus.$on('userDeleted', (users) => {
+            if (users) {
+                this.users = users
+            }
+        })
+    }
 };
-</script>
 
+</script>
 <style lang="css" scoped>
 </style>

@@ -1,43 +1,35 @@
 <template>
     <div>
-        <template v-if="!pageLoaded"><p>Loading</p></template>
+        <template v-if="!pageLoaded">
+            <p>Loading</p>
+        </template>
         <template v-if="pageLoaded">
             <h1>Edit Page</h1>
-
             <input type="radio" name="tab" id="tabOne" checked>
             <input type="radio" name="tab" id="tabTwo">
-
             <fieldset>
                 <input type="text" id="pageName" :value="page.title" required />
                 <label for="pageName">Page Name</label>
             </fieldset>
-
             <fieldset>
                 <input type="text" id="pageUrl" :value="page.url" required />
                 <label for="pageUrl">Page URL</label>
             </fieldset>
-
             <label for="tabOne" class="tab">Page Content</label>
             <label for="tabTwo" class="tab">Page Details</label>
-
             <div class="content--wrapper">
                 <div class="content" id="tabContentOne">
-                    <inputField v-for="field in page.values"
-                                    :fieldType="field.type"
-                                    :fieldId="field.field_id"
-                                    :fieldName="field.field_name"
-                                    :fieldRequired="field.required"
-                                    :key="field.field_id"
-                                    :content="field.content"></inputField>
-
+                    <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
                     <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
+                    <fieldset>
+                        <input type="text" id="tags" v-model="tags" required />
+                        <label for="tags">Tags (Comma Separated)</label>
+                    </fieldset>
                 </div>
                 <div class="content" id="tabContentTwo">
                     <p>Created By: {{ page.created_by ? page.created_by.name : 'User Deleted' }}</p>
                     <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
-
                     <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
-
                     <fieldset>
                         <textarea id="pageDescription" :value="page.description" required></textarea>
                         <label for="pageDescription">Meta Description</label>
@@ -55,24 +47,24 @@ import router from '../../js/admin.js'
 
 export default {
     name: '',
-    data () {
+    data() {
         return {
             pageLoaded: false,
             page: {},
             fieldsValid: false,
+            tags: ''
         }
     },
     props: [],
-    computed: {
-    },
+    computed: {},
     methods: {
-        savePage () {
+        savePage() {
             // set variables to confirm fields are filled
             let name = document.querySelector('#pageName')
             let url = document.querySelector('#pageUrl')
             let selected = document.querySelectorAll('.selected-image')
             let description = document.querySelector('#pageDescription')
-
+            let tags = document.querySelector('#tags');
             // start pageData variable
             let pageData = {}
 
@@ -106,7 +98,7 @@ export default {
             // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
             pageData.url = this.page.url.toLowerCase()
             pageData.menu = this.page.menu
-
+            pageData.tags = tags.value;
             // set fields object
             pageData.fields = []
 
@@ -164,10 +156,24 @@ export default {
         // once it's loaded, set pageLoaded to true and Robert is your mother's uncle
         axios.get(`/page?page_id=${this.$route.params.page_id}`)
             .then((res) => {
+                let tags = '';
                 this.page = res.data
                 this.fields = res.data.values
-
                 this.pageLoaded = true
+
+
+                for (let i = 0; i < res.data.tags.length; i++) {
+                    console.log('running loop');
+
+                    let tag = res.data.tags[i];
+
+                    if (i === 0) {
+                        tags = `${tags}${tag.name}`
+                    } else {
+                        tags = `${tags}, ${tag.name}`
+                    }
+                }
+                this.tags = tags;
             })
     },
     mounted() {
@@ -194,6 +200,7 @@ export default {
         })
     }
 }
+
 </script>
 <style lang="css">
 </style>

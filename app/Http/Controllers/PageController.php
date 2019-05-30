@@ -6,6 +6,7 @@ use App\FieldValue;
 use App\Template;
 use App\Tag;
 use App\User;
+use App\PageTag;
 use Uuid;
 use Auth;
 
@@ -28,13 +29,18 @@ class PageController extends Controller
 
         // find the template name so we know what to render with
         $templateName = Template::where('template_id', $page->template_id)->first()->name;
-
+        $tags = $page->tags()->get();
         // $data represents the fields and values. splitting them into the $data array allows them to be accessed by just the field name on the front end
         $data = [];
 
         $data['menu'] = $menu;
         $data['children'] = $page->children()->get();
-        $data['tags'] = $page->tags()->get();
+        $data['tags'] = [];
+
+        foreach ($tags as $tag) {
+            array_push($data['tags'], $tag->tag);
+        }
+
         $data['description'] = $page->description;
 
         foreach($page->values as $field) {
@@ -65,15 +71,29 @@ class PageController extends Controller
         $page->user_id = $page->updated_user_id = Auth::user()->user_id;
 
         foreach ($tags as $t) {
-            if ($t !== '') {
-                $tag = new Tag;
+            // test if tag already exists
+            $test = Tag::where('name', $t)->first();
 
-                $tag->name = trim($t);
-                $tag->tag_id = Uuid::generate(4)->string;
-                $tag->page_id = $page->page_id;
+            // if so, don't create the tag, just make the association.
+            if ($test) {
+                $pageTag = new PageTag;
+                $pageTag->tag_id = $test->tag_id;
+                $pageTag->page_id = $page->page_id;
 
-                $tag->save();
+                return $pageTag->save();
             }
+
+            $tag = new Tag;
+            $pageTag = new PageTag;
+
+            $tag->name = trim($t);
+
+            $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
+
+            $pageTag->page_id = $page->page_id;
+
+            $pageTag->save();
+            $tag->save();
         }
 
         foreach ($request->input('fields') as $field) {
@@ -103,8 +123,9 @@ class PageController extends Controller
         if ($request->query('page_id')) {
 
             $page = Page::where('page_id', $request->query('page_id'))
-                ->with(['values', 'children', 'created_by', 'updated_by'])
+                ->with(['values', 'children', 'created_by', 'updated_by', 'tags'])
                 ->first();
+
             return $page;
         }
 
@@ -124,6 +145,33 @@ class PageController extends Controller
         $page->menu = $request->input('menu');
         $page->description = $request->input('description');
         $page->updated_user_id = Auth::user()->user_id;
+        $tags = explode(',', $request->input('tags'));
+
+        foreach ($tags as $tg) {
+            $t = trim($tg);
+            // test if tag already exists
+            $testTag = Tag::where('name', $t)->first();
+            // if so, don't create the tag, just make the association.
+            if ($testTag) {
+                $pageTag = new PageTag;
+                $pageTag->tag_id = $testTag->tag_id;
+                $pageTag->page_id = $page->page_id;
+
+                $pageTag->save();
+            } else {
+                $tag = new Tag;
+                $pageTag = new PageTag;
+
+                $tag->name = trim($t);
+
+                $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
+
+                $pageTag->page_id = $page->page_id;
+
+                $pageTag->save();
+                $tag->save();
+            }
+        }
 
         foreach ($request->input('fields') as $field) {
             $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();

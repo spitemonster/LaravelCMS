@@ -15,7 +15,7 @@
             </div>
         </template>
         <template v-else-if="fieldType === 'media'">
-            <form action="/media" method="POST" enctype="multipart/form-data" >
+            <form action="/media" method="POST" enctype="multipart/form-data">
                 <input type="file" id="file" name="file" accept="image/png, image/jpeg" @change="uploadFile">
             </form>
             <input type="hidden" :data-fieldid="fieldId" name="file" :value="content" id="fileUrl">
@@ -24,190 +24,190 @@
     </div>
 </template>
 <script>
-    import Bus from '../../js/admin.js'
-    import Quill from 'quill'
-    import { ImageUpload } from 'quill-image-upload';
-    import axios from 'axios'
+import Bus from '../../js/admin.js'
+import Quill from 'quill'
+import { ImageUpload } from 'quill-image-upload';
+import axios from 'axios'
 
-    export default {
-        data () {
-            return {
-                invalid: false,
+export default {
+    data() {
+        return {
+            invalid: false,
+        }
+    },
+    computed: {
+        inputClass() {
+            if (this.fieldType === 'text') {
+                return 'input--text'
+            } else if (this.fieldType === 'wysiwyg') {
+                return 'input--wysiwyg'
+            } else if (this.fieldType === 'media') {
+                return 'input--media'
             }
+        }
+    },
+    props: ['fieldType', 'fieldName', 'fieldId', 'fieldRequired', 'content'],
+    methods: {
+        fieldContent(e) {
+            Bus.$emit('fieldFill', e.target)
         },
-        computed: {
-            inputClass() {
-                if (this.fieldType === 'text') {
-                    return 'input--text'
-                } else if (this.fieldType === 'wysiwyg') {
-                    return 'input--wysiwyg'
-                } else if (this.fieldType === 'media') {
-                    return 'input--media'
-                }
-            }
-        },
-        props: ['fieldType', 'fieldName', 'fieldId', 'fieldRequired', 'content'],
-        methods: {
-            fieldContent (e) {
-                Bus.$emit('fieldFill', e.target)
-            },
-        },
-        mounted () {
-            let input = document.createElement('input');
+    },
+    mounted() {
+        let input = document.createElement('input');
 
-            var toolbarOptions = [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'script': 'sub'}, { 'script': 'super' }],
-                [{ 'indent': '-1'}, { 'indent': '+1' }],
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                [{ 'font': [] }],
-                [{ 'align': [] }],
-                ['link', 'image'],
-                ['clean']
-            ];
+        var toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+            ['link', 'image'],
+            ['clean']
+        ];
 
-            if (this.fieldType === 'wysiwyg') {
-                Quill.register('modules/imageUpload', ImageUpload);
+        if (this.fieldType === 'wysiwyg') {
+            Quill.register('modules/imageUpload', ImageUpload);
 
-                var editor = new Quill('#quillEditor', {
-                    debug: 'warn',
-                    modules: {
-                        toolbar: toolbarOptions,
-                        imageUpload: {
-                            url: '/media',
-                            method: 'POST',
-                            name: 'file',
-                            headers: {},
-                            customUploader: (file, next) => {
-                                // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
-                                let formData = new FormData();
-                                let imageFile = file
-                                let url;
+            var editor = new Quill('#quillEditor', {
+                debug: 'warn',
+                modules: {
+                    toolbar: toolbarOptions,
+                    imageUpload: {
+                        url: '/media',
+                        method: 'POST',
+                        name: 'file',
+                        headers: {},
+                        customUploader: (file, next) => {
+                            // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
+                            let formData = new FormData();
+                            let imageFile = file
+                            let url;
+                            formData.append('file', imageFile)
 
-                                console.log(this.$route.params.page_id);
-                                formData.append('file', imageFile)
+                            axios.post('/media', formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            }).then((res) => {
+                                let growlerData = {
+                                    mode: res.data.status,
+                                    message: res.data.message
+                                }
 
-                                axios.post('/media', formData, {
-                                    headers: {
-                                      'Content-Type': 'multipart/form-data'
-                                    }
-                                }).then((res) => {
-                                    let growlerData = {
-                                        mode: res.data.status,
-                                        message: res.data.message
-                                    }
+                                Bus.$emit('growl', growlerData);
+                                url = res.data.url
+                                next(url);
+                            }).then(() => {
+                                let box = this.$el.querySelector('.image-details')
+                                let media = box.querySelector("input[name='img-alt']")
+                                let width = box.querySelector("input[name='img-width']")
+                                let height = box.querySelector("input[name='img-height']")
+                                let targetImg = this.$el.querySelector(`img[src="${url}"]`)
 
-                                    Bus.$emit('growl', growlerData);
-                                    url = res.data.url
-                                    next(url);
-                                }).then(() => {
-                                    let box = this.$el.querySelector('.image-details')
-                                    let media = box.querySelector("input[name='img-alt']")
-                                    let width = box.querySelector("input[name='img-width']")
-                                    let height = box.querySelector("input[name='img-height']")
-                                    let targetImg = this.$el.querySelector(`img[src="${url}"]`)
+                                targetImg.classList.add('selected-image');
+                                box.classList.add('active')
 
-                                    targetImg.classList.add('selected-image');
-                                    box.classList.add('active')
-
-                                    width.value = targetImg.offsetWidth
-                                    height.value = targetImg.offsetHeight
-                                })
-                            },
-                            callbackOK: (serverResponse, next) => {
-                                next(serverResponse)
-                            },
-                            callbackKO: serverError => {
-                                alert(serverError)
-                            },
-                            checkBeforeSend: (file, next) => {
-                                next(file)
-                            }
+                                width.value = targetImg.offsetWidth
+                                height.value = targetImg.offsetHeight
+                            })
+                        },
+                        callbackOK: (serverResponse, next) => {
+                            next(serverResponse)
+                        },
+                        callbackKO: serverError => {
+                            alert(serverError)
+                        },
+                        checkBeforeSend: (file, next) => {
+                            next(file)
                         }
-                    },
-                    theme: 'snow'
-                });
+                    }
+                },
+                theme: 'snow'
+            });
 
-                editor.on('text-change', (delta, oldDelta, source) => {
-                    // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
-                    let content = document.querySelector('.ql-editor').innerHTML
+            editor.on('text-change', (delta, oldDelta, source) => {
+                // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
+                let content = document.querySelector('.ql-editor').innerHTML
 
-                    input.dataset.fieldid = this.fieldId
-                    input.value = content
+                input.dataset.fieldid = this.fieldId
+                input.value = content
 
-                    Bus.$emit('fieldFill', input)
-                })
+                Bus.$emit('fieldFill', input)
+            })
+        }
+
+        Bus.$on('invalidField', (fieldId) => {
+            if (this.fieldId === fieldId) {
+                this.invalid = true;
             }
+        })
 
-            Bus.$on('invalidField', (fieldId) => {
-                if (this.fieldId === fieldId) {
-                    this.invalid = true;
+        if (this.fieldType === 'wysiwyg') {
+            let q = this.$el.querySelector('.ql-editor')
+            let qimg = q.querySelectorAll('img')
+            let box = document.querySelector('.image-details')
+            let media = box.querySelector("input[name='img-alt']")
+            let width = box.querySelector("input[name='img-width']")
+            let height = box.querySelector("input[name='img-height']")
+
+            q.addEventListener('click', (e) => {
+                let t = e.target
+                if (t.tagName === 'IMG') {
+
+                    let selected = document.querySelectorAll('.selected-image');
+
+                    selected.forEach((image) => {
+                        image.classList.remove('selected-image');
+                    });
+
+                    t.classList.add('selected-image');
+
+                    box.classList.add('active');
+
+                    media.value = document.querySelector('.selected-image').getAttribute('alt')
+                    width.value = document.querySelector('.selected-image').offsetWidth
+                    height.value = document.querySelector('.selected-image').offsetHeight
                 }
             })
 
-            if (this.fieldType === 'wysiwyg') {
-                let q = this.$el.querySelector('.ql-editor')
-                let qimg = q.querySelectorAll('img')
-                let box = document.querySelector('.image-details')
-                let media = box.querySelector("input[name='img-alt']")
-                let width = box.querySelector("input[name='img-width']")
-                let height = box.querySelector("input[name='img-height']")
+            media.addEventListener('change', () => {
+                let targetImg = document.querySelector('.selected-image');
 
-                q.addEventListener('click', (e) => {
-                    let t = e.target
-                    if (t.tagName === 'IMG') {
+                targetImg.setAttribute('alt', media.value);
+            })
 
-                        let selected = document.querySelectorAll('.selected-image');
+            media.addEventListener('blur', () => {
+                box.classList.remove('active');
+            })
 
-                        selected.forEach((image) => {
-                            image.classList.remove('selected-image');
-                        });
+            width.addEventListener('change', () => {
+                let targetImg = document.querySelector('.selected-image')
 
-                        t.classList.add('selected-image');
+                targetImg.setAttribute('width', width.value)
+                height.value = targetImg.offsetHeight
+            })
 
-                        box.classList.add('active');
+            height.addEventListener('change', () => {
+                let targetImg = document.querySelector('.selected-image')
 
-                        media.value = document.querySelector('.selected-image').getAttribute('alt')
-                        width.value = document.querySelector('.selected-image').offsetWidth
-                        height.value = document.querySelector('.selected-image').offsetHeight
-                    }
-                })
-
-                media.addEventListener('change', () => {
-                    let targetImg = document.querySelector('.selected-image');
-
-                    targetImg.setAttribute('alt', media.value);
-                })
-
-                media.addEventListener('blur', () => {
-                    box.classList.remove('active');
-                })
-
-                width.addEventListener('change', () => {
-                    let targetImg = document.querySelector('.selected-image')
-
-                    targetImg.setAttribute('width', width.value)
-                    height.value = targetImg.offsetHeight
-                })
-
-                height.addEventListener('change', () => {
-                    let targetImg = document.querySelector('.selected-image')
-
-                    targetImg.setAttribute('height', height.value)
-                    width.value = targetImg.offsetWidth
-                })
-            }
+                targetImg.setAttribute('height', height.value)
+                width.value = targetImg.offsetWidth
+            })
         }
     }
+}
+
 </script>
 <style lang="css">
 .err {
     border: 2px solid red;
 }
 
-.ql-editor img, p {
+.ql-editor img,
+p {
     position: relative;
 }
 
@@ -229,4 +229,5 @@
     box-sizing: content-box;
     border: 2px solid slateblue;
 }
+
 </style>

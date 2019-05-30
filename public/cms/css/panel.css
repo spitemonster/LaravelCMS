@@ -793,6 +793,38 @@ a:hover {
   justify-content: space-between;
 }
 
+.page-card__children-wrap {
+  position: relative;
+  margin-top: 1rem;
+  margin-left: 2rem;
+}
+
+.page-card__children-wrap summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.page-card__children-wrap summary::before {
+  content: "+";
+  position: absolute;
+  left: -1rem;
+}
+
+.page-card__children-wrap[open] summary::before {
+  content: "-";
+}
+
+.page-card__child {
+  position: relative;
+  width: 25rem;
+}
+
+.page-card__child::before {
+  content: "\2EA";
+  position: relative;
+  left: 0;
+}
+
 .add-field {
   width: 960px;
   display: flex;

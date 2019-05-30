@@ -32,4 +32,8 @@ class Page extends Model
     {
         return $this->belongsTo(User::class, 'updated_user_id', 'user_id')->select(['user_id', 'name']);;
     }
+
+    public function tags() {
+        return $this->hasManyThrough(Tag::class, PageTag::class, 'page_id', 'tag_id', 'page_id', 'tag_id');
+    }
 }

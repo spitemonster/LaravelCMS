@@ -32,7 +32,8 @@ a {
         outline: none;
     }
 
-    &:focus, &:hover {
+    &:focus,
+    &:hover {
         color: darken($main-accent, 20%);
     }
 }
@@ -74,7 +75,8 @@ a {
                 }
             }
 
-            &::before, &::after {
+            &::before,
+            &::after {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -174,6 +176,43 @@ a {
         display: flex;
         justify-content: space-between;
     }
+
+    &__children-wrap {
+        position: relative;
+        margin-top: 1rem;
+        margin-left: 2rem;
+
+        summary {
+            cursor: pointer;
+            list-style: none;
+
+            &::before {
+                content: "+";
+                position: absolute;
+                left: -1rem;
+            }
+        }
+
+        &[open] {
+            summary {
+
+                &::before {
+                    content: "-";
+                }
+            }
+        }
+    }
+
+    &__child {
+        position: relative;
+        width: 25rem;
+
+        &::before {
+            content: "˪";
+            position: relative;
+            left: 0;
+        }
+    }
 }
 
 .add-field {
@@ -182,7 +221,7 @@ a {
     align-items: center;
 }
 
-fieldset + * {
+fieldset+* {
     margin-top: 0 !important; // margin collapse for some reason not working, so overriding
 }
 
@@ -211,7 +250,20 @@ fieldset + * {
         color: $main-accent;
     }
 
-    .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+    .ql-snow.ql-toolbar button:hover,
+    .ql-snow .ql-toolbar button:hover,
+    .ql-snow.ql-toolbar button:focus,
+    .ql-snow .ql-toolbar button:focus,
+    .ql-snow.ql-toolbar button.ql-active,
+    .ql-snow .ql-toolbar button.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-label:hover,
+    .ql-snow .ql-toolbar .ql-picker-label:hover,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-item:hover,
+    .ql-snow .ql-toolbar .ql-picker-item:hover,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
         color: #dark-accent;
     }
 }
