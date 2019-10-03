@@ -12,7 +12,15 @@ class Tag extends Model
         return $this->hasMany(PageTag::class, 'tag_id', 'tag_id');
     }
 
-    public function page() {
-        return $this->hasMany(Page::class, 'page_id', 'page_id');
+    public function tags() {
+        return $this->hasManyThrough(Tag::class, PageTag::class, 'page_id', 'tag_id', 'page_id', 'tag_id');
+    }
+
+    public function pages() {
+        return $this->hasManyThrough(Page::class, PageTag::class, 'tag_id', 'page_id', 'tag_id', 'page_id');
+    }
+
+    public function page_ids() {
+
     }
 }

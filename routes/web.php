@@ -46,7 +46,7 @@ Route::get('/tag', function(Request $request) {
         Page::where('page_id', $PageTag->page_id)->get();
     }
 
-    return $tag->page;
+    return $tag;
 });
 
 Route::get('/mailable', function() {

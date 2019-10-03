@@ -8,6 +8,10 @@ class PageTag extends Model
 {
     protected $touches = ['page'];
 
+    public function pages() {
+        return $this->hasMany(Page::class, 'page_id', 'page_id');
+    }
+
     public function page() {
         return $this->hasMany(Page::class, 'page_id', 'page_id');
     }
