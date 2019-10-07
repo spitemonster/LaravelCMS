@@ -1,5 +1,5 @@
 <template>
-    <section class="view__pages">
+    <div class="page">
         <h1>View Pages</h1>
         <div class="page-card" v-for="page, k in pages" :key="k">
             <div class="page-card__details">
@@ -15,12 +15,12 @@
                         <h4>{{ child.title }}</h4> Last Updated: <span> {{ child.updated_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ child.updated_by.name }} </span>
                     </div>
                     <div class="page-card__utilities">
-                        <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(child.page_id)" class="delete">Delete Page</button>
+                        <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="alertDelete(page)" class="delete">Delete Page</button>
                     </div>
                 </div>
             </details>
         </div>
-    </section>
+    </div>
 </template>
 <script>
 import axios from 'axios'
@@ -41,7 +41,7 @@ export default {
         alertDelete(pageData) {
 
             let data = {
-                type: 'delete',
+                type: 'deletePage',
                 page: pageData
             }
 

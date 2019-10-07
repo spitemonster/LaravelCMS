@@ -133,3 +133,7 @@ textarea,
 [aria-disabled] {
     cursor: default;
 }
+
+p+p {
+    margin-top: 1rem;
+}

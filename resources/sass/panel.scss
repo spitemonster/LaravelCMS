@@ -24,6 +24,8 @@ html {
     background: $black;
 }
 
+.page {}
+
 a {
     color: $main-accent;
     text-decoration: none;
@@ -48,11 +50,14 @@ a {
     &__nav {
         display: block;
         height: 100%;
-        width: 200px;
         background: $black;
         left: 0;
         top: 0;
         flex-shrink: 0;
+
+        .open {
+            width: 200px;
+        }
 
         ul {
             display: flex;
@@ -130,6 +135,10 @@ a {
         }
     }
 
+    &__nav.open+&__body {
+        left: 200px;
+    }
+
     &__body {
         position: absolute;
         display: block;
@@ -137,11 +146,57 @@ a {
         height: 100%;
         width: 100%;
         background: $white;
-        left: 200px;
         top: 0;
         padding: 1rem;
         overflow: scroll;
         border-top-left-radius: 25px;
+        z-index: 2;
+        left: 0;
+        transition: left 240ms ease-in !important;
+
+        padding: 5rem;
+
+        &.animate {
+            animation: bounce 2s 1 ease;
+            // animation-iteration-count: 1;
+        }
+    }
+
+    &__nav-toggle {
+        content: "+";
+        position: absolute;
+        height: 100vh;
+        width: 25px;
+        left: 0;
+        color: white;
+        cursor: pointer;
+        opacity: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        z-index: 99;
+
+        /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#000000+0,000000+100&0.65+0,0+100;Neutral+Density */
+        background: -moz-linear-gradient(left, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+        /* FF3.6-15 */
+        background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+        /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+        /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a6000000', endColorstr='#00000000', GradientType=1);
+        /* IE6-9 */
+
+
+        transition: opacity 120ms ease-in-out;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__nav.open+&__nav-toggle {
+        content: "-";
     }
 }
 
@@ -266,5 +321,44 @@ fieldset+* {
     .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
     .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
         color: #dark-accent;
+    }
+}
+
+
+@keyframes bounce {
+    0% {
+        left: 0;
+    }
+
+    5% {
+        left: 80px;
+    }
+
+    20% {
+        left: 0;
+    }
+
+    30% {
+        left: 80px;
+    }
+
+    38% {
+        left: 0;
+    }
+
+    45% {
+        left: 55px;
+    }
+
+    50% {
+        left: 0;
+    }
+
+    55% {
+        left: 25px;
+    }
+
+    60% {
+        left: 0;
     }
 }

@@ -25,8 +25,10 @@
                 </li>
             </ul>
         </nav>
-        <div class="dashboard__body l-auto">
+        <div class="dashboard__body l-auto animate">
             <router-view></router-view>
+        </div>
+        <div class="dashboard__nav-toggle" @click="toggleNav">
         </div>
         <loggedOut v-if="logInError"></loggedOut>
         <growler :message="growlerMessage" :mode="growlerMode"></growler>
@@ -77,11 +79,19 @@ export default {
 
             this.alertData = alertData
 
-            console.log(alertData)
-
             setTimeout(() => {
                 alert.classList.add('show')
             }, 100)
+        },
+        toggleNav() {
+
+            let nav = document.querySelector('.dashboard__nav');
+
+            if (nav.classList.contains('open')) {
+                return nav.classList.remove('open')
+            }
+
+            return nav.classList.add('open');
         }
     },
     components: {

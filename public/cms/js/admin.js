@@ -1807,6 +1807,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -1843,10 +1845,18 @@ __webpack_require__.r(__webpack_exports__);
     alertDelete: function alertDelete(alertData) {
       var alert = document.querySelector('.alert');
       this.alertData = alertData;
-      console.log(alertData);
       setTimeout(function () {
         alert.classList.add('show');
       }, 100);
+    },
+    toggleNav: function toggleNav() {
+      var nav = document.querySelector('.dashboard__nav');
+
+      if (nav.classList.contains('open')) {
+        return nav.classList.remove('open');
+      }
+
+      return nav.classList.add('open');
     }
   },
   components: {
@@ -1990,6 +2000,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'alert',
@@ -2001,6 +2045,16 @@ __webpack_require__.r(__webpack_exports__);
     deletePage: function deletePage() {
       var pageID = this.alertData.page.page_id;
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deletePage', pageID);
+      this.closeAlert();
+    },
+    deleteUser: function deleteUser() {
+      var userID = this.alertData.user.user_id;
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteUser', userID);
+      this.closeAlert();
+    },
+    deleteField: function deleteField() {
+      var fieldID = this.alertData.field;
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteField', fieldID);
       this.closeAlert();
     },
     closeAlert: function closeAlert() {
@@ -2064,6 +2118,13 @@ __webpack_require__.r(__webpack_exports__);
         field: this.field,
         name: this.fieldName
       });
+    },
+    alertDelete: function alertDelete(field) {
+      var fieldData = {
+        type: 'deleteField',
+        field: field
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fieldData);
     }
   },
   mounted: function mounted() {
@@ -2408,23 +2469,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -2647,9 +2691,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 
 
@@ -2742,7 +2783,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2778,6 +2818,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_inputField_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/inputField.vue */ "./resources/vue/components/inputField.vue");
 /* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
+//
 //
 //
 //
@@ -3011,10 +3052,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -3023,7 +3060,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       templateName: '',
-      fields: []
+      fields: [],
+      deleteFields: []
     };
   },
   props: [],
@@ -3036,6 +3074,7 @@ __webpack_require__.r(__webpack_exports__);
       templateData.template_id = this.$route.params.template_id;
       templateData.name = this.templateName;
       templateData.fields = this.fields;
+      templateData.deleteFields = this.deleteFields;
       _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('updateTemplate', templateData);
     },
     addField: function addField() {
@@ -3043,7 +3082,8 @@ __webpack_require__.r(__webpack_exports__);
       this.fields.push({
         name: '',
         required: false,
-        type: sel.value
+        type: sel.value,
+        field_id: null
       });
     }
   },
@@ -3073,6 +3113,8 @@ __webpack_require__.r(__webpack_exports__);
       _this2.fields = _this2.fields.filter(function (field) {
         return field !== targetField;
       });
+
+      _this2.deleteFields.push(targetField.field_id);
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('requireField', function (targetField) {
       _this2.fields.forEach(function (field) {
@@ -3145,7 +3187,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     alertDelete: function alertDelete(pageData) {
       var data = {
-        type: 'delete',
+        type: 'deletePage',
         page: pageData
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', data);
@@ -3188,6 +3230,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3273,6 +3322,13 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteUser: function deleteUser(user_id) {
       _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('deleteUser', user_id);
+    },
+    alertDelete: function alertDelete(userData) {
+      var data = {
+        type: 'deleteUser',
+        user: userData
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', data);
     }
   },
   beforeCreate: function beforeCreate() {
@@ -20845,10 +20901,15 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "dashboard__body l-auto" },
+        { staticClass: "dashboard__body l-auto animate" },
         [_c("router-view")],
         1
       ),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "dashboard__nav-toggle",
+        on: { click: _vm.toggleNav }
+      }),
       _vm._v(" "),
       _vm.logInError ? _c("loggedOut") : _vm._e(),
       _vm._v(" "),
@@ -20896,9 +20957,33 @@ var render = function() {
     "div",
     { staticClass: "alert" },
     [
-      _vm.alertData.type === "delete"
+      _vm.alertData.type === "deletePage"
         ? [
-            _c("p", [
+            _c("div", { staticClass: "alert__warning" }, [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "24",
+                    height: "24",
+                    viewBox: "0 0 24 24"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("div")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "alert__warning-message" }, [
               _vm._v(
                 "This will delete the page, its history and all its contents permanently."
               )
@@ -20906,7 +20991,7 @@ var render = function() {
             _vm._v(" "),
             _c("h3", [_vm._v("Are you sure?")]),
             _vm._v(" "),
-            _c("div", [
+            _c("div", { staticClass: "alert__buttons" }, [
               _c(
                 "button",
                 {
@@ -20923,6 +21008,131 @@ var render = function() {
               _c(
                 "button",
                 {
+                  staticClass: "affirm",
+                  on: {
+                    click: function($event) {
+                      return _vm.closeAlert()
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              )
+            ])
+          ]
+        : _vm.alertData.type === "deleteUser"
+        ? [
+            _c("div", { staticClass: "alert__warning" }, [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "24",
+                    height: "24",
+                    viewBox: "0 0 24 24"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("div")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "alert__warning-message" }, [
+              _vm._v(
+                "This will delete the user, its history and all its contents permanently."
+              )
+            ]),
+            _vm._v(" "),
+            _c("h3", [_vm._v("Are you sure?")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "alert__buttons" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "delete",
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteUser()
+                    }
+                  }
+                },
+                [_vm._v("Delete")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "affirm",
+                  on: {
+                    click: function($event) {
+                      return _vm.closeAlert()
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              )
+            ])
+          ]
+        : _vm.alertData.type === "deleteField"
+        ? [
+            _c("div", { staticClass: "alert__warning" }, [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "24",
+                    height: "24",
+                    viewBox: "0 0 24 24"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("div")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "alert__warning-message" }, [
+              _vm._v(
+                "WARNING: This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template."
+              )
+            ]),
+            _vm._v(" "),
+            _c("h3", [_vm._v("Are you sure?")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "alert__buttons" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "delete",
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteField()
+                    }
+                  }
+                },
+                [_vm._v("Delete")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "affirm",
                   on: {
                     click: function($event) {
                       return _vm.closeAlert()
@@ -21044,7 +21254,14 @@ var render = function() {
       _vm.deletable
         ? _c(
             "button",
-            { staticClass: "delete", on: { click: _vm.deleteField } },
+            {
+              staticClass: "delete",
+              on: {
+                click: function($event) {
+                  return _vm.alertDelete(_vm.field)
+                }
+              }
+            },
             [_vm._v("Delete Field")]
           )
         : _vm._e()
@@ -21274,7 +21491,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "page" }, [
     _c("h1", [_vm._v("Create Page")]),
     _vm._v(" "),
     _c("input", {
@@ -21412,15 +21629,6 @@ var render = function() {
             })
           }),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary btn--no-margin",
-              on: { click: _vm.createPage }
-            },
-            [_vm._v("Create Page")]
-          ),
-          _vm._v(" "),
           _c("fieldset", [
             _c("input", {
               directives: [
@@ -21446,7 +21654,16 @@ var render = function() {
             _c("label", { attrs: { for: "tags" } }, [
               _vm._v("Tags (Comma Separated)")
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary btn--no-margin",
+              on: { click: _vm.createPage }
+            },
+            [_vm._v("Create Page")]
+          )
         ],
         2
       ),
@@ -21462,7 +21679,7 @@ var render = function() {
                 expression: "menu"
               }
             ],
-            attrs: { type: "checkbox", name: "menu", id: "showInMenu" },
+            attrs: { type: "checkbox", id: "showInMenu" },
             domProps: {
               checked: Array.isArray(_vm.menu)
                 ? _vm._i(_vm.menu, null) > -1
@@ -21489,9 +21706,11 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _c("label", { attrs: { for: "showInMenu" } }, [
-            _vm._v("Show in Menu?")
-          ])
+          _c(
+            "label",
+            { staticClass: "checkbox", attrs: { for: "showInMenu" } },
+            [_vm._v("Show in Menu?")]
+          )
         ]),
         _vm._v(" "),
         _c("fieldset", [
@@ -21547,7 +21766,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "section",
+    "div",
+    { staticClass: "page" },
     [
       _vm._m(0),
       _vm._v(" "),
@@ -21635,7 +21855,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "page" }, [
     _c("h1", [_vm._v("Dashboard")]),
     _vm._v(" "),
     _c("h3", [_vm._v("Welcome")]),
@@ -21675,6 +21895,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "page" },
     [
       !_vm.pageLoaded ? [_c("p", [_vm._v("Loading")])] : _vm._e(),
       _vm._v(" "),
@@ -21742,15 +21963,6 @@ var render = function() {
                     })
                   }),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary btn--no-margin",
-                      on: { click: _vm.savePage }
-                    },
-                    [_vm._v("Save Page")]
-                  ),
-                  _vm._v(" "),
                   _c("fieldset", [
                     _c("input", {
                       directives: [
@@ -21776,7 +21988,16 @@ var render = function() {
                     _c("label", { attrs: { for: "tags" } }, [
                       _vm._v("Tags (Comma Separated)")
                     ])
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary btn--no-margin",
+                      on: { click: _vm.savePage }
+                    },
+                    [_vm._v("Save Page")]
+                  )
                 ],
                 2
               ),
@@ -21804,49 +22025,52 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  _c("label", [
-                    _vm._v("Show in Menu? "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.page.menu,
-                          expression: "page.menu"
-                        }
-                      ],
-                      attrs: { type: "checkbox" },
-                      domProps: {
-                        checked: Array.isArray(_vm.page.menu)
-                          ? _vm._i(_vm.page.menu, null) > -1
-                          : _vm.page.menu
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.page.menu,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = null,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 &&
-                                _vm.$set(_vm.page, "menu", $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                _vm.$set(
-                                  _vm.page,
-                                  "menu",
-                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                                )
-                            }
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.page.menu,
+                        expression: "page.menu"
+                      }
+                    ],
+                    attrs: { type: "checkbox", id: "showInMenu" },
+                    domProps: {
+                      checked: Array.isArray(_vm.page.menu)
+                        ? _vm._i(_vm.page.menu, null) > -1
+                        : _vm.page.menu
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.page.menu,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = null,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 &&
+                              _vm.$set(_vm.page, "menu", $$a.concat([$$v]))
                           } else {
-                            _vm.$set(_vm.page, "menu", $$c)
+                            $$i > -1 &&
+                              _vm.$set(
+                                _vm.page,
+                                "menu",
+                                $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                              )
                           }
+                        } else {
+                          _vm.$set(_vm.page, "menu", $$c)
                         }
                       }
-                    })
-                  ]),
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    { staticClass: "checkbox", attrs: { for: "showInMenu" } },
+                    [_vm._v("Show in Menu?")]
+                  ),
                   _vm._v(" "),
                   _c("fieldset", [
                     _c("textarea", {
@@ -21897,6 +22121,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "page" },
     [
       _c("h2", [_vm._v("Edit Template")]),
       _vm._v(" "),
@@ -21947,7 +22172,7 @@ var render = function() {
       _vm._l(_vm.fields, function(field, i) {
         return _c("fieldCard", {
           key: field.name,
-          attrs: { field: field, deletable: false, index: i }
+          attrs: { field: field, deletable: true, index: i }
         })
       }),
       _vm._v(" "),
@@ -22001,8 +22226,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "section",
-    { staticClass: "view__pages" },
+    "div",
+    { staticClass: "page" },
     [
       _c("h1", [_vm._v("View Pages")]),
       _vm._v(" "),
@@ -22137,7 +22362,7 @@ var render = function() {
                               staticClass: "delete",
                               on: {
                                 click: function($event) {
-                                  return _vm.deletePage(child.page_id)
+                                  return _vm.alertDelete(page)
                                 }
                               }
                             },
@@ -22182,52 +22407,61 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "page" },
     [
-      _c(
-        "h1",
-        [
-          _vm._v("View Templates "),
-          _c(
-            "router-link",
-            { attrs: { tag: "span", to: "/admin/create/template" } },
-            [_c("a", [_vm._v("Add New")])]
-          )
-        ],
-        1
-      ),
+      _c("h1", [_vm._v("View Templates")]),
       _vm._v(" "),
       _vm._l(_vm.templates, function(template, k) {
-        return _c(
-          "h3",
-          [
-            _vm._v(" " + _vm._s(template.name) + " "),
-            _c(
-              "router-link",
-              {
-                attrs: {
-                  tag: "span",
-                  to: "/admin/template/" + template.template_id + "/edit"
-                }
-              },
-              [
-                _c("a", [_vm._v("Edit Template")]),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    on: {
-                      click: function($event) {
-                        return _vm.deleteTemplate(template.template_id)
-                      }
+        return _c("div", { key: k, staticClass: "page-card" }, [
+          _c("div", { staticClass: "page-card__details" }, [
+            _c("h3", [_vm._v(_vm._s(template.name))]),
+            _vm._v(" Last Updated: "),
+            _c("span", [
+              _vm._v(
+                " " +
+                  _vm._s(
+                    _vm._f("moment")(template.created_at, "dddd, MMMM Do YYYY")
+                  ) +
+                  " "
+              )
+            ]),
+            _vm._v(" by "),
+            _c("span")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "page-card__utilities" },
+            [
+              _c(
+                "router-link",
+                {
+                  attrs: {
+                    tag: "span",
+                    to: "/admin/template/" + template.template_id + "/edit"
+                  }
+                },
+                [_c("a", [_vm._v("Edit Template")])]
+              ),
+              _c(
+                "button",
+                {
+                  staticClass: "delete",
+                  on: {
+                    click: function($event) {
+                      return _vm.alertDelete(template)
                     }
-                  },
-                  [_vm._v("Delete")]
-                )
-              ]
-            )
-          ],
-          1
-        )
+                  }
+                },
+                [
+                  _vm._v("Delete Template"),
+                  _c("i", { staticClass: "la la-trash" })
+                ]
+              )
+            ],
+            1
+          )
+        ])
       })
     ],
     2
@@ -22257,7 +22491,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "section",
-    { staticClass: "view__users" },
+    { staticClass: "page" },
     [
       _c("h1", [_vm._v("View Users")]),
       _vm._v(" "),
@@ -22284,7 +22518,7 @@ var render = function() {
                       staticClass: "delete",
                       on: {
                         click: function($event) {
-                          return _vm.deleteUser(user.user_id)
+                          return _vm.alertDelete(user)
                         }
                       }
                     },

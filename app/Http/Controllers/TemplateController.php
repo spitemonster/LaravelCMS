@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Storage;
 use Uuid;
+use Auth;
 
 class TemplateController extends Controller
 {
@@ -96,19 +97,34 @@ class TemplateController extends Controller
 
         $template->name = $request->input('name');
 
+        $template->updated_user_id = Auth::user()->user_id;
+
+        if (!$template->user_id) {
+            $template->user_id = $template->updated_user_id;
+        }
+
         foreach ($request->input('fields') as $field) {
-            $f = Field::where('field_id', $field['field_id'])->first();
+
+                $f = Field::where('field_id', $field['field_id'])->first();
 
             if(!$f) {
                 $f = new Field;
                 $f->type = $field['type'];
-                $f->field_id = $field['field_id'];
+                $f->field_id = $field['field_id'] ? $field['field_id'] : Uuid::generate(4)->string;;
                 $f->template_id = $request->query('template_id');
             }
 
             $f->name = $field['name'];
             $f->required = $field['required'];
             $f->save();
+        }
+
+        if ($request->deleteFields) {
+            foreach($request->deleteFields as $dField) {
+                $f = Field::where('field_id', $dField);
+
+                $f->delete();
+            }
         }
 
         $template->save();

@@ -142,6 +142,10 @@ textarea,
   cursor: default;
 }
 
+p + p {
+  margin-top: 1rem;
+}
+
 [class^=l-] {
   display: flex;
   flex-wrap: nowrap;
@@ -295,16 +299,113 @@ textarea,
 
 .alert {
   position: absolute;
-  height: 200px;
-  width: 350px;
+  min-height: 300px;
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: white;
-  top: 100%;
-  left: 100%;
+  padding: 2rem;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  z-index: 99;
+  left: 100vw;
+  top: calc(50vh - 300px);
+  transition: left 120ms ease;
 }
 
 .alert.show {
-  top: calc(50% - 100px);
-  left: calc(50% - 175px);
+  left: calc(50vw - 250px);
+}
+
+.alert p,
+.alert h3 {
+  margin-bottom: 1rem;
+}
+
+.alert__warning-message {
+  max-width: 50ch;
+  text-align: center;
+}
+
+.alert__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 30%;
+}
+
+.alert__warning {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  color: #de6b48;
+  font-weight: bold;
+  height: 150px;
+  width: 150px;
+  margin: 2rem;
+}
+
+.alert__warning svg {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  fill: #de6b48;
+}
+
+.alert__warning div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 150px;
+  width: 150px;
+  border: 5px solid #de6b48;
+  border-radius: 50%;
+  -webkit-animation: pulse 1.5s infinite ease-in-out;
+          animation: pulse 1.5s infinite ease-in-out;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    -webkit-transform: scale 1.1;
+            transform: scale 1.1;
+    opacity: 0.3;
+  }
+
+  100% {
+    -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    -webkit-transform: scale 1.1;
+            transform: scale 1.1;
+    opacity: 0.3;
+  }
+
+  100% {
+    -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+    opacity: 0;
+  }
 }
 
 .login {
@@ -347,6 +448,25 @@ p {
   font-size: 1rem;
 }
 
+button.affirm,
+button.delete {
+  background: none;
+  height: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid;
+  font-family: "PT Sans", sans-serif;
+  transition: all 120ms ease-in-out;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+
+button.affirm:hover,
+button.delete:hover {
+  color: #F6F6F2;
+}
+
 .btn,
 .btn-primary,
 .btn-small {
@@ -386,22 +506,21 @@ p {
 }
 
 button.delete {
-  background: none;
   color: #d7263d;
-  height: 1.5rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #d7263d;
-  font-family: "PT Sans", sans-serif;
-  transition: all 120ms ease-in-out;
-  padding: 0 0.5rem;
-  cursor: pointer;
+  border-color: #d7263d;
 }
 
 button.delete:hover {
   background: #d7263d;
-  color: #F6F6F2;
+}
+
+button.affirm {
+  color: #59a96a;
+  border-color: #59a96a;
+}
+
+button.affirm:hover {
+  background: #59a96a;
 }
 
 input[type=checkbox] {
@@ -412,7 +531,6 @@ input[type=checkbox] + label {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-left: 1rem;
   color: #3A4755;
   font-size: 1rem;
 }
@@ -440,7 +558,7 @@ fieldset {
   padding: 0;
   width: 100%;
   max-width: 960px;
-  margin: 1rem 0;
+  margin: 2rem 0;
 }
 
 fieldset label {
@@ -450,6 +568,7 @@ fieldset label {
   color: rgba(191, 104, 160, 0.5);
   font-size: 1.5rem;
   padding-left: 1rem;
+  transition: all 120ms linear;
 }
 
 fieldset input {
@@ -486,7 +605,9 @@ fieldset textarea:focus ~ label,
 fieldset textarea:focus-within ~ label,
 fieldset textarea.focus-within ~ label,
 fieldset textarea:valid ~ label {
-  display: none;
+  top: -1rem;
+  padding-left: 0;
+  font-size: 0.75rem;
 }
 
 .input--wysiwyg {
@@ -497,6 +618,7 @@ fieldset textarea:valid ~ label {
   font-family: sans-serif;
   width: 960px;
   position: relative;
+  margin: 2rem 0;
 }
 
 .input--text label {
@@ -509,10 +631,9 @@ fieldset textarea:valid ~ label {
 
 .input--text input {
   width: 100%;
-  height: 48px;
+  height: 2.5rem;
   font-size: 24px;
-  margin: 1rem 0;
-  padding: 1rem;
+  padding-left: 1rem;
   background: none;
   border: none;
   border-bottom: 1px solid #BF68A0;
@@ -522,7 +643,9 @@ fieldset textarea:valid ~ label {
 .input--text input:focus ~ label,
 .input--text input:focus-within ~ label,
 .input--text input.focus-within ~ label {
-  display: none;
+  top: -1rem;
+  left: 0;
+  font-size: 0.75rem;
 }
 
 .select-wrap {
@@ -687,11 +810,14 @@ a:hover {
 .dashboard__nav {
   display: block;
   height: 100%;
-  width: 200px;
   background: #3A4755;
   left: 0;
   top: 0;
   flex-shrink: 0;
+}
+
+.dashboard__nav .open {
+  width: 200px;
 }
 
 .dashboard__nav ul {
@@ -770,6 +896,10 @@ a:hover {
   z-index: 2;
 }
 
+.dashboard__nav.open + .dashboard__body {
+  left: 200px;
+}
+
 .dashboard__body {
   position: absolute;
   display: block;
@@ -777,11 +907,50 @@ a:hover {
   height: 100%;
   width: 100%;
   background: #F6F6F2;
-  left: 200px;
   top: 0;
   padding: 1rem;
   overflow: scroll;
   border-top-left-radius: 25px;
+  z-index: 2;
+  left: 0;
+  transition: left 240ms ease-in !important;
+  padding: 5rem;
+}
+
+.dashboard__body.animate {
+  -webkit-animation: bounce 2s 1 ease;
+          animation: bounce 2s 1 ease;
+}
+
+.dashboard__nav-toggle {
+  content: "+";
+  position: absolute;
+  height: 100vh;
+  width: 25px;
+  left: 0;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#000000+0,000000+100&0.65+0,0+100;Neutral+Density */
+  /* FF3.6-15 */
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#a6000000", endColorstr="#00000000", GradientType=1);
+  /* IE6-9 */
+  transition: opacity 120ms ease-in-out;
+}
+
+.dashboard__nav-toggle:hover {
+  opacity: 1;
+}
+
+.dashboard__nav.open + .dashboard__nav-toggle {
+  content: "-";
 }
 
 .ql-snow {
@@ -920,5 +1089,81 @@ fieldset + * {
 .ql-toolbar.ql-snow .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
 .ql-toolbar.ql-snow .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
   color: #dark-accent;
+}
+
+@-webkit-keyframes bounce {
+  0% {
+    left: 0;
+  }
+
+  5% {
+    left: 80px;
+  }
+
+  20% {
+    left: 0;
+  }
+
+  30% {
+    left: 80px;
+  }
+
+  38% {
+    left: 0;
+  }
+
+  45% {
+    left: 55px;
+  }
+
+  50% {
+    left: 0;
+  }
+
+  55% {
+    left: 25px;
+  }
+
+  60% {
+    left: 0;
+  }
+}
+
+@keyframes bounce {
+  0% {
+    left: 0;
+  }
+
+  5% {
+    left: 80px;
+  }
+
+  20% {
+    left: 0;
+  }
+
+  30% {
+    left: 80px;
+  }
+
+  38% {
+    left: 0;
+  }
+
+  45% {
+    left: 55px;
+  }
+
+  50% {
+    left: 0;
+  }
+
+  55% {
+    left: 25px;
+  }
+
+  60% {
+    left: 0;
+  }
 }
 

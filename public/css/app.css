@@ -140,6 +140,10 @@ textarea,
   cursor: default;
 }
 
+p + p {
+  margin-top: 1rem;
+}
+
 [class^=l-] {
   display: flex;
   flex-wrap: nowrap;

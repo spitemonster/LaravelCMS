@@ -1,3 +1,20 @@
+%btn-default {
+    background: none;
+    height: 1.5rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
+    font-family: 'PT Sans', sans-serif;
+    transition: all 120ms ease-in-out;
+    padding: 0 .5rem;
+    cursor: pointer;
+
+    &:hover {
+        color: $white;
+    }
+}
+
 .btn {
     display: inline-flex;
     justify-content: center;
@@ -37,20 +54,22 @@
 }
 
 button.delete {
-    background: none;
+    @extend %btn-default;
     color: $red;
-    height: 1.5rem;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid $red;
-    font-family: 'PT Sans', sans-serif;
-    transition: all 120ms ease-in-out;
-    padding: 0 .5rem;
-    cursor: pointer;
+    border-color: $red;
 
     &:hover {
         background: $red;
-        color: $white;
+    }
+}
+
+button.affirm {
+    @extend %btn-default;
+
+    color: $green;
+    border-color: $green;
+
+    &:hover {
+        background: $green;
     }
 }

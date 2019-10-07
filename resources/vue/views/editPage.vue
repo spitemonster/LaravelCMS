@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page">
         <template v-if="!pageLoaded">
             <p>Loading</p>
         </template>
@@ -22,16 +22,17 @@
             <div class="content--wrapper">
                 <div class="content" id="tabContentOne">
                     <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
-                    <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
                     <fieldset>
                         <input type="text" id="tags" v-model="tags" required />
                         <label for="tags">Tags (Comma Separated)</label>
                     </fieldset>
+                    <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
                 </div>
                 <div class="content" id="tabContentTwo">
                     <p>Created By: {{ page.created_by ? page.created_by.name : 'User Deleted' }}</p>
                     <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
-                    <label>Show in Menu? <input type="checkbox" v-model="page.menu" /></label>
+                    <input type="checkbox" v-model="page.menu" id="showInMenu" />
+                    <label class="checkbox" for="showInMenu">Show in Menu?</label>
                     <fieldset>
                         <textarea id="pageDescription" :value="page.description" required></textarea>
                         <label for="pageDescription">Meta Description</label>

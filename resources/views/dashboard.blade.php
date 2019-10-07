@@ -6,7 +6,7 @@
     {{-- <link rel="preload" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'"> --}}
 
     <link rel="preload" type="text/css" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
-    <link rel="preload" type="text/css" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css">
 
     <link href="/fonts/PTSans.ttc" as="font" type="font/woff2" crossorigin>
 

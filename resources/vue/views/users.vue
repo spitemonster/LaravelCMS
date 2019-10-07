@@ -1,5 +1,5 @@
 <template>
-    <section class="view__users">
+    <section class="page">
         <h1>View Users</h1>
         <div v-for="user in users" :class="[user.api_token === api_token ? 'fart' : '']">
             <h3>{{ user.name }}</h3>
@@ -8,7 +8,7 @@
             <p>User ID: {{ user.user_id }}</p>
             <p>API Token: {{ user.api_token }}</p>
             <template v-if="user.api_token === api_token || superuser">
-                <button @click="deleteUser(user.user_id)" class="delete">Delete User</button>
+                <button @click="alertDelete(user)" class="delete">Delete User</button>
             </template>
         </div>
     </section>
@@ -32,6 +32,15 @@ export default {
     methods: {
         deleteUser(user_id) {
             Bus.$emit('deleteUser', user_id);
+        },
+        alertDelete(userData) {
+
+            let data = {
+                type: 'deleteUser',
+                user: userData
+            }
+
+            Bus.$emit('alertDelete', data)
         }
     },
     beforeCreate() {
