@@ -1972,6 +1972,8 @@ __webpack_require__.r(__webpack_exports__);
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_6__["default"].$on('alertDelete', function (data) {
       _this2.alertDelete(data);
+
+      console.log(data);
     });
   }
 });
@@ -2102,7 +2104,7 @@ __webpack_require__.r(__webpack_exports__);
       fieldType: this.field.type
     };
   },
-  props: ['field', 'deletable', 'index'],
+  props: ['field', 'deletable', 'index', 'pageCount'],
   methods: {
     deleteField: function deleteField() {
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteField', this.field);
@@ -2122,7 +2124,8 @@ __webpack_require__.r(__webpack_exports__);
     alertDelete: function alertDelete(field) {
       var fieldData = {
         type: 'deleteField',
-        field: field
+        field: field,
+        pageCount: this.pageCount
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fieldData);
     }
@@ -3096,7 +3099,7 @@ __webpack_require__.r(__webpack_exports__);
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/template/?template_id=".concat(this.$route.params.template_id)).then(function (res) {
       _this.fields = res.data.fields;
       _this.templateName = res.data.name;
-      console.log(_this.fields);
+      _this.pageCount = res.data.pages.length;
     });
   },
   mounted: function mounted() {
@@ -21109,7 +21112,9 @@ var render = function() {
             _vm._v(" "),
             _c("p", { staticClass: "alert__warning-message" }, [
               _vm._v(
-                "WARNING: This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template."
+                "WARNING: There are currently " +
+                  _vm._s(_vm.alertData.pageCount) +
+                  " pages using this template. This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template."
               )
             ]),
             _vm._v(" "),
@@ -22172,7 +22177,12 @@ var render = function() {
       _vm._l(_vm.fields, function(field, i) {
         return _c("fieldCard", {
           key: field.name,
-          attrs: { field: field, deletable: true, index: i }
+          attrs: {
+            field: field,
+            deletable: true,
+            pageCount: _vm.pageCount,
+            index: i
+          }
         })
       }),
       _vm._v(" "),

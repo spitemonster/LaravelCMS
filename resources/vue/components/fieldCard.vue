@@ -23,10 +23,10 @@ export default {
         return {
             fieldName: '',
             fieldRequired: this.field.required,
-            fieldType: this.field.type,
+            fieldType: this.field.type
         }
     },
-    props: ['field', 'deletable', 'index'],
+    props: ['field', 'deletable', 'index', 'pageCount'],
     methods: {
         deleteField() {
             Bus.$emit('deleteField', this.field)
@@ -40,7 +40,8 @@ export default {
         alertDelete(field) {
             let fieldData = {
                 type: 'deleteField',
-                field: field
+                field: field,
+                pageCount: this.pageCount
             }
 
             Bus.$emit('alertDelete', fieldData)

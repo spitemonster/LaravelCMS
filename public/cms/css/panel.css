@@ -326,6 +326,7 @@ p + p {
 .alert__warning-message {
   max-width: 50ch;
   text-align: center;
+  padding: 1rem;
 }
 
 .alert__buttons {
@@ -688,6 +689,11 @@ fieldset textarea:valid ~ label {
 }
 
 .select-wrap select:focus {
+  outline: none;
+}
+
+input:focus,
+select:focus {
   outline: none;
 }
 

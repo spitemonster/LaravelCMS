@@ -20,6 +20,7 @@ class TemplateController extends Controller
 
         $template->name = $request->input('template_name');
         $template->template_id = Uuid::generate(4)->string;
+        $template->user_id = $template->updated_user_id = Auth::user()->user_id;
 
         foreach ($request->input('template_fields') as $template_field) {
             $f = new Field;
@@ -56,7 +57,7 @@ class TemplateController extends Controller
         if ($request->query('template_id')) {
             $template_id = $request->query('template_id');
 
-            $template = Template::where('template_id', $template_id)->with('fields')->first();
+            $template = Template::where('template_id', $template_id)->with('fields')->with('pages')->first();
 
             return $template;
         }

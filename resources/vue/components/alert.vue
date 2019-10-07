@@ -35,7 +35,7 @@
                 <div>
                 </div>
             </div>
-            <p class="alert__warning-message">WARNING: This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template.</p>
+            <p class="alert__warning-message">WARNING: There are currently {{ alertData.pageCount }} pages using this template. This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template.</p>
             <h3>Are you sure?</h3>
             <div class="alert__buttons">
                 <button @click="deleteField()" class="delete">Delete</button>

@@ -15,6 +15,6 @@ class Template extends Model
 
     public function pages()
     {
-        return $this->hasMany(Page::class);
+        return $this->hasMany(Page::class, 'template_id', 'template_id');
     }
 }

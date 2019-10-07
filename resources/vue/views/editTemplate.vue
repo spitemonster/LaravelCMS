@@ -15,7 +15,7 @@
             </div>
             <button @click="addField" class="btn btn-small">Add Field</button>
         </div>
-        <fieldCard :field="field" v-for="field, i in fields" :key="field.name" :deletable="true" :index="i"></fieldCard>
+        <fieldCard :field="field" v-for="field, i in fields" :key="field.name" :deletable="true" :pageCount="pageCount" :index="i"></fieldCard>
         <button @click="saveTemplate" class="btn btn-primary btn--no-margin">Save Template</button>
     </div>
 </template>
@@ -59,8 +59,7 @@ export default {
             .then((res) => {
                 this.fields = res.data.fields
                 this.templateName = res.data.name
-
-                console.log(this.fields);
+                this.pageCount = res.data.pages.length
             })
     },
     mounted() {

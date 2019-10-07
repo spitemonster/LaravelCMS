@@ -210,6 +210,8 @@ export default {
 
         Bus.$on('alertDelete', data => {
             this.alertDelete(data);
+
+            console.log(data);
         })
     }
 }
