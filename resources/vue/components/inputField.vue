@@ -170,6 +170,11 @@ export default {
                     media.value = document.querySelector('.selected-image').getAttribute('alt')
                     width.value = document.querySelector('.selected-image').offsetWidth
                     height.value = document.querySelector('.selected-image').offsetHeight
+                } else {
+                    let selectedImage = document.querySelector('.selected-image')
+                    selectedImage.classList.remove('selected-image')
+
+                    box.classList.remove('active');
                 }
             })
 

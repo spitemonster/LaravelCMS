@@ -293,6 +293,20 @@ textarea,
   font-size: 3rem;
 }
 
+.alert {
+  position: absolute;
+  height: 200px;
+  width: 350px;
+  background: white;
+  top: 100%;
+  left: 100%;
+}
+
+.alert.show {
+  top: calc(50% - 100px);
+  left: calc(50% - 175px);
+}
+
 .login {
   display: flex;
   justify-content: center;
@@ -581,6 +595,14 @@ input[type=radio] {
 }
 
 #tabTwo:checked ~ label[for=tabTwo] {
+  background: #CA9CAB;
+}
+
+#tabThree:checked ~ .content--wrapper #tabContentThree {
+  display: block;
+}
+
+#tabThree:checked ~ label[for=tabThree] {
   background: #CA9CAB;
 }
 

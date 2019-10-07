@@ -6,7 +6,7 @@
                 <h3>{{ page.title }}</h3> Last Updated: <span> {{ page.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ page.updated_by.name }} </span>
             </div>
             <div class="page-card__utilities">
-                <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="deletePage(page.page_id)" class="delete">Delete Page <i class="la la-trash"></i></button>
+                <router-link tag="span" :to="'/admin/page/' + page.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="alertDelete(page)" class="delete">Delete Page <i class="la la-trash"></i></button>
             </div>
             <details v-if="page.children.length >= 1" class="page-card__children-wrap">
                 <summary>Show Children</summary>
@@ -37,6 +37,15 @@ export default {
     methods: {
         deletePage(pageId) {
             Bus.$emit('deletePage', pageId);
+        },
+        alertDelete(pageData) {
+
+            let data = {
+                type: 'delete',
+                page: pageData
+            }
+
+            Bus.$emit('alertDelete', data);
         }
     },
     beforeCreate() {

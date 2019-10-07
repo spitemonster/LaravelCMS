@@ -30,11 +30,13 @@
         </div>
         <loggedOut v-if="logInError"></loggedOut>
         <growler :message="growlerMessage" :mode="growlerMode"></growler>
+        <alert :alertData="alertData"></alert>
     </main>
 </template>
 <script>
 import fieldCard from './components/fieldCard.vue'
 import growler from './components/growler.vue'
+import alert from './components/alert.vue'
 import createTemplate from './views/createTemplate.vue'
 import loggedOut from './components/loggedOut.vue'
 import createPage from './views/createPage.vue'
@@ -48,9 +50,10 @@ export default {
         return {
             fields: [],
             logInError: false,
-            growlerMessage: '',
-            growlerMode: '',
-            user: {}
+            growlerMessage: null,
+            growlerMode: null,
+            user: {},
+            alertData: {}
         }
     },
     methods: {
@@ -68,6 +71,18 @@ export default {
                 growler.classList.remove('show')
             }, 5000)
         },
+
+        alertDelete(alertData) {
+            let alert = document.querySelector('.alert')
+
+            this.alertData = alertData
+
+            console.log(alertData)
+
+            setTimeout(() => {
+                alert.classList.add('show')
+            }, 100)
+        }
     },
     components: {
         fieldCard,
@@ -75,7 +90,8 @@ export default {
         createPage,
         router,
         loggedOut,
-        growler
+        growler,
+        alert
     },
     beforeMount() {
         axios.get('/user')
@@ -181,6 +197,10 @@ export default {
                     Bus.$emit('userDeleted', res.data.users)
                 })
         });
+
+        Bus.$on('alertDelete', data => {
+            this.alertDelete(data);
+        })
     }
 }
 

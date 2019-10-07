@@ -7,6 +7,7 @@
             <h1>Edit Page</h1>
             <input type="radio" name="tab" id="tabOne" checked>
             <input type="radio" name="tab" id="tabTwo">
+            <input type="radio" name="tab" id="tabThree">
             <fieldset>
                 <input type="text" id="pageName" :value="page.title" required />
                 <label for="pageName">Page Name</label>
@@ -17,6 +18,7 @@
             </fieldset>
             <label for="tabOne" class="tab">Page Content</label>
             <label for="tabTwo" class="tab">Page Details</label>
+            <label for="tabThree" class="tab">Page Analytics</label>
             <div class="content--wrapper">
                 <div class="content" id="tabContentOne">
                     <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
@@ -34,6 +36,9 @@
                         <textarea id="pageDescription" :value="page.description" required></textarea>
                         <label for="pageDescription">Meta Description</label>
                     </fieldset>
+                </div>
+                <div class="content" id="tabContentThree">
+                    <p>Views - {{ page.views }}</p>
                 </div>
             </div>
         </template>

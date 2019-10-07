@@ -155,29 +155,20 @@ class PageController extends Controller
             $t = trim($tg);
             // test if tag already exists
             $testTag = Tag::where('name', $t)->first();
-            $tagPages = null;
 
             // if so, don't create the tag, just make the association.
             if ($testTag) {
                 $testPageTag = PageTag::where([['page_id', $page->page_id], ['tag_id', $testTag->tag_id]])->first();
-                $tagPages = $testTag->pages;
-                $pageTag = new PageTag;
 
-                if ($testPageTag) {
-                    return;
+                if (!$testPageTag) {
+                    $pageTag = new PageTag;
+
+                    $pageTag->page_id = $page->page_id;
+                    $pageTag->tag_id = $testTag->tag_id;
+
+                    $pageTag->save();
                 }
 
-                $pageTag->page_id = $page->page_id;
-                $pageTag->tag_id = $testTag->tag_id;
-
-                $pageTag->save();
-
-            } elseif ($testTag) {
-                $pageTag = new PageTag;
-                $pageTag->tag_id = $testTag->tag_id;
-                $pageTag->page_id = $page->page_id;
-
-                $pageTag->save();
             } else {
                 $tag = new Tag;
                 $pageTag = new PageTag;

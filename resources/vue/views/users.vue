@@ -3,11 +3,12 @@
         <h1>View Users</h1>
         <div v-for="user in users" :class="[user.api_token === api_token ? 'fart' : '']">
             <h3>{{ user.name }}</h3>
+            <p v-if="superuser">Superuser</p>
             <p>Created: {{ user.created_at }}</p>
             <p>User ID: {{ user.user_id }}</p>
             <p>API Token: {{ user.api_token }}</p>
             <template v-if="user.api_token === api_token || superuser">
-                <button @click="deleteUser(user.user_id)">Delete User</button>
+                <button @click="deleteUser(user.user_id)" class="delete">Delete User</button>
             </template>
         </div>
     </section>

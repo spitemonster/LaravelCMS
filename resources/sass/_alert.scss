@@ -1,0 +1,16 @@
+.alert {
+    position: absolute;
+
+    height: 200px;
+    width: 350px;
+
+    background: white;
+
+    top: 100%;
+    left: 100%;
+
+    &.show {
+        top: calc(50% - 100px);
+        left: calc(50% - 175px);
+    }
+}

@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <title>Dashboard</title>
-    <link rel="preload" href="/cms/css/quill.css" as="style" onload="this.rel='stylesheet'">
-    <link rel="preload" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="/cms/css/quill.css" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
+    {{-- <link rel="preload" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'"> --}}
 
-    <link rel="preload" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" type="text/css" href="/cms/css/panel.css" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
+    <link rel="preload" type="text/css" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
 
-    <link rel="preload" href="/fonts/PTSans.ttc" as="font" type="font/woff2" crossorigin>
+    <link href="/fonts/PTSans.ttc" as="font" type="font/woff2" crossorigin>
 
     <noscript>
         <link rel="stylesheet" href="/css/quill.css">

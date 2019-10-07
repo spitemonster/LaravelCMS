@@ -16,24 +16,35 @@ input[type=radio] {
 
 #tabOne {
   &:checked {
-    & ~ .content--wrapper #tabContentOne {
+    &~.content--wrapper #tabContentOne {
       display: block;
     }
 
-    & ~ label[for=tabOne] {
+    &~label[for=tabOne] {
       background: $dark-accent;
     }
   }
 }
 
 #tabTwo {
-
   &:checked {
-    & ~ .content--wrapper #tabContentTwo {
+    &~.content--wrapper #tabContentTwo {
       display: block
     }
 
-    & ~ label[for=tabTwo] {
+    &~label[for=tabTwo] {
+      background: $dark-accent;
+    }
+  }
+}
+
+#tabThree {
+  &:checked {
+    &~.content--wrapper #tabContentThree {
+      display: block
+    }
+
+    &~label[for=tabThree] {
       background: $dark-accent;
     }
   }
