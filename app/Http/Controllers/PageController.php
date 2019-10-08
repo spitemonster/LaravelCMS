@@ -19,8 +19,13 @@ class PageController extends Controller
     {
         $page = Page::where('url', '/' . $url)->with('children')->first();
 
+        if ($page->private) {
+            // temporary functionality for private pages
+            return view('404');
+        }
+
         // gather all menu pages and return them with every page request
-        $menu = Page::where('menu', true)->get(['title', 'url']);
+        $menu = Page::where([['menu', true], ['private', false]])->get(['title', 'url']);
 
         // if the page doesn't exist, send that sweet sweet 404
         if (!$page) {
@@ -70,6 +75,7 @@ class PageController extends Controller
         $page->url = $request->input('url');
         $page->page_id = Uuid::generate(4)->string;
         $page->menu = $request->input('menu');
+        $page->private = $request->input('private');
         $page->description = $request->input('description');
         $tags = explode(',', $request->input('tags'));
 
@@ -147,6 +153,7 @@ class PageController extends Controller
         $page->title = $request->input('title');
         $page->url = $request->input('url');
         $page->menu = $request->input('menu');
+        $page->private = $request->input('private');
         $page->description = $request->input('description');
         $page->updated_user_id = Auth::user()->user_id;
         $tags = explode(',', $request->input('tags'));
@@ -228,8 +235,8 @@ class PageController extends Controller
     }
 
     public function makeMenu() {
-        return Page::where('menu', true)->with(['children' => function ($query) {
-            $query->where('menu', true);
+        return Page::where([['menu', true], ['private', false]])->with(['children' => function ($query) {
+            $query->where([['menu', true], ['private', false]]);
         }])->get();
     }
 }

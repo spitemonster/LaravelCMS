@@ -39,10 +39,8 @@
                 <button @click="createPage" class="btn btn-primary btn--no-margin">Create Page</button>
             </div>
             <div class="content" id="tabContentTwo">
-                <fieldset>
-                    <input type="checkbox" v-model="menu" id="showInMenu" />
-                    <label class="checkbox" for="showInMenu">Show in Menu?</label>
-                </fieldset>
+                <label class="checkbox">Show In Menu?<input type="checkbox" v-model="menu" /><span class="checkbox__box"></span></label>
+                <label class="checkbox">Private Page?<input type="checkbox" v-model="private" /><span class="checkbox__box"></span></label>
                 <fieldset>
                     <textarea id="pageDescription" v-model="pageDescription" name="description" required></textarea>
                     <label for="pageDescription">Meta Description</label>
@@ -73,7 +71,8 @@ export default {
             fieldsValid: false,
             menu: false,
             pageDescription: '',
-            tags: ''
+            tags: '',
+            private: false
         }
     },
     props: [],
@@ -174,7 +173,7 @@ export default {
             pageData.parent_id = this.selectedParent ? this.selectedParent : ''
             pageData.tags = this.tags;
             pageData.menu = this.menu;
-
+            pageData.private = this.private;
             pageData.fields = [];
 
             for (let i = 0; i < this.fields.length; i++) {

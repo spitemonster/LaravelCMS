@@ -2470,8 +2470,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -2492,7 +2490,8 @@ __webpack_require__.r(__webpack_exports__);
       fieldsValid: false,
       menu: false,
       pageDescription: '',
-      tags: ''
+      tags: '',
+      private: false
     };
   },
   props: [],
@@ -2593,6 +2592,7 @@ __webpack_require__.r(__webpack_exports__);
       pageData.parent_id = this.selectedParent ? this.selectedParent : '';
       pageData.tags = this.tags;
       pageData.menu = this.menu;
+      pageData.private = this.private;
       pageData.fields = [];
 
       for (var i = 0; i < this.fields.length; i++) {
@@ -2912,7 +2912,8 @@ __webpack_require__.r(__webpack_exports__);
           message: "Please fill in marked fields and try again."
         };
         return _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
-      } // get pageID from the route param. my general thought is that this is trustworthy.
+      } // get pageID from the route param. i'm operating under the assumption this is trustworthy.
+      // furthermore...why would you fuck with the routes unless you were navigating to another page?
 
 
       pageData.page_id = this.$route.params.page_id;
@@ -2921,6 +2922,7 @@ __webpack_require__.r(__webpack_exports__);
 
       pageData.url = this.page.url.toLowerCase();
       pageData.menu = this.page.menu;
+      pageData.private = this.page.private;
       pageData.tags = tags.value; // set fields object
 
       pageData.fields = []; // language here is a little tricky. field content is stored as 'values' in the database and returned as such
@@ -21674,7 +21676,8 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("div", { staticClass: "content", attrs: { id: "tabContentTwo" } }, [
-        _c("fieldset", [
+        _c("label", { staticClass: "checkbox" }, [
+          _vm._v("Show In Menu?"),
           _c("input", {
             directives: [
               {
@@ -21684,7 +21687,7 @@ var render = function() {
                 expression: "menu"
               }
             ],
-            attrs: { type: "checkbox", id: "showInMenu" },
+            attrs: { type: "checkbox" },
             domProps: {
               checked: Array.isArray(_vm.menu)
                 ? _vm._i(_vm.menu, null) > -1
@@ -21710,12 +21713,49 @@ var render = function() {
               }
             }
           }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticClass: "checkbox", attrs: { for: "showInMenu" } },
-            [_vm._v("Show in Menu?")]
-          )
+          _c("span", { staticClass: "checkbox__box" })
+        ]),
+        _vm._v(" "),
+        _c("label", { staticClass: "checkbox" }, [
+          _vm._v("Private Page?"),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.private,
+                expression: "private"
+              }
+            ],
+            attrs: { type: "checkbox" },
+            domProps: {
+              checked: Array.isArray(_vm.private)
+                ? _vm._i(_vm.private, null) > -1
+                : _vm.private
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.private,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.private = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.private = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.private = $$c
+                }
+              }
+            }
+          }),
+          _c("span", { staticClass: "checkbox__box" })
         ]),
         _vm._v(" "),
         _c("fieldset", [
@@ -22030,52 +22070,95 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.page.menu,
-                        expression: "page.menu"
-                      }
-                    ],
-                    attrs: { type: "checkbox", id: "showInMenu" },
-                    domProps: {
-                      checked: Array.isArray(_vm.page.menu)
-                        ? _vm._i(_vm.page.menu, null) > -1
-                        : _vm.page.menu
-                    },
-                    on: {
-                      change: function($event) {
-                        var $$a = _vm.page.menu,
-                          $$el = $event.target,
-                          $$c = $$el.checked ? true : false
-                        if (Array.isArray($$a)) {
-                          var $$v = null,
-                            $$i = _vm._i($$a, $$v)
-                          if ($$el.checked) {
-                            $$i < 0 &&
-                              _vm.$set(_vm.page, "menu", $$a.concat([$$v]))
+                  _c("label", { staticClass: "checkbox" }, [
+                    _vm._v("Show in Menu?"),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.page.menu,
+                          expression: "page.menu"
+                        }
+                      ],
+                      attrs: { type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.page.menu)
+                          ? _vm._i(_vm.page.menu, null) > -1
+                          : _vm.page.menu
+                      },
+                      on: {
+                        change: function($event) {
+                          var $$a = _vm.page.menu,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                _vm.$set(_vm.page, "menu", $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                _vm.$set(
+                                  _vm.page,
+                                  "menu",
+                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                )
+                            }
                           } else {
-                            $$i > -1 &&
-                              _vm.$set(
-                                _vm.page,
-                                "menu",
-                                $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                              )
+                            _vm.$set(_vm.page, "menu", $$c)
                           }
-                        } else {
-                          _vm.$set(_vm.page, "menu", $$c)
                         }
                       }
-                    }
-                  }),
+                    }),
+                    _c("span", { staticClass: "checkbox__box" })
+                  ]),
                   _vm._v(" "),
-                  _c(
-                    "label",
-                    { staticClass: "checkbox", attrs: { for: "showInMenu" } },
-                    [_vm._v("Show in Menu?")]
-                  ),
+                  _c("label", { staticClass: "checkbox" }, [
+                    _vm._v("Private Page?"),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.page.private,
+                          expression: "page.private"
+                        }
+                      ],
+                      attrs: { type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.page.private)
+                          ? _vm._i(_vm.page.private, null) > -1
+                          : _vm.page.private
+                      },
+                      on: {
+                        change: function($event) {
+                          var $$a = _vm.page.private,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                _vm.$set(_vm.page, "private", $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                _vm.$set(
+                                  _vm.page,
+                                  "private",
+                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                )
+                            }
+                          } else {
+                            _vm.$set(_vm.page, "private", $$c)
+                          }
+                        }
+                      }
+                    }),
+                    _c("span", { staticClass: "checkbox__box" })
+                  ]),
                   _vm._v(" "),
                   _c("fieldset", [
                     _c("textarea", {

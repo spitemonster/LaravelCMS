@@ -31,8 +31,8 @@
                 <div class="content" id="tabContentTwo">
                     <p>Created By: {{ page.created_by ? page.created_by.name : 'User Deleted' }}</p>
                     <p v-if="page.updated_by">Last Updated By: {{ page.updated_by.name }}</p>
-                    <input type="checkbox" v-model="page.menu" id="showInMenu" />
-                    <label class="checkbox" for="showInMenu">Show in Menu?</label>
+                    <label class="checkbox">Show in Menu?<input type="checkbox" v-model="page.menu" /><span class="checkbox__box"></span></label>
+                    <label class="checkbox">Private Page?<input type="checkbox" v-model="page.private" /><span class="checkbox__box"></span></label>
                     <fieldset>
                         <textarea id="pageDescription" :value="page.description" required></textarea>
                         <label for="pageDescription">Meta Description</label>
@@ -97,13 +97,15 @@ export default {
                 return Bus.$emit('growl', growlerData);
             }
 
-            // get pageID from the route param. my general thought is that this is trustworthy.
+            // get pageID from the route param. i'm operating under the assumption this is trustworthy.
+            // furthermore...why would you fuck with the routes unless you were navigating to another page?
             pageData.page_id = this.$route.params.page_id
             pageData.title = name.value
             pageData.description = pageDescription.value
             // make sure whatever url a user enters gets switched to lowercase because this is not a farm and we are not farmers
             pageData.url = this.page.url.toLowerCase()
             pageData.menu = this.page.menu
+            pageData.private = this.page.private
             pageData.tags = tags.value;
             // set fields object
             pageData.fields = []

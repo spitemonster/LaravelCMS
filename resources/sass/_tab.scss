@@ -17,7 +17,7 @@ input[type=radio] {
 #tabOne {
   &:checked {
     &~.content--wrapper #tabContentOne {
-      display: block;
+      visibility: visible;
     }
 
     &~label[for=tabOne] {
@@ -29,7 +29,7 @@ input[type=radio] {
 #tabTwo {
   &:checked {
     &~.content--wrapper #tabContentTwo {
-      display: block
+      visibility: visible;
     }
 
     &~label[for=tabTwo] {
@@ -41,7 +41,7 @@ input[type=radio] {
 #tabThree {
   &:checked {
     &~.content--wrapper #tabContentThree {
-      display: block
+      visibility: visible;
     }
 
     &~label[for=tabThree] {
@@ -54,7 +54,7 @@ input[type=radio] {
   position: relative;
 
   .content {
-    display: none;
+    visibility: hidden;
     position: absolute;
   }
 }
