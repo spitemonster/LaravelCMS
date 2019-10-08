@@ -42,6 +42,20 @@
                 <button @click="closeAlert()" class="affirm">Cancel</button>
             </div>
         </template>
+        <template v-else-if="alertData.type === 'deleteTemplate'">
+            <div class="alert__warning">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z" /></svg>
+                <div>
+                </div>
+            </div>
+            <p class="alert__warning-message">WARNING: There are currently {{ alertData.pageCount }} pages using this template. This will delete the template and its history. Any pages using this template will also be deleted.</p>
+            <h3>Are you sure?</h3>
+            <div class="alert__buttons">
+                <button @click="deleteTemplate()" class="delete">Delete</button>
+                <button @click="closeAlert()" class="affirm">Cancel</button>
+            </div>
+        </template>
     </div>
 </template>
 <script>
@@ -74,6 +88,13 @@ export default {
             let fieldID = this.alertData.field
 
             Bus.$emit('deleteField', fieldID)
+
+            this.closeAlert();
+        },
+        deleteTemplate() {
+            let templateID = this.alertData.template.template_id
+
+            Bus.$emit('deleteTemplate', templateID);
 
             this.closeAlert();
         },

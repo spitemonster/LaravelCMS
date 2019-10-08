@@ -1972,8 +1972,6 @@ __webpack_require__.r(__webpack_exports__);
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_6__["default"].$on('alertDelete', function (data) {
       _this2.alertDelete(data);
-
-      console.log(data);
     });
   }
 });
@@ -1990,6 +1988,20 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2057,6 +2069,11 @@ __webpack_require__.r(__webpack_exports__);
     deleteField: function deleteField() {
       var fieldID = this.alertData.field;
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteField', fieldID);
+      this.closeAlert();
+    },
+    deleteTemplate: function deleteTemplate() {
+      var templateID = this.alertData.template.template_id;
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteTemplate', templateID);
       this.closeAlert();
     },
     closeAlert: function closeAlert() {
@@ -3261,6 +3278,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: [],
   methods: {
+    alertDelete: function alertDelete(template) {
+      var alertData = {
+        type: "deleteTemplate",
+        template: template
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('alertDelete', alertData);
+    },
     deleteTemplate: function deleteTemplate(templateId) {
       _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('deleteTemplate', templateId);
     }
@@ -21130,6 +21154,70 @@ var render = function() {
                   on: {
                     click: function($event) {
                       return _vm.deleteField()
+                    }
+                  }
+                },
+                [_vm._v("Delete")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "affirm",
+                  on: {
+                    click: function($event) {
+                      return _vm.closeAlert()
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              )
+            ])
+          ]
+        : _vm.alertData.type === "deleteTemplate"
+        ? [
+            _c("div", { staticClass: "alert__warning" }, [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    width: "24",
+                    height: "24",
+                    viewBox: "0 0 24 24"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      d:
+                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+                    }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c("div")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "alert__warning-message" }, [
+              _vm._v(
+                "WARNING: There are currently " +
+                  _vm._s(_vm.alertData.pageCount) +
+                  " pages using this template. This will delete the template and its history. Any pages using this template will also be deleted."
+              )
+            ]),
+            _vm._v(" "),
+            _c("h3", [_vm._v("Are you sure?")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "alert__buttons" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "delete",
+                  on: {
+                    click: function($event) {
+                      return _vm.deleteTemplate()
                     }
                   }
                 },

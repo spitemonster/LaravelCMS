@@ -26,6 +26,14 @@ export default {
     },
     props: [],
     methods: {
+        alertDelete(template) {
+            let alertData = {
+                type: "deleteTemplate",
+                template: template
+            }
+
+            Bus.$emit('alertDelete', alertData)
+        },
         deleteTemplate(templateId) {
             Bus.$emit('deleteTemplate', templateId);
         }

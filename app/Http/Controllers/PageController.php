@@ -19,8 +19,9 @@ class PageController extends Controller
     {
         $page = Page::where('url', '/' . $url)->with('children')->first();
 
-        if ($page->private) {
+        if ($page->private && !Auth::user()) {
             // temporary functionality for private pages
+            // if the page is private and the user is not logged in, show them the 404 page
             return view('404');
         }
 

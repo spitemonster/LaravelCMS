@@ -140,8 +140,10 @@ class TemplateController extends Controller
 
     // delete
     public function deleteTemplate(Request $request) {
+        // make sure the uuid given is a valid uuid
         $validator = Validator::make(['uuid' => $request->query('template_id')], ['uuid' => 'uuid']);
 
+        // if not, throw an error and let them know they goofed
         if (!$request->query('template_id') || !$validator->passes()) {
             $errMsg = array(
                 'status' => 'error',
@@ -151,9 +153,14 @@ class TemplateController extends Controller
             return $errMsg;
         }
 
+        // if it is, continue from here
+        // get the template, its name and pages using it
         $template = Template::where('template_id', $request->query('template_id'))->first();
         $template_name = strtolower(str_replace(' ', '_', $template->name));
+        $pages = $template->pages;
+        $fields = $template->fields()->get();
 
+        // if the template file can't be found, throw an error
         if (!$template) {
             $errMsg = array(
                 'status' => 'error',
@@ -163,17 +170,23 @@ class TemplateController extends Controller
             return $errMsg;
         }
 
-        $fields = $template->fields()->get();
+        // delete the pages first
+        foreach ($pages as $page) {
+            $page->delete();
+        }
 
+        // then fields
         foreach ($fields as $field) {
             $field->delete();
         }
 
-        // delete the template file so it doesn't sit around
+        // then the template file so it doesn't sit around
         Storage::disk('resources')->delete('/views/'. $template_name . '.blade.php');
 
+        // then delete the template itself
         $template->delete();
 
+        // then we good
         $successMsg = array(
             'status' => 'success',
             'message' => 'Template successfully deleted'

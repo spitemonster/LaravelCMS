@@ -35,18 +35,17 @@ Route::get('/mail', function() {
 
 Route::get('/tag', function(Request $request) {
 
-    $tag = null;
+    $data = [];
 
     if ($request->query('tag_id')) {
-        $tag = PageTag::where('tag_id', $request->query('tag_id'))->first();
+        $data['pages'] = PageTag::where('tag_id', $request->query('tag_id'))->first()->pages;
     } elseif ($request->query('tag_name')) {
-        $tag_id = Tag::where('name', $request->query('tag_name'))->first()->tag_id;
-
-        $PageTag = PageTag::where('tag_id', $tag_id)->first();
-        Page::where('page_id', $PageTag->page_id)->get();
+        $data['pages'] = Tag::where('name', $request->query('tag_name'))->first()->pages;
+    } else {
+        $data['tags'] = Tag::get();
     }
 
-    return $tag;
+    return view('tags', $data);
 });
 
 Route::get('/mailable', function() {
