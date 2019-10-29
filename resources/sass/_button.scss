@@ -48,8 +48,46 @@
         height: 2rem;
     }
 
+    // buttons with no text, only icons
+    // as of writing, only occurs on delete button on media window
+    &-icon {
+        @extend .btn-primary;
+        height: 1.5rem;
+        width: 1.5rem;
+        position: absolute;
+        top: -1.5rem;
+        right: -1.5rem;
+        border-color: $red;
+        background: $red;
+        color: $white;
+        padding: 0;
+
+        &:hover {
+            background: $white;
+            color: $red;
+        }
+    }
+
     &--no-margin {
         margin: 1rem 0;
+    }
+
+    &.close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: none;
+        color: $main-accent;
+
+        &:hover {
+            color: $black;
+        }
+    }
+
+    &.insert {
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
 }
 

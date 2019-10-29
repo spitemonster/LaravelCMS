@@ -20,6 +20,9 @@
                 <router-link tag="li" to="/admin/view/users">
                     <a>View Users</a>
                 </router-link>
+                <router-link tag="li" to="/admin/view/media">
+                    <a>View Media</a>
+                </router-link>
                 <li>
                     <a href="/logout">Log Out</a>
                 </li>
@@ -33,12 +36,14 @@
         <loggedOut v-if="logInError"></loggedOut>
         <growler :message="growlerMessage" :mode="growlerMode"></growler>
         <alert :alertData="alertData"></alert>
+        <mediaWindow></mediaWindow>
     </main>
 </template>
 <script>
 import fieldCard from './components/fieldCard.vue'
 import growler from './components/growler.vue'
 import alert from './components/alert.vue'
+import mediaWindow from './components/mediaWindow.vue'
 import createTemplate from './views/createTemplate.vue'
 import loggedOut from './components/loggedOut.vue'
 import createPage from './views/createPage.vue'
@@ -101,7 +106,8 @@ export default {
         router,
         loggedOut,
         growler,
-        alert
+        alert,
+        mediaWindow
     },
     beforeMount() {
         axios.get('/user')
@@ -210,6 +216,31 @@ export default {
 
         Bus.$on('alertDelete', data => {
             this.alertDelete(data);
+        })
+
+        Bus.$on('openMedia', () => {
+            let mw = document.querySelector('.media-window')
+
+            mw.classList.add('open')
+        })
+
+        Bus.$on('uploadMedia', (file) => {
+            let formData = new FormData()
+            formData.append('file', file)
+
+            axios.post('/media', formData)
+                .then((r) => {
+                    if (r.status === 200) {
+                        Bus.$emit('mediaUploaded')
+                    }
+                })
+        })
+
+        Bus.$on('deleteMedia', (fileId) => {
+            axios.delete(`/media?media_id=${fileId}`)
+                .then((res) => {
+                    Bus.$emit('mediaDeleted')
+                })
         })
     }
 }

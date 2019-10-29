@@ -5,6 +5,26 @@
             <label :for="fieldName">{{ fieldName }}<template v-if="fieldRequired">*</template></label>
         </template>
         <template v-else-if="fieldType === 'wysiwyg'">
+            <div id="toolbar">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+                <button class="ql-script" value="sub"></button>
+                <button class="ql-script" value="super"></button>
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <select class="ql-header">
+                    <option value="1">H1</option>
+                    <option value="2">H2</option>
+                    <option value="3">H3</option>
+                    <option value="4">H4</option>
+                    <option value="5">H5</option>
+                    <option value="6">H6</option>
+                </select>
+                <button @click="openMedia"><svg class="ql-img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z" /></svg></button>
+            </div>
             <div id="quillEditor">
                 <div class="ql-editor" data-gramm="false" contenteditable="true"><span v-html="content"></span></div>
             </div>
@@ -26,13 +46,15 @@
 <script>
 import Bus from '../../js/admin.js'
 import Quill from 'quill'
-import { ImageUpload } from 'quill-image-upload';
 import axios from 'axios'
+import Delta from 'quill-delta'
 
 export default {
     data() {
         return {
             invalid: false,
+            pageId: null,
+            index: null
         }
     },
     computed: {
@@ -51,79 +73,41 @@ export default {
         fieldContent(e) {
             Bus.$emit('fieldFill', e.target)
         },
+        openMedia() {
+            Bus.$emit('openMedia')
+        }
     },
     mounted() {
         let input = document.createElement('input');
-
-        var toolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],
-            ['blockquote', 'code-block'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'script': 'sub' }, { 'script': 'super' }],
-            [{ 'indent': '-1' }, { 'indent': '+1' }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-            ['link', 'image'],
-            ['clean']
-        ];
-
         if (this.fieldType === 'wysiwyg') {
-            Quill.register('modules/imageUpload', ImageUpload);
 
-            var editor = new Quill('#quillEditor', {
+            let BlockEmbed = Quill.import('blots/block/embed');
+            class ImageBlot extends BlockEmbed {
+                static create(value) {
+                    let node = super.create();
+                    node.setAttribute('alt', value.alt);
+                    node.setAttribute('src', value.src);
+                    return node;
+                }
+
+                static value(node) {
+                    return {
+                        alt: node.getAttribute('alt'),
+                        src: node.getAttribute('src')
+                    };
+                }
+            }
+            ImageBlot.blotName = 'image';
+            ImageBlot.tagName = 'img';
+
+            Quill.register({ 'formats/image': ImageBlot });
+
+            let editor = new Quill('#quillEditor', {
                 debug: 'warn',
                 modules: {
-                    toolbar: toolbarOptions,
-                    imageUpload: {
-                        url: '/media',
-                        method: 'POST',
-                        name: 'file',
-                        headers: {},
-                        customUploader: (file, next) => {
-                            // the out of the box upload was not working in the slightest, so I switched to good ol fashioned axios upload that works so well.
-                            let formData = new FormData();
-                            let imageFile = file
-                            let url;
-                            formData.append('file', imageFile)
-
-                            axios.post('/media', formData, {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
-                            }).then((res) => {
-                                let growlerData = {
-                                    mode: res.data.status,
-                                    message: res.data.message
-                                }
-
-                                Bus.$emit('growl', growlerData);
-                                url = res.data.url
-                                next(url);
-                            }).then(() => {
-                                let box = this.$el.querySelector('.image-details')
-                                let media = box.querySelector("input[name='img-alt']")
-                                let width = box.querySelector("input[name='img-width']")
-                                let height = box.querySelector("input[name='img-height']")
-                                let targetImg = this.$el.querySelector(`img[src="${url}"]`)
-
-                                targetImg.classList.add('selected-image');
-                                box.classList.add('active')
-
-                                width.value = targetImg.offsetWidth
-                                height.value = targetImg.offsetHeight
-                            })
-                        },
-                        callbackOK: (serverResponse, next) => {
-                            next(serverResponse)
-                        },
-                        callbackKO: serverError => {
-                            alert(serverError)
-                        },
-                        checkBeforeSend: (file, next) => {
-                            next(file)
-                        }
-                    }
+                    toolbar: {
+                        container: '#toolbar',
+                    },
                 },
                 theme: 'snow'
             });
@@ -136,6 +120,22 @@ export default {
                 input.value = content
 
                 Bus.$emit('fieldFill', input)
+            })
+
+            // keep track of where the cursor is in the editor OUTSIDE of editor events so that we don't lose position when an image is being inserted
+            editor.on('editor-change', (eventName, ...args) => {
+                if (editor.getSelection().index !== null) {
+                    this.editorIndex = editor.getSelection().index
+                }
+            })
+
+            Bus.$on('insertFiles', (files) => {
+                files.forEach((file) => {
+                    editor.insertEmbed(this.editorIndex, 'image', {
+                        src: file.dataset.src, // any url
+                        alt: file.dataset.alt
+                    }, 'user');
+                })
             })
         }
 
@@ -153,9 +153,9 @@ export default {
             let width = box.querySelector("input[name='img-width']")
             let height = box.querySelector("input[name='img-height']")
 
-            q.addEventListener('click', (e) => {
+            document.addEventListener('click', (e) => {
                 let t = e.target
-                if (t.tagName === 'IMG') {
+                if (t.tagName === 'IMG' || t === box) {
 
                     let selected = document.querySelectorAll('.selected-image');
 
@@ -171,8 +171,11 @@ export default {
                     width.value = document.querySelector('.selected-image').offsetWidth
                     height.value = document.querySelector('.selected-image').offsetHeight
                 } else {
-                    let selectedImage = document.querySelector('.selected-image')
-                    selectedImage.classList.remove('selected-image')
+
+                    // if user clicks in the editor and they are not selecting an image, get rid of the box
+                    if (document.querySelector('.selected-image')) {
+                        document.querySelector('.selected-image').classList.remove('selected-image')
+                    }
 
                     box.classList.remove('active');
                 }
@@ -228,11 +231,6 @@ p {
 
 .active {
     display: block;
-}
-
-.selected-image {
-    box-sizing: content-box;
-    border: 2px solid slateblue;
 }
 
 </style>

@@ -14,7 +14,7 @@
 
     box-shadow: 0px 0px 5px rgba(0, 0, 0, .3);
 
-    z-index: 99;
+    z-index: 99999999;
 
     // this is added when an alert pops up
     &.show {

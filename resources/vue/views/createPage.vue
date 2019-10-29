@@ -72,7 +72,8 @@ export default {
             menu: false,
             pageDescription: '',
             tags: '',
-            private: false
+            private: false,
+            pageId: null
         }
     },
     props: [],
@@ -108,6 +109,9 @@ export default {
             let t = e.target
             let pageName = t.value
             let url = this.baseUrl = pageName.replace(/[\s]+/g, '-').replace(/[\s~!@#$%^&*()+={}|\\:;"'<>,.?]+/g, '').toLowerCase();
+            let urlInput = this.$el.querySelector('#pageUrl')
+
+            urlInput.classList.add('disable')
 
             // get page name and generate a url based on it, where e is the page name input
             if (t.classList.contains('invalid')) {
@@ -128,6 +132,8 @@ export default {
                     if (url.classList.contains('invalid')) {
                         url.classList.remove('invalid')
                     }
+
+                    url.classList.remove('disable')
 
                     return this.generatedUrl = res.data;
                 })
@@ -175,6 +181,7 @@ export default {
             pageData.menu = this.menu;
             pageData.private = this.private;
             pageData.fields = [];
+            pageData.pageId = this.pageId;
 
             for (let i = 0; i < this.fields.length; i++) {
                 let field = this.fields[i];
@@ -243,9 +250,18 @@ export default {
                 }
             })
         })
+
+        Bus.$on('imageUploaded', (pageId) => {
+            this.pageId = pageId;
+        })
     }
 }
 
 </script>
 <style lang="css">
+.disable {
+    pointer-events: none;
+    cursor: wait;
+}
+
 </style>

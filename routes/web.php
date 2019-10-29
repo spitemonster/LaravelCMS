@@ -25,7 +25,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 // use Storage;
 // use App\Http\Middleware\CheckApiToken;
-// use Uuid;
+// use \Uuid;
+
+Route::get('/media{filename?}', 'MediaController@getMedia');
+Route::post('/media', 'MediaController@createMedia');
+Route::delete('/media', 'MediaController@deleteMedia');
 
 Route::get('/mail', function() {
     Mail::to('johnstk91@gmail.com')->send(new TestEmail());
@@ -35,6 +39,8 @@ Route::get('/mail', function() {
 
 Route::get('/tag', function(Request $request) {
 
+    // if someone visits /tag either show them the pages related to that tag if given a name or id
+    // or just display a list of tags
     $data = [];
 
     if ($request->query('tag_id')) {
@@ -119,25 +125,25 @@ Route::delete('/user', function(Request $request) {
     return $allowedData;
 });
 
-Route::post('/media', function(Request $request) {
-    $file = $request->file('file')->store('media', 'public');
+// Route::post('/media', function(Request $request) {
+//     $file = $request->file('file')->store('media', 'public');
 
-    $data = array(
-        'status' => 'success',
-        'message' => 'File successfully uploaded',
-        'url' => '/' . $file
-    );
+//     $data = array(
+//         'status' => 'success',
+//         'message' => 'File successfully uploaded',
+//         'url' => '/' . $file
+//     );
 
-    $media = new Media;
+//     $media = new Media;
 
-    $media->url = $file;
-    $media->filename = 'poop';
-    $media->page_id = '124444';
+//     $media->url = $file;
+//     $media->filename = 'poop';
+//     $media->page_id = $data['pageId'] = Uuid::generate(4)->string;
 
-    $media->save();
+//     $media->save();
 
-    return $data;
-});
+//     return $data;
+// });
 
 // CRUD template
 Route::middleware('auth:api')->post('/template', 'TemplateController@createTemplate');

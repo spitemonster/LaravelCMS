@@ -198,3 +198,12 @@ input:focus,
 select:focus {
     outline: none;
 }
+
+.ql-img {
+    fill: $main-accent;
+
+    &:hover {
+        fill: $purple;
+        stroke: $purple;
+    }
+}

@@ -19,17 +19,17 @@ class PageController extends Controller
     {
         $page = Page::where('url', '/' . $url)->with('children')->first();
 
-        if ($page->private && !Auth::user()) {
-            // temporary functionality for private pages
-            // if the page is private and the user is not logged in, show them the 404 page
-            return view('404');
-        }
-
         // gather all menu pages and return them with every page request
         $menu = Page::where([['menu', true], ['private', false]])->get(['title', 'url']);
 
         // if the page doesn't exist, send that sweet sweet 404
         if (!$page) {
+            return view('404');
+        }
+
+        if ($page->private && !Auth::user()) {
+            // temporary functionality for private pages
+            // if the page is private and the user is not logged in, show them the 404 page
             return view('404');
         }
 
@@ -74,7 +74,7 @@ class PageController extends Controller
         $page->template_id = $request->input('template_id');
         $page->parent_id = $request->input('parent_id');
         $page->url = $request->input('url');
-        $page->page_id = Uuid::generate(4)->string;
+        $page->page_id = $request->input('pageId') ? $request->input('pageId') : Uuid::generate(4)->string;
         $page->menu = $request->input('menu');
         $page->private = $request->input('private');
         $page->description = $request->input('description');

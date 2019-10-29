@@ -309,7 +309,7 @@ p + p {
   background: white;
   padding: 2rem;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-  z-index: 99;
+  z-index: 99999999;
   left: 100vw;
   top: calc(50vh - 300px);
   transition: left 120ms ease;
@@ -471,6 +471,7 @@ button.delete:hover {
 
 .btn,
 .btn-primary,
+.btn-icon,
 .btn-small {
   display: inline-flex;
   justify-content: center;
@@ -487,6 +488,7 @@ button.delete:hover {
 }
 
 .btn-primary,
+.btn-icon,
 .btn-small {
   border: 1px solid #BF68A0;
   color: #BF68A0;
@@ -494,6 +496,7 @@ button.delete:hover {
 }
 
 .btn-primary:hover,
+.btn-icon:hover,
 .btn-small:hover {
   color: #F6F6F2;
   background: #BF68A0;
@@ -503,8 +506,52 @@ button.delete:hover {
   height: 2rem;
 }
 
+.btn-icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  border-color: #d7263d;
+  background: #d7263d;
+  color: #F6F6F2;
+  padding: 0;
+}
+
+.btn-icon:hover {
+  background: #F6F6F2;
+  color: #d7263d;
+}
+
 .btn--no-margin {
   margin: 1rem 0;
+}
+
+.btn.close,
+.close.btn-primary,
+.close.btn-small,
+.close.btn-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  color: #BF68A0;
+}
+
+.btn.close:hover,
+.close.btn-primary:hover,
+.close.btn-small:hover,
+.close.btn-icon:hover {
+  color: #3A4755;
+}
+
+.btn.insert,
+.insert.btn-primary,
+.insert.btn-small,
+.insert.btn-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 button.delete {
@@ -711,6 +758,15 @@ select:focus {
   outline: none;
 }
 
+.ql-img {
+  fill: #BF68A0;
+}
+
+.ql-img:hover {
+  fill: #885FA6;
+  stroke: #885FA6;
+}
+
 input[type=radio] {
   display: none;
 }
@@ -726,7 +782,7 @@ input[type=radio] {
 }
 
 #tabOne:checked ~ .content--wrapper #tabContentOne {
-  visibility: visible;
+  display: block;
 }
 
 #tabOne:checked ~ label[for=tabOne] {
@@ -734,7 +790,7 @@ input[type=radio] {
 }
 
 #tabTwo:checked ~ .content--wrapper #tabContentTwo {
-  visibility: visible;
+  display: block;
 }
 
 #tabTwo:checked ~ label[for=tabTwo] {
@@ -742,7 +798,7 @@ input[type=radio] {
 }
 
 #tabThree:checked ~ .content--wrapper #tabContentThree {
-  visibility: visible;
+  display: block;
 }
 
 #tabThree:checked ~ label[for=tabThree] {
@@ -754,7 +810,7 @@ input[type=radio] {
 }
 
 .content--wrapper .content {
-  visibility: hidden;
+  display: none;
   position: absolute;
 }
 
@@ -783,6 +839,75 @@ input[type=radio] {
   justify-content: space-between;
   margin-top: 0.5rem;
   padding: 0 1rem;
+}
+
+.img-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 250px));
+  grid-gap: 5px;
+}
+
+.img-grid__image {
+  position: relative;
+  height: 150px;
+  width: 150px;
+}
+
+.img-grid__image::after {
+  content: "";
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 99;
+}
+
+.img-grid__image img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+
+.media-window {
+  position: absolute;
+  height: 75%;
+  width: 75%;
+  top: calc(50% - 37.5%);
+  left: 100%;
+  background: white;
+  z-index: 999;
+  overflow: scroll;
+  padding: 2rem;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  transition: left 240ms ease-in;
+}
+
+.media-window.open {
+  left: calc(50% - 37.5%);
+}
+
+.selected::before {
+  background: #BF68A0;
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  z-index: -1;
+  height: calc(100% + 6px);
+  width: calc(100% + 6px);
+}
+
+.button-row {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 ::-moz-selection,
@@ -918,6 +1043,7 @@ a:hover {
 
 .dashboard__nav.open + .dashboard__body {
   left: 200px;
+  width: calc(100% - 200px);
 }
 
 .dashboard__body {
@@ -928,12 +1054,11 @@ a:hover {
   width: 100%;
   background: #F6F6F2;
   top: 0;
-  padding: 1rem;
   overflow: scroll;
   border-top-left-radius: 25px;
   z-index: 2;
   left: 0;
-  transition: left 240ms ease-in !important;
+  transition: all 240ms ease-in;
   padding: 5rem;
 }
 

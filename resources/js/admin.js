@@ -10,6 +10,7 @@ import viewTemplates from '../vue/views/templates.vue'
 import editPage from '../vue/views/editPage.vue'
 import editTemplate from '../vue/views/editTemplate.vue'
 import viewUsers from '../vue/views/users.vue'
+import viewMedia from '../vue/views/viewMedia.vue'
 
 
 const Vue = window.Vue = require('vue')
@@ -34,16 +35,15 @@ const router = new Router({
         { path: '/admin/view/templates', name: 'viewTemplates', component: viewTemplates },
         { path: '/admin/page/:page_id/edit', name: 'editPages', component: editPage },
         { path: '/admin/template/:template_id/edit', name: 'editTemplates', component: editTemplate },
-        { path: '/admin/view/users', name: 'viewUsers', component: viewUsers}
+        { path: '/admin/view/users', name: 'viewUsers', component: viewUsers },
+        { path: '/admin/view/media', name: 'viewMedia', component: viewMedia }
     ]
 })
 
 new Vue({
-    data: {
-    },
+    data: {},
     router,
     components: { App },
     template: '<App/>',
-    mounted () {
-    }
+    mounted() {}
 }).$mount('#app')

@@ -9,6 +9,7 @@
 @import 'input';
 @import 'tab';
 @import 'field-card';
+@import 'media';
 
 ::selection,
 ::-moz-selection {
@@ -137,6 +138,7 @@ a {
 
     &__nav.open+&__body {
         left: 200px;
+        width: calc(100% - 200px);
     }
 
     &__body {
@@ -147,13 +149,11 @@ a {
         width: 100%;
         background: $white;
         top: 0;
-        padding: 1rem;
         overflow: scroll;
         border-top-left-radius: 25px;
         z-index: 2;
         left: 0;
-        transition: left 240ms ease-in !important;
-
+        transition: all 240ms ease-in;
         padding: 5rem;
 
         &.animate {

@@ -168,11 +168,7 @@ export default {
                 this.page = res.data
                 this.fields = res.data.values
                 this.pageLoaded = true
-
-
                 for (let i = 0; i < res.data.tags.length; i++) {
-                    console.log('running loop');
-
                     let tag = res.data.tags[i];
 
                     if (i === 0) {
@@ -182,6 +178,8 @@ export default {
                     }
                 }
                 this.tags = tags;
+
+                console.log(this.page)
             })
     },
     mounted() {
@@ -200,7 +198,6 @@ export default {
             let targetField = field.dataset.fieldid
 
             this.page.values.forEach((f) => {
-                console.log(f.content);
                 if (f.field_id === targetField) {
                     f.content = field.value
                 }
