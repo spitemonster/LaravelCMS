@@ -281,6 +281,16 @@ fieldset+* {
     margin-top: 0 !important; // margin collapse for some reason not working, so overriding
 }
 
+.empty {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: $dark-accent;
+}
+
 #pageDescription {
     width: 960px;
 }

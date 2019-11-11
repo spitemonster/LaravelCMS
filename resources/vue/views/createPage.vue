@@ -91,6 +91,8 @@ export default {
                     .then((res) => {
                         this.fields = res.data.fields
                         this.selectedTemplate = res.data.template_id
+
+                        console.log(this.fields)
                     })
             }
         },
@@ -254,6 +256,7 @@ export default {
         Bus.$on('imageUploaded', (pageId) => {
             this.pageId = pageId;
         })
+
     }
 }
 

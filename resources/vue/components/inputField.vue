@@ -5,7 +5,7 @@
             <label :for="fieldName">{{ fieldName }}<template v-if="fieldRequired">*</template></label>
         </template>
         <template v-else-if="fieldType === 'wysiwyg'">
-            <div id="toolbar">
+            <div :id="`toolbar-${fieldId}`">
                 <button class="ql-bold"></button>
                 <button class="ql-italic"></button>
                 <button class="ql-underline"></button>
@@ -22,10 +22,10 @@
                     <option value="5">H5</option>
                     <option value="6">H6</option>
                 </select>
-                <button @click="openMedia"><svg class="ql-img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <button @click="openMedia(fieldId)"><svg class="ql-img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                         <path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z" /></svg></button>
             </div>
-            <div id="quillEditor">
+            <div :id="`wysiwyg-${fieldId}`">
                 <div class="ql-editor" data-gramm="false" contenteditable="true"><span v-html="content"></span></div>
             </div>
             <div class="image-details">
@@ -73,8 +73,8 @@ export default {
         fieldContent(e) {
             Bus.$emit('fieldFill', e.target)
         },
-        openMedia() {
-            Bus.$emit('openMedia')
+        openMedia(fieldId) {
+            Bus.$emit('openMedia', fieldId)
         }
     },
     mounted() {
@@ -102,11 +102,11 @@ export default {
 
             Quill.register({ 'formats/image': ImageBlot });
 
-            let editor = new Quill('#quillEditor', {
+            let editor = new Quill(`#wysiwyg-${this.fieldId}`, {
                 debug: 'warn',
                 modules: {
                     toolbar: {
-                        container: '#toolbar',
+                        container: `#toolbar-${this.fieldId}`,
                     },
                 },
                 theme: 'snow'
@@ -126,19 +126,23 @@ export default {
             editor.on('editor-change', (eventName, ...args) => {
                 if (editor.getSelection().index !== null) {
                     this.editorIndex = editor.getSelection().index
-                }
+                } else { this.editorIndex === 0 }
             })
 
-            Bus.$on('insertFiles', (files) => {
-                files.forEach((file) => {
-                    editor.insertEmbed(this.editorIndex, 'image', {
-                        src: file.dataset.src, // any url
-                        alt: file.dataset.alt
-                    }, 'user');
-                })
+            Bus.$on('insertFiles', (files, fieldId) => {
+
+                if (this.fieldId === fieldId) {
+                    files.forEach((file) => {
+                        editor.insertEmbed(this.editorIndex, 'image', {
+                            src: file.dataset.src, // any url
+                            alt: file.dataset.alt
+                        }, 'user');
+                    })
+                }
             })
         }
 
+        // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
         Bus.$on('invalidField', (fieldId) => {
             if (this.fieldId === fieldId) {
                 this.invalid = true;

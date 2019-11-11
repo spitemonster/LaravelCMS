@@ -1981,7 +1981,9 @@ __webpack_require__.r(__webpack_exports__);
       _this2.alertDelete(data);
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('openMedia', function () {
+      var fieldId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var mw = document.querySelector('.media-window');
+      mw.dataset.fieldId = fieldId;
       mw.classList.add('open');
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('uploadMedia', function (file) {
@@ -2335,8 +2337,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
     fieldContent: function fieldContent(e) {
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('fieldFill', e.target);
     },
-    openMedia: function openMedia() {
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('openMedia');
+    openMedia: function openMedia(fieldId) {
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('openMedia', fieldId);
     }
   },
   mounted: function mounted() {
@@ -2385,11 +2387,11 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       quill__WEBPACK_IMPORTED_MODULE_1___default.a.register({
         'formats/image': ImageBlot
       });
-      var editor = new quill__WEBPACK_IMPORTED_MODULE_1___default.a('#quillEditor', {
+      var editor = new quill__WEBPACK_IMPORTED_MODULE_1___default.a("#wysiwyg-".concat(this.fieldId), {
         debug: 'warn',
         modules: {
           toolbar: {
-            container: '#toolbar'
+            container: "#toolbar-".concat(this.fieldId)
           }
         },
         theme: 'snow'
@@ -2405,18 +2407,23 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       editor.on('editor-change', function (eventName) {
         if (editor.getSelection().index !== null) {
           _this.editorIndex = editor.getSelection().index;
+        } else {
+          _this.editorIndex === 0;
         }
       });
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('insertFiles', function (files) {
-        files.forEach(function (file) {
-          editor.insertEmbed(_this.editorIndex, 'image', {
-            src: file.dataset.src,
-            // any url
-            alt: file.dataset.alt
-          }, 'user');
-        });
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('insertFiles', function (files, fieldId) {
+        if (_this.fieldId === fieldId) {
+          files.forEach(function (file) {
+            editor.insertEmbed(_this.editorIndex, 'image', {
+              src: file.dataset.src,
+              // any url
+              alt: file.dataset.alt
+            }, 'user');
+          });
+        }
       });
-    }
+    } // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
+
 
     _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('invalidField', function (fieldId) {
       if (_this.fieldId === fieldId) {
@@ -2586,7 +2593,8 @@ __webpack_require__.r(__webpack_exports__);
       this.selected.push(t);
     },
     insertFiles: function insertFiles() {
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('insertFiles', this.selected);
+      var fieldId = this.$el.dataset.fieldId;
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('insertFiles', this.selected, fieldId);
       this.selected = [];
       this.closeWindow();
     },
@@ -2735,6 +2743,7 @@ __webpack_require__.r(__webpack_exports__);
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/template?template_id=".concat(sel.value)).then(function (res) {
           _this.fields = res.data.fields;
           _this.selectedTemplate = res.data.template_id;
+          console.log(_this.fields);
         });
       }
     },
@@ -3608,8 +3617,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -3619,24 +3629,59 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'viewMedia',
   data: function data() {
     return {
-      media: []
+      media: null
     };
   },
   props: [],
-  methods: {},
-  mounted: function mounted() {
-    var _this = this;
+  methods: {
+    getMedia: function getMedia() {
+      var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/media').then(function (res) {
-      res.data.forEach(function (item) {
-        _this.media.push(item);
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/media').then(function (res) {
+        var arr;
+
+        if (res.data.length) {
+          arr = [];
+          res.data.forEach(function (item) {
+            arr.push(item);
+          });
+          _this.media = arr;
+        }
       });
-    });
+    },
+    alertDelete: function alertDelete(fileId) {
+      var fileData = {
+        type: 'deleteFile',
+        fileId: fileId
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fileData);
+    },
+    uploadFiles: function uploadFiles() {
+      var f = document.querySelector('input[type="file"]');
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('uploadMedia', f.files[0]);
+    }
+  },
+  mounted: function mounted() {
+    this.getMedia();
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaUploaded', this.getMedia);
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaDeleted', this.getMedia);
   }
 });
 
@@ -23216,7 +23261,7 @@ var render = function() {
           ]
         : _vm.fieldType === "wysiwyg"
         ? [
-            _c("div", { attrs: { id: "toolbar" } }, [
+            _c("div", { attrs: { id: "toolbar-" + _vm.fieldId } }, [
               _c("button", { staticClass: "ql-bold" }),
               _vm._v(" "),
               _c("button", { staticClass: "ql-italic" }),
@@ -23247,31 +23292,41 @@ var render = function() {
               _vm._v(" "),
               _vm._m(0),
               _vm._v(" "),
-              _c("button", { on: { click: _vm.openMedia } }, [
-                _c(
-                  "svg",
-                  {
-                    staticClass: "ql-img",
-                    attrs: {
-                      xmlns: "http://www.w3.org/2000/svg",
-                      width: "24",
-                      height: "24",
-                      viewBox: "0 0 24 24"
+              _c(
+                "button",
+                {
+                  on: {
+                    click: function($event) {
+                      return _vm.openMedia(_vm.fieldId)
                     }
-                  },
-                  [
-                    _c("path", {
+                  }
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "ql-img",
                       attrs: {
-                        d:
-                          "M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"
+                        xmlns: "http://www.w3.org/2000/svg",
+                        width: "24",
+                        height: "24",
+                        viewBox: "0 0 24 24"
                       }
-                    })
-                  ]
-                )
-              ])
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          d:
+                            "M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"
+                        }
+                      })
+                    ]
+                  )
+                ]
+              )
             ]),
             _vm._v(" "),
-            _c("div", { attrs: { id: "quillEditor" } }, [
+            _c("div", { attrs: { id: "wysiwyg-" + _vm.fieldId } }, [
               _c(
                 "div",
                 {
@@ -24689,16 +24744,67 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "page" }, [
-    _c(
-      "div",
-      { staticClass: "img-grid" },
-      _vm._l(_vm.media, function(m) {
-        return _c("div", { staticClass: "img-grid__image" }, [
-          _c("img", { attrs: { src: m.url, alt: "" } })
-        ])
-      }),
-      0
-    )
+    _c("h1", [_vm._v("Media")]),
+    _vm._v(" "),
+    _vm.media
+      ? _c(
+          "div",
+          { staticClass: "img-grid" },
+          [
+            _vm._l(_vm.media, function(m) {
+              return [
+                _c(
+                  "div",
+                  {
+                    staticClass: "img-grid__image",
+                    attrs: {
+                      "data-fileid": m.file_id,
+                      "data-src": m.url,
+                      "data-alt": m.alt_text
+                    }
+                  },
+                  [
+                    _c("img", { attrs: { src: m.url, alt: m.alt_text } }),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn-icon",
+                        on: {
+                          click: function($event) {
+                            return _vm.alertDelete(m.file_id)
+                          }
+                        }
+                      },
+                      [_vm._v("X")]
+                    )
+                  ]
+                )
+              ]
+            })
+          ],
+          2
+        )
+      : _c("div", { staticClass: "empty" }, [
+          _c("h3", [_vm._v("No media to show.")])
+        ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "button-row" }, [
+      _c("input", { attrs: { type: "file", name: "somethin", id: "file" } }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn",
+          on: {
+            click: function($event) {
+              return _vm.uploadFiles()
+            }
+          }
+        },
+        [_vm._v("Upload")]
+      )
+    ])
   ])
 }
 var staticRenderFns = []
@@ -44542,15 +44648,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************************!*\
   !*** ./resources/vue/components/inputField.vue ***!
   \*************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _inputField_vue_vue_type_template_id_3045af98___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./inputField.vue?vue&type=template&id=3045af98& */ "./resources/vue/components/inputField.vue?vue&type=template&id=3045af98&");
 /* harmony import */ var _inputField_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./inputField.vue?vue&type=script&lang=js& */ "./resources/vue/components/inputField.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _inputField_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _inputField_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _inputField_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./inputField.vue?vue&type=style&index=0&lang=css& */ "./resources/vue/components/inputField.vue?vue&type=style&index=0&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _inputField_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./inputField.vue?vue&type=style&index=0&lang=css& */ "./resources/vue/components/inputField.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -44582,7 +44687,7 @@ component.options.__file = "resources/vue/components/inputField.vue"
 /*!**************************************************************************!*\
   !*** ./resources/vue/components/inputField.vue?vue&type=script&lang=js& ***!
   \**************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

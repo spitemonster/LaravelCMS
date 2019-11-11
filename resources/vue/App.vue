@@ -218,8 +218,10 @@ export default {
             this.alertDelete(data);
         })
 
-        Bus.$on('openMedia', () => {
+        Bus.$on('openMedia', (fieldId = null) => {
             let mw = document.querySelector('.media-window')
+
+            mw.dataset.fieldId = fieldId;
 
             mw.classList.add('open')
         })

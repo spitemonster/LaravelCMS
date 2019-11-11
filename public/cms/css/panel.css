@@ -1171,6 +1171,15 @@ fieldset + * {
   margin-top: 0 !important;
 }
 
+.empty {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #CA9CAB;
+}
+
 #pageDescription {
   width: 960px;
 }

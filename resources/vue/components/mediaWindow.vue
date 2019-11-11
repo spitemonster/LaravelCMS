@@ -69,7 +69,9 @@ export default {
             this.selected.push(t)
         },
         insertFiles() {
-            Bus.$emit('insertFiles', this.selected);
+            let fieldId = this.$el.dataset.fieldId;
+
+            Bus.$emit('insertFiles', this.selected, fieldId);
             this.selected = [];
             this.closeWindow();
         },

@@ -1,34 +1,68 @@
 <template>
     <div class="page">
-        <div class="img-grid">
-            <div class="img-grid__image" v-for="m in media">
-                <img :src="m.url " alt="">
-            </div>
+        <h1>Media</h1>
+        <div class="img-grid" v-if="media">
+            <template v-for="m in media">
+                <div class="img-grid__image" :data-fileid="m.file_id" :data-src="m.url" :data-alt="m.alt_text">
+                    <img :src="m.url" :alt="m.alt_text">
+                    <button @click="alertDelete(m.file_id)" class="btn-icon">X</button>
+                </div>
+            </template>
+        </div>
+        <div class="empty" v-else>
+            <h3>No media to show.</h3>
+        </div>
+        <div class="button-row">
+            <input type="file" name="somethin" id="file">
+            <button class="btn" @click="uploadFiles()">Upload</button>
         </div>
     </div>
 </template>
 <script>
-import axios from 'axios'
+import Bus from '../../js/admin.js'
+import axios from 'axios';
 
 export default {
     name: 'viewMedia',
     data() {
         return {
-            media: [],
+            media: null,
         }
     },
     props: [],
     methods: {
+        getMedia() {
+            axios.get('/media')
+                .then((res) => {
+                    let arr;
 
+                    if (res.data.length) {
+                        arr = [];
+                        res.data.forEach((item) => {
+                            arr.push(item);
+                        })
+
+                        this.media = arr
+                    }
+                })
+        },
+        alertDelete(fileId) {
+            let fileData = {
+                type: 'deleteFile',
+                fileId: fileId
+            }
+            Bus.$emit('alertDelete', fileData)
+        },
+        uploadFiles() {
+            let f = document.querySelector('input[type="file"]');
+
+            Bus.$emit('uploadMedia', f.files[0])
+        }
     },
     mounted() {
-        axios.get('/media')
-            .then((res) => {
-
-                res.data.forEach((item) => {
-                    this.media.push(item);
-                })
-            })
+        this.getMedia();
+        Bus.$on('mediaUploaded', this.getMedia)
+        Bus.$on('mediaDeleted', this.getMedia)
     }
 }
 

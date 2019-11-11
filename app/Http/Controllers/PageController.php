@@ -43,6 +43,7 @@ class PageController extends Controller
         $data['menu'] = $menu;
         $data['children'] = $page->children()->get();
         $data['tags'] = [];
+        $data['title'] = null;
 
         foreach ($tags as $tag) {
             array_push($data['tags'], $tag);
@@ -52,6 +53,11 @@ class PageController extends Controller
 
         foreach($page->values as $field) {
             $data[strtolower($field->field_name)] = $field->content;
+        }
+
+        // if a page doesn't have a title field, assign the page title as the title
+        if (!$data['title']) {
+            $data['title'] = $page->title;
         }
 
         $page->views = $page->views + 1;
