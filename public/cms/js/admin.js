@@ -2344,10 +2344,16 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
   mounted: function mounted() {
     var _this = this;
 
-    var input = document.createElement('input');
+    var input = this.$el.createElement('input');
 
     if (this.fieldType === 'wysiwyg') {
-      var BlockEmbed = quill__WEBPACK_IMPORTED_MODULE_1___default.a.import('blots/block/embed');
+      var q = this.$el.querySelector('.ql-editor');
+      var qimg = q.querySelectorAll('img');
+      var box = document.querySelector('.image-details');
+      var media = box.querySelector("input[name='img-alt']");
+      var width = box.querySelector("input[name='img-width']");
+      var height = box.querySelector("input[name='img-height']");
+      var BlockEmbed = quill__WEBPACK_IMPORTED_MODULE_1___default.a.import('blots/block/embed'); // implement and register the imageblot for the custom image insert feature, since we don't upload directly within the wysiwyg
 
       var ImageBlot =
       /*#__PURE__*/
@@ -2386,31 +2392,35 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       ImageBlot.tagName = 'img';
       quill__WEBPACK_IMPORTED_MODULE_1___default.a.register({
         'formats/image': ImageBlot
-      });
-      var editor = new quill__WEBPACK_IMPORTED_MODULE_1___default.a("#wysiwyg-".concat(this.fieldId), {
+      }); // set up the editor
+      // we target by classes with field IDs to keep things separate but legible
+
+      var editor = new quill__WEBPACK_IMPORTED_MODULE_1___default.a(".editor[data-field-id=\"".concat(this.fieldId, "\"]"), {
         debug: 'warn',
         modules: {
           toolbar: {
-            container: "#toolbar-".concat(this.fieldId)
+            container: ".toolbar[data-field-id=\"".concat(this.fieldId, "\"]")
           }
         },
         theme: 'snow'
-      });
-      editor.on('text-change', function (delta, oldDelta, source) {
-        // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
-        var content = document.querySelector('.ql-editor').innerHTML;
-        input.dataset.fieldid = _this.fieldId;
-        input.value = content;
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('fieldFill', input);
       }); // keep track of where the cursor is in the editor OUTSIDE of editor events so that we don't lose position when an image is being inserted
 
       editor.on('editor-change', function (eventName) {
+        var content = _this.$el.querySelector('.ql-editor').innerHTML;
+
         if (editor.getSelection().index !== null) {
           _this.editorIndex = editor.getSelection().index;
         } else {
           _this.editorIndex === 0;
-        }
-      });
+        } // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
+
+
+        input.dataset.fieldid = _this.fieldId;
+        input.value = content;
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('fieldFill', input);
+      }); // when we get an insert files event, check if the field id matches our current field id
+      // if so, go on and embed that image, son
+
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('insertFiles', function (files, fieldId) {
         if (_this.fieldId === fieldId) {
           files.forEach(function (file) {
@@ -2421,23 +2431,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
             }, 'user');
           });
         }
-      });
-    } // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
+      }); // this is where we deal with adjusting the size and alt attributes of an image
+      // doesn't work great right now
 
-
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('invalidField', function (fieldId) {
-      if (_this.fieldId === fieldId) {
-        _this.invalid = true;
-      }
-    });
-
-    if (this.fieldType === 'wysiwyg') {
-      var q = this.$el.querySelector('.ql-editor');
-      var qimg = q.querySelectorAll('img');
-      var box = document.querySelector('.image-details');
-      var media = box.querySelector("input[name='img-alt']");
-      var width = box.querySelector("input[name='img-width']");
-      var height = box.querySelector("input[name='img-height']");
       document.addEventListener('click', function (e) {
         var t = e.target;
 
@@ -2477,7 +2473,14 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
         targetImg.setAttribute('height', height.value);
         width.value = targetImg.offsetWidth;
       });
-    }
+    } // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
+
+
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('invalidField', function (fieldId) {
+      if (_this.fieldId === fieldId) {
+        _this.invalid = true;
+      }
+    });
   }
 });
 
@@ -3230,7 +3233,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       _this.tags = tags;
-      console.log(_this.page);
     });
   },
   mounted: function mounted() {
@@ -23227,7 +23229,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { class: _vm.inputClass },
+    { staticClass: "input-field", class: _vm.inputClass },
     [
       _vm.fieldType === "text"
         ? [
@@ -23261,81 +23263,95 @@ var render = function() {
           ]
         : _vm.fieldType === "wysiwyg"
         ? [
-            _c("div", { attrs: { id: "toolbar-" + _vm.fieldId } }, [
-              _c("button", { staticClass: "ql-bold" }),
-              _vm._v(" "),
-              _c("button", { staticClass: "ql-italic" }),
-              _vm._v(" "),
-              _c("button", { staticClass: "ql-underline" }),
-              _vm._v(" "),
-              _c("button", { staticClass: "ql-strike" }),
-              _vm._v(" "),
-              _c("button", {
-                staticClass: "ql-script",
-                attrs: { value: "sub" }
-              }),
-              _vm._v(" "),
-              _c("button", {
-                staticClass: "ql-script",
-                attrs: { value: "super" }
-              }),
-              _vm._v(" "),
-              _c("button", {
-                staticClass: "ql-list",
-                attrs: { value: "ordered" }
-              }),
-              _vm._v(" "),
-              _c("button", {
-                staticClass: "ql-list",
-                attrs: { value: "bullet" }
-              }),
-              _vm._v(" "),
-              _vm._m(0),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.openMedia(_vm.fieldId)
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "svg",
-                    {
-                      staticClass: "ql-img",
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "24",
-                        height: "24",
-                        viewBox: "0 0 24 24"
+            _c(
+              "div",
+              {
+                staticClass: "toolbar",
+                attrs: { "data-field-id": _vm.fieldId }
+              },
+              [
+                _c("button", { staticClass: "ql-bold" }),
+                _vm._v(" "),
+                _c("button", { staticClass: "ql-italic" }),
+                _vm._v(" "),
+                _c("button", { staticClass: "ql-underline" }),
+                _vm._v(" "),
+                _c("button", { staticClass: "ql-strike" }),
+                _vm._v(" "),
+                _c("button", {
+                  staticClass: "ql-script",
+                  attrs: { value: "sub" }
+                }),
+                _vm._v(" "),
+                _c("button", {
+                  staticClass: "ql-script",
+                  attrs: { value: "super" }
+                }),
+                _vm._v(" "),
+                _c("button", {
+                  staticClass: "ql-list",
+                  attrs: { value: "ordered" }
+                }),
+                _vm._v(" "),
+                _c("button", {
+                  staticClass: "ql-list",
+                  attrs: { value: "bullet" }
+                }),
+                _vm._v(" "),
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.openMedia(_vm.fieldId)
                       }
-                    },
-                    [
-                      _c("path", {
+                    }
+                  },
+                  [
+                    _c(
+                      "svg",
+                      {
+                        staticClass: "ql-img",
                         attrs: {
-                          d:
-                            "M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"
+                          xmlns: "http://www.w3.org/2000/svg",
+                          width: "24",
+                          height: "24",
+                          viewBox: "0 0 24 24"
                         }
-                      })
-                    ]
-                  )
-                ]
-              )
-            ]),
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z"
+                          }
+                        })
+                      ]
+                    )
+                  ]
+                )
+              ]
+            ),
             _vm._v(" "),
-            _c("div", { attrs: { id: "wysiwyg-" + _vm.fieldId } }, [
-              _c(
-                "div",
-                {
-                  staticClass: "ql-editor",
-                  attrs: { "data-gramm": "false", contenteditable: "true" }
-                },
-                [_c("span", { domProps: { innerHTML: _vm._s(_vm.content) } })]
-              )
-            ]),
+            _c(
+              "div",
+              {
+                staticClass: "editor",
+                attrs: { "data-field-id": _vm.fieldId }
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "ql-editor",
+                    attrs: { "data-gramm": "false", contenteditable: "true" }
+                  },
+                  [_c("span", { domProps: { innerHTML: _vm._s(_vm.content) } })]
+                )
+              ]
+            ),
             _vm._v(" "),
             _vm._m(1)
           ]

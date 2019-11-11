@@ -179,7 +179,6 @@ export default {
                 }
                 this.tags = tags;
 
-                console.log(this.page)
             })
     },
     mounted() {
@@ -196,8 +195,8 @@ export default {
         // get the field, compare to the page's fields; once it finds a match update its content
         Bus.$on('fieldFill', (field) => {
             let targetField = field.dataset.fieldid
-
             this.page.values.forEach((f) => {
+
                 if (f.field_id === targetField) {
                     f.content = field.value
                 }

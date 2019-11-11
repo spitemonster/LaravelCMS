@@ -767,6 +767,10 @@ select:focus {
   stroke: #885FA6;
 }
 
+.input-field {
+  margin-top: 1rem;
+}
+
 input[type=radio] {
   display: none;
 }

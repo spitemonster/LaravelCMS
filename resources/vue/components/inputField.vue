@@ -1,11 +1,11 @@
 <template>
-    <div v-bind:class="inputClass">
+    <div v-bind:class="inputClass" class="input-field">
         <template v-if="fieldType === 'text'">
             <input type="text" :name="fieldName" :data-fieldid="fieldId" :required="fieldRequired ? true : false" :id="fieldName" class="inputField" v-bind:class="{err: invalid}" @input="fieldContent($event)" :value="content">
             <label :for="fieldName">{{ fieldName }}<template v-if="fieldRequired">*</template></label>
         </template>
         <template v-else-if="fieldType === 'wysiwyg'">
-            <div :id="`toolbar-${fieldId}`">
+            <div class="toolbar" :data-field-id="fieldId">
                 <button class="ql-bold"></button>
                 <button class="ql-italic"></button>
                 <button class="ql-underline"></button>
@@ -25,7 +25,7 @@
                 <button @click="openMedia(fieldId)"><svg class="ql-img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                         <path d="M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z" /></svg></button>
             </div>
-            <div :id="`wysiwyg-${fieldId}`">
+            <div class="editor" :data-field-id="fieldId">
                 <div class="ql-editor" data-gramm="false" contenteditable="true"><span v-html="content"></span></div>
             </div>
             <div class="image-details">
@@ -78,10 +78,17 @@ export default {
         }
     },
     mounted() {
-        let input = document.createElement('input');
+        let input = this.$el.createElement('input');
         if (this.fieldType === 'wysiwyg') {
-
+            let q = this.$el.querySelector('.ql-editor')
+            let qimg = q.querySelectorAll('img')
+            let box = document.querySelector('.image-details')
+            let media = box.querySelector("input[name='img-alt']")
+            let width = box.querySelector("input[name='img-width']")
+            let height = box.querySelector("input[name='img-height']")
             let BlockEmbed = Quill.import('blots/block/embed');
+
+            // implement and register the imageblot for the custom image insert feature, since we don't upload directly within the wysiwyg
             class ImageBlot extends BlockEmbed {
                 static create(value) {
                     let node = super.create();
@@ -97,40 +104,42 @@ export default {
                     };
                 }
             }
+
             ImageBlot.blotName = 'image';
             ImageBlot.tagName = 'img';
 
             Quill.register({ 'formats/image': ImageBlot });
 
-            let editor = new Quill(`#wysiwyg-${this.fieldId}`, {
+            // set up the editor
+            // we target by classes with field IDs to keep things separate but legible
+            let editor = new Quill(`.editor[data-field-id="${this.fieldId}"]`, {
                 debug: 'warn',
                 modules: {
                     toolbar: {
-                        container: `#toolbar-${this.fieldId}`,
+                        container: `.toolbar[data-field-id="${this.fieldId}"]`,
                     },
                 },
                 theme: 'snow'
             });
 
-            editor.on('text-change', (delta, oldDelta, source) => {
-                // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
-                let content = document.querySelector('.ql-editor').innerHTML
+            // keep track of where the cursor is in the editor OUTSIDE of editor events so that we don't lose position when an image is being inserted
+            editor.on('editor-change', (eventName, ...args) => {
+                let content = this.$el.querySelector('.ql-editor').innerHTML
 
+                if (editor.getSelection().index !== null) {
+                    this.editorIndex = editor.getSelection().index
+                } else { this.editorIndex === 0 }
+
+                // because our fieldFill event requires a fieldid data attribute, we are using an invisible input element to hold all the data and fieldid
                 input.dataset.fieldid = this.fieldId
                 input.value = content
 
                 Bus.$emit('fieldFill', input)
             })
 
-            // keep track of where the cursor is in the editor OUTSIDE of editor events so that we don't lose position when an image is being inserted
-            editor.on('editor-change', (eventName, ...args) => {
-                if (editor.getSelection().index !== null) {
-                    this.editorIndex = editor.getSelection().index
-                } else { this.editorIndex === 0 }
-            })
-
+            // when we get an insert files event, check if the field id matches our current field id
+            // if so, go on and embed that image, son
             Bus.$on('insertFiles', (files, fieldId) => {
-
                 if (this.fieldId === fieldId) {
                     files.forEach((file) => {
                         editor.insertEmbed(this.editorIndex, 'image', {
@@ -140,22 +149,9 @@ export default {
                     })
                 }
             })
-        }
 
-        // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
-        Bus.$on('invalidField', (fieldId) => {
-            if (this.fieldId === fieldId) {
-                this.invalid = true;
-            }
-        })
-
-        if (this.fieldType === 'wysiwyg') {
-            let q = this.$el.querySelector('.ql-editor')
-            let qimg = q.querySelectorAll('img')
-            let box = document.querySelector('.image-details')
-            let media = box.querySelector("input[name='img-alt']")
-            let width = box.querySelector("input[name='img-width']")
-            let height = box.querySelector("input[name='img-height']")
+            // this is where we deal with adjusting the size and alt attributes of an image
+            // doesn't work great right now
 
             document.addEventListener('click', (e) => {
                 let t = e.target
@@ -209,6 +205,13 @@ export default {
                 width.value = targetImg.offsetWidth
             })
         }
+
+        // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
+        Bus.$on('invalidField', (fieldId) => {
+            if (this.fieldId === fieldId) {
+                this.invalid = true;
+            }
+        })
     }
 }
 
