@@ -648,6 +648,12 @@ fieldset input[type=checkbox]:invalid {
   height: 1rem;
 }
 
+fieldset button {
+  position: absolute;
+  right: 1rem;
+  top: calc(50% - .75rem);
+}
+
 fieldset textarea {
   background: none;
   border: none;
@@ -663,6 +669,7 @@ fieldset input:not([type=checkbox]):focus ~ label,
 fieldset input:not([type=checkbox]):focus-within ~ label,
 fieldset input:not([type=checkbox]).focus-within ~ label,
 fieldset input:not([type=checkbox]):valid ~ label,
+fieldset input[readonly=readonly] ~ label,
 fieldset textarea:focus ~ label,
 fieldset textarea:focus-within ~ label,
 fieldset textarea.focus-within ~ label,
@@ -1337,5 +1344,55 @@ fieldset + * {
   60% {
     left: 0;
   }
+}
+
+.card {
+  display: block;
+  width: 25rem;
+  margin-bottom: 1rem;
+}
+
+.card__details {
+  border-bottom: 1px solid #3A4755;
+  padding-bottom: 0.5rem;
+}
+
+.card__utilities {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card__children-wrap {
+  position: relative;
+  margin-top: 1rem;
+  margin-left: 2rem;
+}
+
+.card__children-wrap summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.card__children-wrap summary::before {
+  content: "+";
+  position: absolute;
+  left: -1rem;
+}
+
+.card__children-wrap[open] summary::before {
+  content: "-";
+}
+
+.card__child {
+  position: relative;
+  width: 25rem;
+}
+
+.card__child::before {
+  content: "\2EA";
+  position: relative;
+  left: 0;
 }
 

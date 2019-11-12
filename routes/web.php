@@ -64,6 +64,8 @@ Route::get('/logout', function(Request $request) {
     return redirect('/');
 });
 
+Route::middleware('auth:api')->patch('/user', 'UserController@updateUser');
+
 Route::get('/user', function(Request $request) {
     if (!$request->query('user_id')) {
         $authUser = Auth::user();
@@ -125,7 +127,7 @@ Route::delete('/user', function(Request $request) {
     return $allowedData;
 });
 
-
+Route::middleware('auth:api')->post('/token', 'UserController@newApiToken');
 
 // CRUD template
 Route::middleware('auth:api')->post('/template', 'TemplateController@createTemplate');

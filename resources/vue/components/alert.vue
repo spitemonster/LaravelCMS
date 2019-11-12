@@ -9,7 +9,8 @@
         <p class="alert__warning-message">{{ alertData.msg }}</p>
         <h3 v-if="alertData.type !== 'alert'">Are you sure?</h3>
         <div class="alert__buttons">
-            <button v-if="alertData.type !== 'alert'" @click="deleteItem(alertData.type, alertData.id)" class="delete">Delete</button>
+            <button v-if="alertData.type === 'delete'" @click="proceed" class="delete">Delete</button>
+            <button v-else @click="proceed" class="delete">Proceed</button>
             <button @click="closeAlert()" class="affirm">Cancel</button>
         </div>
     </div>
@@ -29,13 +30,8 @@ export default {
         'alertData'
     ],
     methods: {
-        deleteItem(targetType, targetId) {
-            let targetData = {
-                type: targetType,
-                id: targetId
-            }
-
-            Bus.$emit('deleteTarget', targetData)
+        proceed() {
+            Bus.$emit(this.alertData.method, this.alertData)
             this.closeAlert();
         },
         closeAlert() {

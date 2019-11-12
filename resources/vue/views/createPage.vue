@@ -1,6 +1,7 @@
 <template>
     <div class="page">
         <h1>Create Page</h1>
+        <!-- <h2>{{ selectedParent }}</h2> -->
         <input type="radio" name="tab" id="tabOne" checked>
         <input type="radio" name="tab" id="tabTwo">
         <fieldset>
@@ -13,7 +14,7 @@
         </fieldset>
         <fieldset>
             <div class="select-wrap">
-                <select id="parentPage" @change="selectParent" v-if="pages">
+                <select id="parentPage" v-model="selectedParent" @change="selectParent" v-if="pages">
                     <option value="">No Parent</option>
                     <option v-for="page, k in pages" v-if="page.url !== '/'" :value="page.page_id">{{ page.title }} - {{ page.url }}</option>
                 </select>
@@ -54,6 +55,7 @@ import axios from 'axios'
 import inputField from '../components/inputField.vue'
 import Bus from '../../js/admin.js'
 import uuidv4 from 'uuid/v4'
+import router from '../../js/admin.js'
 
 export default {
     data() {
@@ -73,7 +75,8 @@ export default {
             pageDescription: '',
             tags: '',
             private: false,
-            pageId: null
+            pageId: null,
+            parentSlug: null
         }
     },
     props: [],
@@ -86,13 +89,10 @@ export default {
                 if (sel.classList.contains('invalid')) {
                     sel.classList.remove('invalid')
                 }
-
                 axios.get(`/template?template_id=${sel.value}`)
                     .then((res) => {
                         this.fields = res.data.fields
                         this.selectedTemplate = res.data.template_id
-
-                        console.log(this.fields)
                     })
             }
         },
@@ -101,10 +101,9 @@ export default {
 
             axios.get(`/page?page_id=${parent.value}`)
                 .then((res) => {
-                    let parentSlug = res.data.url;
+                    this.parentSlug = res.data.url;
 
-                    this.selectedParent = parent.value;
-                    this.getUrl(`${parentSlug ? parentSlug : ''}${this.baseUrl}`);
+                    this.getUrl(`${this.parentSlug ? this.parentSlug : ''}${this.baseUrl}`);
                 })
         },
         generateUrl(e) {
@@ -124,7 +123,7 @@ export default {
                 url = this.baseUrl = `/${url}`;
             }
 
-            this.getUrl(url);
+            this.getUrl(`${this.parentSlug ? this.parentSlug : ''}${url}`);
         },
         getUrl(slug) {
             axios.get(`/url?slug=${slug}`)
@@ -263,6 +262,14 @@ export default {
             this.pageId = pageId;
         })
 
+        if (this.$route.params.parent_id) {
+            axios.get(`/page?page_id=${this.$route.params.parent_id}`)
+                .then((res) => {
+                    this.parentSlug = res.data.url;
+                })
+
+            this.selectedParent = this.$route.params.parent_id
+        }
     }
 }
 

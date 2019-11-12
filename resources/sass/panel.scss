@@ -374,3 +374,58 @@ fieldset+* {
         left: 0;
     }
 }
+
+.card {
+    display: block;
+    width: 25rem;
+    margin-bottom: 1rem;
+
+    &__details {
+        border-bottom: 1px solid $black;
+        padding-bottom: .5rem;
+    }
+
+    &__utilities {
+        margin-top: .5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__children-wrap {
+        position: relative;
+        margin-top: 1rem;
+        margin-left: 2rem;
+
+        summary {
+            cursor: pointer;
+            list-style: none;
+
+            &::before {
+                content: "+";
+                position: absolute;
+                left: -1rem;
+            }
+        }
+
+        &[open] {
+            summary {
+
+                &::before {
+                    content: "-";
+                }
+            }
+        }
+    }
+
+    &__child {
+        position: relative;
+        width: 25rem;
+
+        &::before {
+            content: "˪";
+            position: relative;
+            left: 0;
+        }
+    }
+}

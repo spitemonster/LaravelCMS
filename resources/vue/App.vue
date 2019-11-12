@@ -79,7 +79,7 @@ export default {
             }, 5000)
         },
 
-        alertDelete(alertData) {
+        alert(alertData) {
             let alert = document.querySelector('.alert')
 
             this.alertData = alertData
@@ -97,6 +97,12 @@ export default {
             }
 
             return nav.classList.add('open');
+        },
+        getApiToken() {
+            axios.get('/user')
+                .then((res) => {
+                    this.api_token = res.data.api_token
+                })
         }
     },
     components: {
@@ -110,10 +116,7 @@ export default {
         mediaWindow
     },
     beforeMount() {
-        axios.get('/user')
-            .then((res) => {
-                this.api_token = res.data.api_token
-            })
+        this.getApiToken();
     },
     mounted() {
         Bus.$on('growl', (growler) => {
@@ -152,37 +155,15 @@ export default {
                 })
         })
 
-        // Page Functionality
-
-        Bus.$on('updatePage', (pageData) => {
-            axios.patch(`/page?page_id=${pageData.page_id}&api_token=${this.api_token}`, pageData)
+        Bus.$on('getUser', (userId) => {
+            axios.get(`/user?user_id=${userId}&api_token${this.api_token}`)
                 .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    this.$router.push({ name: 'viewPages' })
-                    Bus.$emit('growl', growlerData)
+                    Bus.$emit('returnUser', res.data)
                 })
         })
 
-        Bus.$on('updateTemplate', (templateData) => {
-            axios.patch(`/template?template_id=${templateData.template_id}&api_token=${this.api_token}`, templateData)
-                .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    this.$router.push({ name: 'viewTemplates' })
-                    Bus.$emit('growl', growlerData)
-                    Bus.$emit('templateCreated')
-                })
-        })
-
-        Bus.$on('alertDelete', data => {
-            this.alertDelete(data);
+        Bus.$on('alert', data => {
+            this.alert(data);
         })
 
         Bus.$on('openMedia', (fieldId = null) => {
@@ -209,6 +190,38 @@ export default {
             axios.delete(`/${targetData.type}?${targetData.type}_id=${targetData.id}&api_token=${this.api_token}`)
                 .then((res) => {
                     Bus.$emit('deleted', targetData.type)
+                })
+        })
+
+        Bus.$on('getNewApiToken', (data) => {
+            axios.post(`/token?user_id=${data.id}&api_token=${this.api_token}`)
+                .then((res) => {
+                    let growlerData = {
+                        mode: res.data.status,
+                        message: res.data.message
+                    }
+
+                    Bus.$emit('newTokenGenerated', data.id)
+                    Bus.$emit('growl', growlerData)
+
+                    this.getApiToken();
+                })
+        })
+
+        Bus.$on('updateUser', (userData) => {
+            axios.patch(`/user?user_id=${userData.user_id}&api_token=${this.api_token}`, userData)
+                .then((res) => {
+                    let growlerData = {
+                        mode: res.data.status,
+                        message: res.data.message
+                    }
+
+                    Bus.$emit('growl', growlerData)
+                    this.$router.push({ name: 'dashboard' })
+
+                    window.setTimeout(() => {
+                        window.location.href = "/logout"
+                    }, 3000)
                 })
         })
     }

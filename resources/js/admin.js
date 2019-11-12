@@ -11,6 +11,7 @@ import editPage from '../vue/views/editPage.vue'
 import editTemplate from '../vue/views/editTemplate.vue'
 import viewUsers from '../vue/views/users.vue'
 import viewMedia from '../vue/views/viewMedia.vue'
+import editUser from '../vue/views/editUser.vue'
 
 
 const Vue = window.Vue = require('vue')
@@ -30,11 +31,12 @@ const router = new Router({
     routes: [
         { path: '/admin', name: 'admin', component: dashboard },
         { path: '/admin/create/template', name: 'createTemplate', component: createTemplate },
-        { path: '/admin/create/page', name: 'createPage', component: createPage },
+        { path: '/admin/create/page/:parent_id?', name: 'createPage', component: createPage },
         { path: '/admin/view/pages', name: 'viewPages', component: viewPages },
         { path: '/admin/view/templates', name: 'viewTemplates', component: viewTemplates },
-        { path: '/admin/page/:page_id/edit', name: 'editPages', component: editPage },
-        { path: '/admin/template/:template_id/edit', name: 'editTemplates', component: editTemplate },
+        { path: '/admin/edit/page/:page_id', name: 'editPages', component: editPage },
+        { path: '/admin/edit/template/:template_id', name: 'editTemplates', component: editTemplate },
+        { path: '/admin/edit/user/:user_id', name: 'editUser', component: editUser },
         { path: '/admin/view/users', name: 'viewUsers', component: viewUsers },
         { path: '/admin/view/media', name: 'viewMedia', component: viewMedia }
     ]

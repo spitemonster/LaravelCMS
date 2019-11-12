@@ -104,9 +104,10 @@ class TemplateController extends Controller
             $template->user_id = $template->updated_user_id;
         }
 
+        // loop through each field and save its new info
         foreach ($request->input('fields') as $field) {
 
-                $f = Field::where('field_id', $field['field_id'])->first();
+            $f = Field::where('field_id', $field['field_id'])->with('values')->first();
 
             if(!$f) {
                 $f = new Field;
@@ -115,9 +116,21 @@ class TemplateController extends Controller
                 $f->template_id = $request->query('template_id');
             }
 
-            $f->name = $field['name'];
-            $f->required = $field['required'];
-            $f->save();
+            // loop through each FieldValue and save its new info. The only thing that can change ex post facto is the field name so we save that to be safe
+            // this is to ensure that the name of the field when being rendered in the template file is consistent with what you name it when you create or modify it
+            foreach($f->values as $value) {
+                // wrap in an if to save from writing to the db if necessary
+                if ($value->field_name !== $field['name']) {
+                    $value->field_name = $field['name'];
+                    $value->save();
+                }
+            }
+
+            if ($f->name !== $field['name'] || $f->required !== $field['required']) {
+                $f->name = $field['name'];
+                $f->required = $field['required'];
+                $f->save();
+            }
         }
 
         if ($request->deleteFields) {

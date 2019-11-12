@@ -5,7 +5,7 @@
             <template v-for="m in media">
                 <div class="img-grid__image" :data-fileid="m.file_id" :data-src="m.url" :data-alt="m.alt_text">
                     <img :src="m.url" :alt="m.alt_text">
-                    <button @click="alertDelete(m.file_id)" class="btn-icon">X</button>
+                    <button @click="alert(m.file_id)" class="btn-icon">X</button>
                 </div>
             </template>
         </div>
@@ -50,9 +50,11 @@ export default {
                     this.media = null
                 })
         },
-        alertDelete(fileId) {
+        alert(fileId) {
             let fileData = {
+                intent: 'delete',
                 type: 'media',
+                method: 'deleteTarget',
                 id: fileId,
                 msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
             }

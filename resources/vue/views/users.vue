@@ -1,16 +1,17 @@
 <template>
     <section class="page">
         <h1>View Users</h1>
-        <div v-for="user in users" class="user-card">
-            <div class="user-card__details">
+        <div v-for="user in users" class="card">
+            <div class="card__details">
                 <h3 class="user-card__name">{{ user.name }}</h3>
                 <p class="user-card__info" v-if="superuser">Superuser</p>
                 <p class="user-card__info">Created: {{ user.created_at }}</p>
                 <p class="user-card__info">User ID: {{ user.user_id }}</p>
                 <p class="user-card__info">API Token: {{ user.api_token }}</p>
             </div>
-            <div class="user-card__utilities">
-                <button @click="alertDelete(user)" class="delete">Delete User</button>
+            <div class="card__utilities">
+                <router-link tag="span" :to="'/admin/edit/user/' + user.user_id"><a>Edit User</a></router-link>
+                <button @click="alert(user)" class="delete">Delete User</button>
             </div>
         </div>
     </section>
@@ -35,22 +36,24 @@ export default {
         deleteUser(user_id) {
             Bus.$emit('deleteUser', user_id);
         },
-        alertDelete(userData) {
+        alert(userData) {
             let data = {}
 
             if (this.api_token === userData.api_token && this.users.length <= 1) {
+                data.intent = "delete"
                 data.type = "alert"
                 data.id = null
                 data.msg = "You cannot delete your own account if you are the only user."
 
-                return Bus.$emit('alertDelete', data)
+                return Bus.$emit('alert', data)
             }
 
             data.type = 'user'
+            data.method = "deleteTarget"
             data.id = this.user_id
             data.msg = 'WARNING: This will delete the user and remove any reference to them from the site. You may experience issues with any page that references them.'
 
-            Bus.$emit('alertDelete', data)
+            Bus.$emit('alert', data)
         },
         getUsers() {
             axios.get('/user')
