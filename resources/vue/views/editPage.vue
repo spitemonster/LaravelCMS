@@ -26,7 +26,10 @@
                         <input type="text" id="tags" v-model="tags" required />
                         <label for="tags">Tags (Comma Separated)</label>
                     </fieldset>
-                    <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
+                    <div class="page-card__utilities">
+                        <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
+                        <a :href="page.url" target="_blank">View Page</a>
+                    </div>
                 </div>
                 <div class="content" id="tabContentTwo">
                     <p>Created By: {{ page.created_by ? page.created_by.name : 'User Deleted' }}</p>
@@ -139,8 +142,15 @@ export default {
             // just to double confirm, if fields valid is true, emit the updatePage event with pageData
             // and the event listener on App.vue takes care of everything else
 
+            let data = {
+                type: 'page',
+                id: pageData.page_id,
+                data: pageData,
+                redirect: 'viewPages'
+            }
+
             if (this.fieldsValid) {
-                Bus.$emit('updatePage', pageData)
+                Bus.$emit('update', data)
             }
         },
         invalidField(fieldId) {

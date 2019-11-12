@@ -38,14 +38,15 @@ export default {
         deletePage(pageId) {
             Bus.$emit('deletePage', pageId);
         },
-        alertDelete(pageData) {
+        alertDelete(page) {
 
-            let data = {
-                type: 'deletePage',
-                page: pageData
+            let alertData = {
+                type: 'page',
+                id: page.page_id,
+                msg: 'WARNING: This will delete the page and any of its children.'
             }
 
-            Bus.$emit('alertDelete', data);
+            Bus.$emit('alertDelete', alertData);
         }
     },
     beforeCreate() {
@@ -55,11 +56,13 @@ export default {
             })
     },
     mounted() {
-        Bus.$on('pageDeleted', () => {
-            axios.get('/page')
-                .then((res) => {
-                    this.pages = res.data
-                })
+        Bus.$on('deleted', (type) => {
+            if (type === 'page') {
+                axios.get('/page')
+                    .then((res) => {
+                        this.pages = res.data
+                    })
+            }
         })
     }
 }

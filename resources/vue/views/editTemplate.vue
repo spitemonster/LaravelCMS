@@ -35,6 +35,14 @@ export default {
     },
     props: [],
     methods: {
+        getTemplate() {
+            axios.get(`/template/?template_id=${this.$route.params.template_id}`)
+                .then((res) => {
+                    this.fields = res.data.fields
+                    this.templateName = res.data.name
+                    this.pageCount = res.data.pages.length
+                })
+        },
         saveTemplate() {
             let templateData = {}
             let headers = { 'Content-Type': 'application/json' }
@@ -44,7 +52,14 @@ export default {
             templateData.fields = this.fields;
             templateData.deleteFields = this.deleteFields;
 
-            Bus.$emit('updateTemplate', templateData)
+            let data = {
+                type: 'template',
+                id: templateData.template_id,
+                data: templateData,
+                redirect: 'viewTemplates'
+            }
+
+            Bus.$emit('update', data)
         },
         addField() {
             let sel = document.querySelector('#fieldSelector')
@@ -54,14 +69,7 @@ export default {
     components: {
         fieldCard,
     },
-    beforeCreate() {
-        axios.get(`/template/?template_id=${this.$route.params.template_id}`)
-            .then((res) => {
-                this.fields = res.data.fields
-                this.templateName = res.data.name
-                this.pageCount = res.data.pages.length
-            })
-    },
+    beforeCreate() {},
     mounted() {
         document.addEventListener('keydown', (e) => {
             if (e.metaKey && e.which == 83) {
@@ -71,12 +79,12 @@ export default {
             }
         })
 
-        Bus.$on('deleteField', (targetField) => {
-            this.fields = this.fields.filter((field) => {
-                return field !== targetField;
-            })
+        this.getTemplate()
 
-            this.deleteFields.push(targetField.field_id);
+        Bus.$on('deleted', (type) => {
+            if (type === 'field') {
+                this.getTemplate()
+            }
         })
 
         Bus.$on('requireField', (targetField) => {

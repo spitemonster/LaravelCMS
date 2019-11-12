@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\field_value;
+use App\FieldValue;
 use Illuminate\Database\Eloquent\Model;
 
 class Field extends Model
@@ -12,6 +12,10 @@ class Field extends Model
     public function template()
     {
         return $this->belongsTo(Template::class, 'template_id', 'template_id');
+    }
+
+    public function values() {
+        return $this->hasMany(FieldValue::class, 'field_id', 'field_id');
     }
 
     public function getRequiredAttribute($value)

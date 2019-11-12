@@ -28,8 +28,9 @@ export default {
     methods: {
         alertDelete(template) {
             let alertData = {
-                type: "deleteTemplate",
-                template: template
+                type: "template",
+                id: template.template_id,
+                msg: `WARNING: ${ template.pages.length } page(s) are currently using this template.This will delete the template and its history.Any pages using this template will also be deleted.`
             }
 
             Bus.$emit('alertDelete', alertData)
@@ -45,11 +46,13 @@ export default {
             })
     },
     mounted() {
-        Bus.$on('templateDeleted', () => {
-            axios.get('/template')
-                .then((res) => {
-                    this.templates = res.data
-                })
+        Bus.$on('deleted', (type) => {
+            if (type === 'template') {
+                axios.get('/template')
+                    .then((res) => {
+                        this.templates = res.data
+                    })
+            }
         });
     }
 }

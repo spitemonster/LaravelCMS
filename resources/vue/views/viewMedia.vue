@@ -42,15 +42,21 @@ export default {
                             arr.push(item);
                         })
 
-                        this.media = arr
+                        console.log(arr)
+
+                        return this.media = arr
                     }
+
+                    this.media = null
                 })
         },
         alertDelete(fileId) {
             let fileData = {
-                type: 'deleteFile',
-                fileId: fileId
+                type: 'media',
+                id: fileId,
+                msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
             }
+
             Bus.$emit('alertDelete', fileData)
         },
         uploadFiles() {
@@ -62,7 +68,11 @@ export default {
     mounted() {
         this.getMedia();
         Bus.$on('mediaUploaded', this.getMedia)
-        Bus.$on('mediaDeleted', this.getMedia)
+        Bus.$on('deleted', (type) => {
+            if (type === 'media') {
+                this.getMedia()
+            }
+        })
     }
 }
 

@@ -1,15 +1,17 @@
 <template>
     <section class="page">
         <h1>View Users</h1>
-        <div v-for="user in users" :class="[user.api_token === api_token ? 'fart' : '']">
-            <h3>{{ user.name }}</h3>
-            <p v-if="superuser">Superuser</p>
-            <p>Created: {{ user.created_at }}</p>
-            <p>User ID: {{ user.user_id }}</p>
-            <p>API Token: {{ user.api_token }}</p>
-            <template v-if="user.api_token === api_token || superuser">
+        <div v-for="user in users" class="user-card">
+            <div class="user-card__details">
+                <h3 class="user-card__name">{{ user.name }}</h3>
+                <p class="user-card__info" v-if="superuser">Superuser</p>
+                <p class="user-card__info">Created: {{ user.created_at }}</p>
+                <p class="user-card__info">User ID: {{ user.user_id }}</p>
+                <p class="user-card__info">API Token: {{ user.api_token }}</p>
+            </div>
+            <div class="user-card__utilities">
                 <button @click="alertDelete(user)" class="delete">Delete User</button>
-            </template>
+            </div>
         </div>
     </section>
 </template>
@@ -34,34 +36,49 @@ export default {
             Bus.$emit('deleteUser', user_id);
         },
         alertDelete(userData) {
+            let data = {}
 
-            let data = {
-                type: 'deleteUser',
-                user: userData
+            if (this.api_token === userData.api_token && this.users.length <= 1) {
+                data.type = "alert"
+                data.id = null
+                data.msg = "You cannot delete your own account if you are the only user."
+
+                return Bus.$emit('alertDelete', data)
             }
 
+            data.type = 'user'
+            data.id = this.user_id
+            data.msg = 'WARNING: This will delete the user and remove any reference to them from the site. You may experience issues with any page that references them.'
+
             Bus.$emit('alertDelete', data)
+        },
+        getUsers() {
+            axios.get('/user')
+                .then((res) => {
+                    this.api_token = res.data.api_token
+                    this.superuser = res.data.superuser
+                    this.user_id = res.data.user_id
+                }).then(() => {
+                    axios.get(`/users?api_token=${this.api_token}`)
+                        .then((res) => {
+                            this.users = res.data
+                        })
+                }).catch(err => {
+                    console.log(err)
+                })
         }
     },
     beforeCreate() {
-        axios.get('/user')
-            .then((res) => {
-                this.api_token = res.data.api_token
-                this.superuser = res.data.superuser
-                this.user_id = res.data.user_id
-            }).then(() => {
-                axios.get(`/users?api_token=${this.api_token}`)
-                    .then((res) => {
-                        this.users = res.data
-                    })
-            })
+
     },
     mounted() {
-        Bus.$on('userDeleted', (users) => {
-            if (users) {
-                this.users = users
+        Bus.$on('deleted', (type) => {
+            if (type === 'user') {
+                this.getUsers()
             }
         })
+
+        this.getUsers()
     }
 };
 

@@ -78,14 +78,14 @@ export default {
         }
     },
     mounted() {
-        let input = this.$el.createElement('input');
+        let input = document.createElement('input');
         if (this.fieldType === 'wysiwyg') {
             let q = this.$el.querySelector('.ql-editor')
             let qimg = q.querySelectorAll('img')
             let box = document.querySelector('.image-details')
             let media = box.querySelector("input[name='img-alt']")
-            let width = box.querySelector("input[name='img-width']")
-            let height = box.querySelector("input[name='img-height']")
+            let imageWidth = box.querySelector("input[name='img-width']")
+            let imageHeight = box.querySelector("input[name='img-height']")
             let BlockEmbed = Quill.import('blots/block/embed');
 
             // implement and register the imageblot for the custom image insert feature, since we don't upload directly within the wysiwyg
@@ -168,8 +168,8 @@ export default {
                     box.classList.add('active');
 
                     media.value = document.querySelector('.selected-image').getAttribute('alt')
-                    width.value = document.querySelector('.selected-image').offsetWidth
-                    height.value = document.querySelector('.selected-image').offsetHeight
+                    imageWidth.value = document.querySelector('.selected-image').offsetWidth
+                    imageHeight.value = document.querySelector('.selected-image').offsetHeight
                 } else {
 
                     // if user clicks in the editor and they are not selecting an image, get rid of the box
@@ -191,18 +191,18 @@ export default {
                 box.classList.remove('active');
             })
 
-            width.addEventListener('change', () => {
+            imageWidth.addEventListener('change', () => {
                 let targetImg = document.querySelector('.selected-image')
 
-                targetImg.setAttribute('width', width.value)
-                height.value = targetImg.offsetHeight
+                targetImg.setAttribute('width', imageWidth.value)
+                imageHeight.value = targetImg.offsetHeight
             })
 
-            height.addEventListener('change', () => {
+            imageHeight.addEventListener('change', () => {
                 let targetImg = document.querySelector('.selected-image')
 
-                targetImg.setAttribute('height', height.value)
-                width.value = targetImg.offsetWidth
+                targetImg.setAttribute('height', imageHeight.value)
+                imageWidth.value = targetImg.offsetWidth
             })
         }
 

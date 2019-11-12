@@ -167,8 +167,14 @@ export default {
 
             let pageData = this.collectPageData();
 
+            let createData = {
+                type: 'page',
+                data: pageData,
+                redirect: 'viewPages'
+            }
+
             if (this.fieldsValid) {
-                Bus.$emit('createPage', pageData)
+                Bus.$emit('create', createData)
             }
         },
         collectPageData() {

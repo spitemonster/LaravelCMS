@@ -1887,22 +1887,40 @@ __webpack_require__.r(__webpack_exports__);
 
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('growl', function (growler) {
       _this2.growl(growler);
-    }); // Page Functionality
-
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('createPage', function (pageData) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.post("/page?api_token=".concat(_this2.api_token), pageData).then(function (res) {
+    });
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('create', function (data) {
+      axios__WEBPACK_IMPORTED_MODULE_8___default.a.post("/".concat(data.type, "?api_token=").concat(_this2.api_token), data.data).then(function (res) {
         var growlerData = {
           mode: res.data.status,
           message: res.data.message
         };
 
-        _this2.$router.push({
-          name: 'viewPages'
-        });
+        if (data.redirect) {
+          _this2.$router.push({
+            name: data.redirect
+          });
+        }
 
         _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
       });
     });
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('update', function (data) {
+      axios__WEBPACK_IMPORTED_MODULE_8___default.a.patch("/".concat(data.type, "?").concat(data.type, "_id=").concat(data.id, "&api_token=").concat(_this2.api_token), data.data).then(function (res) {
+        var growlerData = {
+          mode: res.data.status,
+          message: res.data.message
+        };
+
+        if (data.redirect) {
+          _this2.$router.push({
+            name: data.redirect
+          });
+        }
+
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
+      });
+    }); // Page Functionality
+
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('updatePage', function (pageData) {
       axios__WEBPACK_IMPORTED_MODULE_8___default.a.patch("/page?page_id=".concat(pageData.page_id, "&api_token=").concat(_this2.api_token), pageData).then(function (res) {
         var growlerData = {
@@ -1915,31 +1933,6 @@ __webpack_require__.r(__webpack_exports__);
         });
 
         _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
-      });
-    });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('deletePage', function (pageId) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.delete("/page?page_id=".concat(pageId, "&api_token=").concat(_this2.api_token)).then(function (res) {
-        var growlerData = {
-          mode: res.data.status,
-          message: res.data.message
-        };
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('pageDeleted');
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
-      });
-    });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('createTemplate', function (templateData) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.post("/template?api_token=".concat(_this2.api_token), templateData).then(function (res) {
-        var growlerData = {
-          mode: res.data.status,
-          message: res.data.message
-        };
-
-        _this2.$router.push({
-          name: 'viewTemplates'
-        });
-
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('templateCreated');
       });
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('updateTemplate', function (templateData) {
@@ -1955,26 +1948,6 @@ __webpack_require__.r(__webpack_exports__);
 
         _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
         _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('templateCreated');
-      });
-    });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('deleteTemplate', function (templateId) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.delete("/template?template_id=".concat(templateId, "&api_token=").concat(_this2.api_token)).then(function (res) {
-        var growlerData = {
-          mode: res.data.status,
-          message: res.data.message
-        };
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('templateDeleted');
-      });
-    });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('deleteUser', function (user_id) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.delete("/user?user_id=".concat(user_id, "&api_token=").concat(_this2.api_token)).then(function (res) {
-        var growlerData = {
-          mode: res.data.status,
-          message: res.data.message
-        };
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('growl', growlerData);
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('userDeleted', res.data.users);
       });
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('alertDelete', function (data) {
@@ -1995,9 +1968,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('deleteMedia', function (fileId) {
-      axios__WEBPACK_IMPORTED_MODULE_8___default.a.delete("/media?media_id=".concat(fileId)).then(function (res) {
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('mediaDeleted');
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$on('deleteTarget', function (targetData) {
+      axios__WEBPACK_IMPORTED_MODULE_8___default.a.delete("/".concat(targetData.type, "?").concat(targetData.type, "_id=").concat(targetData.id, "&api_token=").concat(_this2.api_token)).then(function (res) {
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_7__["default"].$emit('deleted', targetData.type);
       });
     });
   }
@@ -2015,64 +1988,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_admin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/admin.js */ "./resources/js/admin.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
@@ -2090,36 +2007,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'alert',
   data: function data() {
-    return {};
+    return {
+      count: 0
+    };
   },
   props: ['alertData'],
   methods: {
-    deletePage: function deletePage() {
-      var pageID = this.alertData.page.page_id;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deletePage', pageID);
-      this.closeAlert();
-    },
-    deleteUser: function deleteUser() {
-      var userID = this.alertData.user.user_id;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteUser', userID);
-      this.closeAlert();
-    },
-    deleteField: function deleteField() {
-      var fieldID = this.alertData.field;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteField', fieldID);
-      this.closeAlert();
-    },
-    deleteTemplate: function deleteTemplate() {
-      var templateID = this.alertData.template.template_id;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteTemplate', templateID);
-      this.closeAlert();
-    },
-    deleteFile: function deleteFile() {
-      var fileId = this.alertData.fileId;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteMedia', fileId);
+    deleteItem: function deleteItem(targetType, targetId) {
+      var targetData = {
+        type: targetType,
+        id: targetId
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('deleteTarget', targetData);
       this.closeAlert();
     },
     closeAlert: function closeAlert() {
@@ -2186,9 +2089,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     alertDelete: function alertDelete(field) {
       var fieldData = {
-        type: 'deleteField',
-        field: field,
-        pageCount: this.pageCount
+        type: 'field',
+        id: field.field_id,
+        msg: 'WARNING: This will delete this field from the template permanently. Any pages referencing this field may experience errors.'
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fieldData);
     }
@@ -2344,15 +2247,15 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
   mounted: function mounted() {
     var _this = this;
 
-    var input = this.$el.createElement('input');
+    var input = document.createElement('input');
 
     if (this.fieldType === 'wysiwyg') {
       var q = this.$el.querySelector('.ql-editor');
       var qimg = q.querySelectorAll('img');
       var box = document.querySelector('.image-details');
       var media = box.querySelector("input[name='img-alt']");
-      var width = box.querySelector("input[name='img-width']");
-      var height = box.querySelector("input[name='img-height']");
+      var imageWidth = box.querySelector("input[name='img-width']");
+      var imageHeight = box.querySelector("input[name='img-height']");
       var BlockEmbed = quill__WEBPACK_IMPORTED_MODULE_1___default.a.import('blots/block/embed'); // implement and register the imageblot for the custom image insert feature, since we don't upload directly within the wysiwyg
 
       var ImageBlot =
@@ -2445,8 +2348,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
           t.classList.add('selected-image');
           box.classList.add('active');
           media.value = document.querySelector('.selected-image').getAttribute('alt');
-          width.value = document.querySelector('.selected-image').offsetWidth;
-          height.value = document.querySelector('.selected-image').offsetHeight;
+          imageWidth.value = document.querySelector('.selected-image').offsetWidth;
+          imageHeight.value = document.querySelector('.selected-image').offsetHeight;
         } else {
           // if user clicks in the editor and they are not selecting an image, get rid of the box
           if (document.querySelector('.selected-image')) {
@@ -2463,15 +2366,15 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       media.addEventListener('blur', function () {
         box.classList.remove('active');
       });
-      width.addEventListener('change', function () {
+      imageWidth.addEventListener('change', function () {
         var targetImg = document.querySelector('.selected-image');
-        targetImg.setAttribute('width', width.value);
-        height.value = targetImg.offsetHeight;
+        targetImg.setAttribute('width', imageWidth.value);
+        imageHeight.value = targetImg.offsetHeight;
       });
-      height.addEventListener('change', function () {
+      imageHeight.addEventListener('change', function () {
         var targetImg = document.querySelector('.selected-image');
-        targetImg.setAttribute('height', height.value);
-        width.value = targetImg.offsetWidth;
+        targetImg.setAttribute('height', imageHeight.value);
+        imageWidth.value = targetImg.offsetWidth;
       });
     } // Should be self documenting, but if a field is invalid, get the fieldID, find the field and mark it invalid
 
@@ -2610,8 +2513,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     alertDelete: function alertDelete(fileId) {
       var fileData = {
-        type: 'deleteFile',
-        fileId: fileId
+        type: 'media',
+        id: fileId,
+        msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fileData);
     }
@@ -2623,7 +2527,11 @@ __webpack_require__.r(__webpack_exports__);
 
     _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaUploaded', this.getMedia); // when an image/media is deleted, refresh the list
 
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaDeleted', this.getMedia);
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('deleted', function (type) {
+      if (type === 'media') {
+        _this2.getMedia();
+      }
+    });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('insertFiles', function () {
       //when an image is inserted into the wysiwyg editor, remove all selected images so if there's another image to insert we start fresh
       var selectedImgs = _this2.$el.querySelectorAll('.selected');
@@ -2818,9 +2726,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var pageData = this.collectPageData();
+      var createData = {
+        type: 'page',
+        data: pageData,
+        redirect: 'viewPages'
+      };
 
       if (this.fieldsValid) {
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('createPage', pageData);
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('create', createData);
       }
     },
     collectPageData: function collectPageData() {
@@ -2957,9 +2870,14 @@ __webpack_require__.r(__webpack_exports__);
         index: this.fields.length
       });
     },
-    saveTemplate: function saveTemplate() {
+    createTemplate: function createTemplate() {
       var template = this.collectTemplateData();
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('createTemplate', template);
+      var data = {
+        type: 'template',
+        data: template,
+        redirect: 'viewTemplates'
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('create', data);
     },
     collectTemplateData: function collectTemplateData() {
       var template_name = document.querySelector('#templateName').value;
@@ -3112,6 +3030,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -3194,8 +3115,15 @@ __webpack_require__.r(__webpack_exports__);
       this.fieldsValid = true; // just to double confirm, if fields valid is true, emit the updatePage event with pageData
       // and the event listener on App.vue takes care of everything else
 
+      var data = {
+        type: 'page',
+        id: pageData.page_id,
+        data: pageData,
+        redirect: 'viewPages'
+      };
+
       if (this.fieldsValid) {
-        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('updatePage', pageData);
+        _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('update', data);
       }
     },
     invalidField: function invalidField(fieldId) {
@@ -3312,6 +3240,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: [],
   methods: {
+    getTemplate: function getTemplate() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/template/?template_id=".concat(this.$route.params.template_id)).then(function (res) {
+        _this.fields = res.data.fields;
+        _this.templateName = res.data.name;
+        _this.pageCount = res.data.pages.length;
+      });
+    },
     saveTemplate: function saveTemplate() {
       var templateData = {};
       var headers = {
@@ -3321,7 +3258,13 @@ __webpack_require__.r(__webpack_exports__);
       templateData.name = this.templateName;
       templateData.fields = this.fields;
       templateData.deleteFields = this.deleteFields;
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('updateTemplate', templateData);
+      var data = {
+        type: 'template',
+        id: templateData.template_id,
+        data: templateData,
+        redirect: 'viewTemplates'
+      };
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('update', data);
     },
     addField: function addField() {
       var sel = document.querySelector('#fieldSelector');
@@ -3336,15 +3279,7 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     fieldCard: _components_fieldCard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  beforeCreate: function beforeCreate() {
-    var _this = this;
-
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/template/?template_id=".concat(this.$route.params.template_id)).then(function (res) {
-      _this.fields = res.data.fields;
-      _this.templateName = res.data.name;
-      _this.pageCount = res.data.pages.length;
-    });
-  },
+  beforeCreate: function beforeCreate() {},
   mounted: function mounted() {
     var _this2 = this;
 
@@ -3355,12 +3290,11 @@ __webpack_require__.r(__webpack_exports__);
         _this2.saveTemplate();
       }
     });
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('deleteField', function (targetField) {
-      _this2.fields = _this2.fields.filter(function (field) {
-        return field !== targetField;
-      });
-
-      _this2.deleteFields.push(targetField.field_id);
+    this.getTemplate();
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('deleted', function (type) {
+      if (type === 'field') {
+        _this2.getTemplate();
+      }
     });
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('requireField', function (targetField) {
       _this2.fields.forEach(function (field) {
@@ -3431,12 +3365,13 @@ __webpack_require__.r(__webpack_exports__);
     deletePage: function deletePage(pageId) {
       _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('deletePage', pageId);
     },
-    alertDelete: function alertDelete(pageData) {
-      var data = {
-        type: 'deletePage',
-        page: pageData
+    alertDelete: function alertDelete(page) {
+      var alertData = {
+        type: 'page',
+        id: page.page_id,
+        msg: 'WARNING: This will delete the page and any of its children.'
       };
-      _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', data);
+      _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', alertData);
     }
   },
   beforeCreate: function beforeCreate() {
@@ -3449,10 +3384,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this2 = this;
 
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('pageDeleted', function () {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/page').then(function (res) {
-        _this2.pages = res.data;
-      });
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('deleted', function (type) {
+      if (type === 'page') {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/page').then(function (res) {
+          _this2.pages = res.data;
+        });
+      }
     });
   }
 });
@@ -3504,8 +3441,9 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     alertDelete: function alertDelete(template) {
       var alertData = {
-        type: "deleteTemplate",
-        template: template
+        type: "template",
+        id: template.template_id,
+        msg: "WARNING: ".concat(template.pages.length, " page(s) are currently using this template.This will delete the template and its history.Any pages using this template will also be deleted.")
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('alertDelete', alertData);
     },
@@ -3523,10 +3461,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this2 = this;
 
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('templateDeleted', function () {
-      axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('/template').then(function (res) {
-        _this2.templates = res.data;
-      });
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('deleted', function (type) {
+      if (type === 'template') {
+        axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('/template').then(function (res) {
+          _this2.templates = res.data;
+        });
+      }
     });
   }
 });
@@ -3560,6 +3500,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -3577,34 +3519,46 @@ __webpack_require__.r(__webpack_exports__);
       _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('deleteUser', user_id);
     },
     alertDelete: function alertDelete(userData) {
-      var data = {
-        type: 'deleteUser',
-        user: userData
-      };
+      var data = {};
+
+      if (this.api_token === userData.api_token && this.users.length <= 1) {
+        data.type = "alert";
+        data.id = null;
+        data.msg = "You cannot delete your own account if you are the only user.";
+        return _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', data);
+      }
+
+      data.type = 'user';
+      data.id = this.user_id;
+      data.msg = 'WARNING: This will delete the user and remove any reference to them from the site. You may experience issues with any page that references them.';
       _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alertDelete', data);
+    },
+    getUsers: function getUsers() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/user').then(function (res) {
+        _this.api_token = res.data.api_token;
+        _this.superuser = res.data.superuser;
+        _this.user_id = res.data.user_id;
+      }).then(function () {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/users?api_token=".concat(_this.api_token)).then(function (res) {
+          _this.users = res.data;
+        });
+      }).catch(function (err) {
+        console.log(err);
+      });
     }
   },
-  beforeCreate: function beforeCreate() {
-    var _this = this;
-
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/user').then(function (res) {
-      _this.api_token = res.data.api_token;
-      _this.superuser = res.data.superuser;
-      _this.user_id = res.data.user_id;
-    }).then(function () {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/users?api_token=".concat(_this.api_token)).then(function (res) {
-        _this.users = res.data;
-      });
-    });
-  },
+  beforeCreate: function beforeCreate() {},
   mounted: function mounted() {
     var _this2 = this;
 
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('userDeleted', function (users) {
-      if (users) {
-        _this2.users = users;
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$on('deleted', function (type) {
+      if (type === 'user') {
+        _this2.getUsers();
       }
     });
+    this.getUsers();
   }
 });
 
@@ -3664,14 +3618,18 @@ __webpack_require__.r(__webpack_exports__);
           res.data.forEach(function (item) {
             arr.push(item);
           });
-          _this.media = arr;
+          console.log(arr);
+          return _this.media = arr;
         }
+
+        _this.media = null;
       });
     },
     alertDelete: function alertDelete(fileId) {
       var fileData = {
-        type: 'deleteFile',
-        fileId: fileId
+        type: 'media',
+        id: fileId,
+        msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('alertDelete', fileData);
     },
@@ -3681,9 +3639,15 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    var _this2 = this;
+
     this.getMedia();
     _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaUploaded', this.getMedia);
-    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('mediaDeleted', this.getMedia);
+    _js_admin_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on('deleted', function (type) {
+      if (type === 'media') {
+        _this2.getMedia();
+      }
+    });
   }
 });
 
@@ -22736,328 +22700,69 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "alert" },
-    [
-      _vm.alertData.type === "deletePage"
-        ? [
-            _c("div", { staticClass: "alert__warning" }, [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "24",
-                    height: "24",
-                    viewBox: "0 0 24 24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "alert__warning-message" }, [
-              _vm._v(
-                "This will delete the page, its history and all its contents permanently."
-              )
-            ]),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Are you sure?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "alert__buttons" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "delete",
-                  on: {
-                    click: function($event) {
-                      return _vm.deletePage()
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "affirm",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeAlert()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ]
-        : _vm.alertData.type === "deleteUser"
-        ? [
-            _c("div", { staticClass: "alert__warning" }, [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "24",
-                    height: "24",
-                    viewBox: "0 0 24 24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "alert__warning-message" }, [
-              _vm._v(
-                "This will delete the user, its history and all its contents permanently."
-              )
-            ]),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Are you sure?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "alert__buttons" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "delete",
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteUser()
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "affirm",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeAlert()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ]
-        : _vm.alertData.type === "deleteField"
-        ? [
-            _c("div", { staticClass: "alert__warning" }, [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "24",
-                    height: "24",
-                    viewBox: "0 0 24 24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "alert__warning-message" }, [
-              _vm._v(
-                "WARNING: There are currently " +
-                  _vm._s(_vm.alertData.pageCount) +
-                  " pages using this template. This will delete the field and its contents for every page that uses it permanently. This may effect the display of pages using this template."
-              )
-            ]),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Are you sure?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "alert__buttons" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "delete",
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteField()
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "affirm",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeAlert()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ]
-        : _vm.alertData.type === "deleteTemplate"
-        ? [
-            _c("div", { staticClass: "alert__warning" }, [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "24",
-                    height: "24",
-                    viewBox: "0 0 24 24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "alert__warning-message" }, [
-              _vm._v(
-                "WARNING: There are currently " +
-                  _vm._s(_vm.alertData.pageCount) +
-                  " pages using this template. This will delete the template and its history. Any pages using this template will also be deleted."
-              )
-            ]),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Are you sure?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "alert__buttons" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "delete",
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteTemplate()
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "affirm",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeAlert()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ]
-        : _vm.alertData.type === "deleteFile"
-        ? [
-            _c("div", { staticClass: "alert__warning" }, [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "24",
-                    height: "24",
-                    viewBox: "0 0 24 24"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      d:
-                        "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "alert__warning-message" }, [
-              _vm._v(
-                "This will delete the file permanently. This ma effect the display of pages using this image."
-              )
-            ]),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Are you sure?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "alert__buttons" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "delete",
-                  on: {
-                    click: function($event) {
-                      return _vm.deleteFile()
-                    }
-                  }
-                },
-                [_vm._v("Delete")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "affirm",
-                  on: {
-                    click: function($event) {
-                      return _vm.closeAlert()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ]
-        : _vm._e()
-    ],
-    2
-  )
+  return _c("div", { staticClass: "alert" }, [
+    _c("div", { staticClass: "alert__warning" }, [
+      _c(
+        "svg",
+        {
+          attrs: {
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "24",
+            height: "24",
+            viewBox: "0 0 24 24"
+          }
+        },
+        [
+          _c("path", {
+            attrs: {
+              d:
+                "M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.31 7.526c-.099-.807.528-1.526 1.348-1.526.771 0 1.377.676 1.28 1.451l-.757 6.053c-.035.283-.276.496-.561.496s-.526-.213-.562-.496l-.748-5.978zm1.31 10.724c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"
+            }
+          })
+        ]
+      ),
+      _vm._v(" "),
+      _c("div")
+    ]),
+    _vm._v(" "),
+    _c("p", { staticClass: "alert__warning-message" }, [
+      _vm._v(_vm._s(_vm.alertData.msg))
+    ]),
+    _vm._v(" "),
+    _vm.alertData.type !== "alert"
+      ? _c("h3", [_vm._v("Are you sure?")])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "alert__buttons" }, [
+      _vm.alertData.type !== "alert"
+        ? _c(
+            "button",
+            {
+              staticClass: "delete",
+              on: {
+                click: function($event) {
+                  return _vm.deleteItem(_vm.alertData.type, _vm.alertData.id)
+                }
+              }
+            },
+            [_vm._v("Delete")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "affirm",
+          on: {
+            click: function($event) {
+              return _vm.closeAlert()
+            }
+          }
+        },
+        [_vm._v("Cancel")]
+      )
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -23947,7 +23652,7 @@ var render = function() {
         "button",
         {
           staticClass: "btn btn-primary btn--no-margin",
-          on: { click: _vm.saveTemplate }
+          on: { click: _vm.createTemplate }
         },
         [_vm._v("Save Template")]
       )
@@ -24145,14 +23850,22 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary btn--no-margin",
-                      on: { click: _vm.savePage }
-                    },
-                    [_vm._v("Save Page")]
-                  )
+                  _c("div", { staticClass: "page-card__utilities" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary btn--no-margin",
+                        on: { click: _vm.savePage }
+                      },
+                      [_vm._v("Save Page")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: _vm.page.url, target: "_blank" } },
+                      [_vm._v("View Page")]
+                    )
+                  ])
                 ],
                 2
               ),
@@ -24699,39 +24412,46 @@ var render = function() {
       _c("h1", [_vm._v("View Users")]),
       _vm._v(" "),
       _vm._l(_vm.users, function(user) {
-        return _c(
-          "div",
-          { class: [user.api_token === _vm.api_token ? "fart" : ""] },
-          [
-            _c("h3", [_vm._v(_vm._s(user.name))]),
+        return _c("div", { staticClass: "user-card" }, [
+          _c("div", { staticClass: "user-card__details" }, [
+            _c("h3", { staticClass: "user-card__name" }, [
+              _vm._v(_vm._s(user.name))
+            ]),
             _vm._v(" "),
-            _vm.superuser ? _c("p", [_vm._v("Superuser")]) : _vm._e(),
+            _vm.superuser
+              ? _c("p", { staticClass: "user-card__info" }, [
+                  _vm._v("Superuser")
+                ])
+              : _vm._e(),
             _vm._v(" "),
-            _c("p", [_vm._v("Created: " + _vm._s(user.created_at))]),
+            _c("p", { staticClass: "user-card__info" }, [
+              _vm._v("Created: " + _vm._s(user.created_at))
+            ]),
             _vm._v(" "),
-            _c("p", [_vm._v("User ID: " + _vm._s(user.user_id))]),
+            _c("p", { staticClass: "user-card__info" }, [
+              _vm._v("User ID: " + _vm._s(user.user_id))
+            ]),
             _vm._v(" "),
-            _c("p", [_vm._v("API Token: " + _vm._s(user.api_token))]),
-            _vm._v(" "),
-            user.api_token === _vm.api_token || _vm.superuser
-              ? [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "delete",
-                      on: {
-                        click: function($event) {
-                          return _vm.alertDelete(user)
-                        }
-                      }
-                    },
-                    [_vm._v("Delete User")]
-                  )
-                ]
-              : _vm._e()
-          ],
-          2
-        )
+            _c("p", { staticClass: "user-card__info" }, [
+              _vm._v("API Token: " + _vm._s(user.api_token))
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "user-card__utilities" }, [
+            _c(
+              "button",
+              {
+                staticClass: "delete",
+                on: {
+                  click: function($event) {
+                    return _vm.alertDelete(user)
+                  }
+                }
+              },
+              [_vm._v("Delete User")]
+            )
+          ])
+        ])
       })
     ],
     2

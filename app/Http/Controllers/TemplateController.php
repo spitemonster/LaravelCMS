@@ -62,7 +62,7 @@ class TemplateController extends Controller
             return $template;
         }
 
-        return Template::all();
+        return Template::with('pages')->get();
     }
 
     // update

@@ -120,19 +120,39 @@ export default {
             this.growl(growler)
         })
 
-        // Page Functionality
-        Bus.$on('createPage', (pageData) => {
-            axios.post(`/page?api_token=${this.api_token}`, pageData)
+        Bus.$on('create', (data) => {
+            axios.post(`/${data.type}?api_token=${this.api_token}`, data.data)
                 .then((res) => {
                     let growlerData = {
                         mode: res.data.status,
                         message: res.data.message
                     }
 
-                    this.$router.push({ name: 'viewPages' })
+                    if (data.redirect) {
+                        this.$router.push({ name: data.redirect })
+                    }
+
                     Bus.$emit('growl', growlerData);
                 })
         })
+
+        Bus.$on('update', (data) => {
+            axios.patch(`/${data.type}?${data.type}_id=${data.id}&api_token=${this.api_token}`, data.data)
+                .then((res) => {
+                    let growlerData = {
+                        mode: res.data.status,
+                        message: res.data.message
+                    }
+
+                    if (data.redirect) {
+                        this.$router.push({ name: data.redirect })
+                    }
+
+                    Bus.$emit('growl', growlerData);
+                })
+        })
+
+        // Page Functionality
 
         Bus.$on('updatePage', (pageData) => {
             axios.patch(`/page?page_id=${pageData.page_id}&api_token=${this.api_token}`, pageData)
@@ -144,33 +164,6 @@ export default {
 
                     this.$router.push({ name: 'viewPages' })
                     Bus.$emit('growl', growlerData)
-                })
-        })
-
-        Bus.$on('deletePage', (pageId) => {
-            axios.delete(`/page?page_id=${pageId}&api_token=${this.api_token}`)
-                .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    Bus.$emit('pageDeleted')
-                    Bus.$emit('growl', growlerData)
-                })
-        })
-
-        Bus.$on('createTemplate', (templateData) => {
-            axios.post(`/template?api_token=${this.api_token}`, templateData)
-                .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    this.$router.push({ name: 'viewTemplates' })
-                    Bus.$emit('growl', growlerData)
-                    Bus.$emit('templateCreated')
                 })
         })
 
@@ -187,32 +180,6 @@ export default {
                     Bus.$emit('templateCreated')
                 })
         })
-
-        Bus.$on('deleteTemplate', (templateId) => {
-            axios.delete(`/template?template_id=${templateId}&api_token=${this.api_token}`)
-                .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    Bus.$emit('growl', growlerData)
-                    Bus.$emit('templateDeleted')
-                })
-        });
-
-        Bus.$on('deleteUser', (user_id) => {
-            axios.delete(`/user?user_id=${user_id}&api_token=${this.api_token}`)
-                .then((res) => {
-                    let growlerData = {
-                        mode: res.data.status,
-                        message: res.data.message
-                    }
-
-                    Bus.$emit('growl', growlerData)
-                    Bus.$emit('userDeleted', res.data.users)
-                })
-        });
 
         Bus.$on('alertDelete', data => {
             this.alertDelete(data);
@@ -238,10 +205,10 @@ export default {
                 })
         })
 
-        Bus.$on('deleteMedia', (fileId) => {
-            axios.delete(`/media?media_id=${fileId}`)
+        Bus.$on('deleteTarget', (targetData) => {
+            axios.delete(`/${targetData.type}?${targetData.type}_id=${targetData.id}&api_token=${this.api_token}`)
                 .then((res) => {
-                    Bus.$emit('mediaDeleted')
+                    Bus.$emit('deleted', targetData.type)
                 })
         })
     }

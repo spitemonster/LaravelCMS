@@ -85,9 +85,11 @@ export default {
         },
         alertDelete(fileId) {
             let fileData = {
-                type: 'deleteFile',
-                fileId: fileId
+                type: 'media',
+                id: fileId,
+                msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
             }
+
             Bus.$emit('alertDelete', fileData)
         },
     },
@@ -98,7 +100,11 @@ export default {
         Bus.$on('mediaUploaded', this.getMedia)
 
         // when an image/media is deleted, refresh the list
-        Bus.$on('mediaDeleted', this.getMedia)
+        Bus.$on('deleted', (type) => {
+            if (type === 'media') {
+                this.getMedia()
+            }
+        })
 
         Bus.$on('insertFiles', () => {
 

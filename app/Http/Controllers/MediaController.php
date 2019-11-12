@@ -76,7 +76,7 @@ class MediaController extends Controller
 
         $m->delete();
 
-        return 200;
+        return Media::all();
     }
 
 }

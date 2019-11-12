@@ -39,9 +39,9 @@ export default {
         },
         alertDelete(field) {
             let fieldData = {
-                type: 'deleteField',
-                field: field,
-                pageCount: this.pageCount
+                type: 'field',
+                id: field.field_id,
+                msg: 'WARNING: This will delete this field from the template permanently. Any pages referencing this field may experience errors.'
             }
 
             Bus.$emit('alertDelete', fieldData)

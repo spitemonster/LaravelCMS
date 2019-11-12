@@ -1,0 +1,14 @@
+.user-card {
+    width: 25rem;
+    margin-bottom: 2rem;
+
+    &__name {}
+
+    &__info:not(:first-of-type) {
+        margin-top: .5rem;
+    }
+
+    button {
+        margin-top: .5rem;
+    }
+}

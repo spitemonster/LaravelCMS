@@ -80,7 +80,7 @@ Route::get('/user', function(Request $request) {
     return $user;
 });
 
-Route::get('/users', function(Request $request) {
+Route::middleware('auth:api')->get('/users', function(Request $request) {
     return User::all();
 });
 
@@ -125,25 +125,7 @@ Route::delete('/user', function(Request $request) {
     return $allowedData;
 });
 
-// Route::post('/media', function(Request $request) {
-//     $file = $request->file('file')->store('media', 'public');
 
-//     $data = array(
-//         'status' => 'success',
-//         'message' => 'File successfully uploaded',
-//         'url' => '/' . $file
-//     );
-
-//     $media = new Media;
-
-//     $media->url = $file;
-//     $media->filename = 'poop';
-//     $media->page_id = $data['pageId'] = Uuid::generate(4)->string;
-
-//     $media->save();
-
-//     return $data;
-// });
 
 // CRUD template
 Route::middleware('auth:api')->post('/template', 'TemplateController@createTemplate');
@@ -156,6 +138,8 @@ Route::middleware('auth:api')->post('/page', 'PageController@createPage');
 Route::get('/page', 'PageController@getPage');
 Route::middleware('auth:api')->patch('/page', 'PageController@updatePage');
 Route::middleware('auth:api')->delete('/page', 'PageController@deletePage');
+
+Route::middleware('auth:api')->delete('/field', 'FieldController@deleteField');
 
 // Given a slug, tests to see if it's still available. If not, iterates until it finds one that is available.
 Route::get('/url', function(Request $request) {

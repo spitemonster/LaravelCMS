@@ -768,7 +768,7 @@ select:focus {
 }
 
 .input-field {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 input[type=radio] {
@@ -912,6 +912,19 @@ input[type=radio] {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.user-card {
+  width: 25rem;
+  margin-bottom: 2rem;
+}
+
+.user-card__info:not(:first-of-type) {
+  margin-top: 0.5rem;
+}
+
+.user-card button {
+  margin-top: 0.5rem;
 }
 
 ::-moz-selection,
@@ -1131,6 +1144,7 @@ a:hover {
   margin-top: 0.5rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .page-card__children-wrap {

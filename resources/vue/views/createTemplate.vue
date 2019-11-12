@@ -15,7 +15,7 @@
             <button @click="addField" class="btn btn-small">Add Field</button>
         </div>
         <fieldCard :field="field" v-for="field, i in fields" :key="i" :deletable="true" :index="i"></fieldCard>
-        <button @click="saveTemplate" class="btn btn-primary btn--no-margin">Save Template</button>
+        <button @click="createTemplate" class="btn btn-primary btn--no-margin">Save Template</button>
     </div>
 </template>
 <script>
@@ -34,10 +34,15 @@ export default {
             let sel = document.querySelector('#fieldSelector')
             this.fields.push({ name: '', required: false, type: sel.value, index: this.fields.length });
         },
-        saveTemplate() {
+        createTemplate() {
             let template = this.collectTemplateData()
+            let data = {
+                type: 'template',
+                data: template,
+                redirect: 'viewTemplates'
+            }
 
-            Bus.$emit('createTemplate', template)
+            Bus.$emit('create', data)
         },
         collectTemplateData() {
             let template_name = document.querySelector('#templateName').value
