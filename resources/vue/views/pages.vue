@@ -4,10 +4,10 @@
         <div class="cards">
             <div class="card" v-for="page, k in pages" :key="k">
                 <div class="card__details">
-                    <h3>{{ page.title }}</h3> Last Updated: <span> {{ page.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ page.updated_by.name }} </span>
+                    <h3>{{ page.title }}</h3> Last Updated: <span> {{ page.created_at | moment("MMMM Do YYYY") }} </span> by <span> {{ page.updated_by ? page.updated_by.name : 'User Not Found' }} </span>
                 </div>
                 <div class="card__utilities">
-                    <router-link tag="span" :to="'/admin/page/edit/' + page.page_id"><a>Edit Page</a></router-link>
+                    <router-link tag="span" :to="'/admin/edit/page/' + page.page_id"><a>Edit Page</a></router-link>
                     <router-link tag="span" :to="'/admin/create/page/' + page.page_id"><a>Create Child</a></router-link>
                     <span><a :href="page.url" target="_blank" rel="noopener noreferrer">View Page</a></span>
                     <button @click="alert(page.page_id)" class="delete">Delete Page <i class="la la-trash"></i></button>
@@ -16,10 +16,10 @@
                     <summary>Show Children</summary>
                     <div class="card__child" v-for="child, l in page.children">
                         <div class="card__details">
-                            <h4>{{ child.title }}</h4> Last Updated: <span> {{ child.updated_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> {{ child.updated_by.name }} </span>
+                            <h4>{{ child.title }}</h4> Last Updated: <span> {{ child.updated_at | moment("MMMM Do YYYY") }} </span> by <span> {{ page.updated_by ? page.updated_by.name : 'User Not Found' }} </span>
                         </div>
                         <div class="card__utilities">
-                            <router-link tag="span" :to="'/admin/page/' + child.page_id + '/edit'"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="alertDelete(page)" class="delete">Delete Page</button>
+                            <router-link tag="span" :to="'/admin/edit/page/' + child.page_id"><a>Edit Page</a></router-link> <span><a :href="child.url" target="_blank" rel="noopener noreferrer">View Page</a></span> <button @click="alertDelete(page)" class="delete">Delete Page</button>
                         </div>
                     </div>
                 </details>

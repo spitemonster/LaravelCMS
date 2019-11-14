@@ -17,19 +17,13 @@ class PageController extends Controller
 {
     public function showPage($url = '')
     {
+        $data = [];
         $page = Page::where('url', '/' . $url)->with('children')->first();
-
         // gather all menu pages and return them with every page request
         $menu = Page::where([['menu', true], ['private', false]])->get(['title', 'url']);
 
-        // if the page doesn't exist, send that sweet sweet 404
-        if (!$page) {
-            return view('404');
-        }
-
-        if ($page->private && !Auth::user()) {
-            // temporary functionality for private pages
-            // if the page is private and the user is not logged in, show them the 404 page
+        // if the page doesn't exist or the user is not logged in and attempting to visit a private page, send that sweet sweet 404
+        if (!$page || ($page->private && !Auth::user())) {
             return view('404');
         }
 
@@ -38,7 +32,6 @@ class PageController extends Controller
         $tags = $page->tags()->get();
 
         // $data represents the fields and values. splitting them into the $data array allows them to be accessed by just the field name on the front end
-        $data = [];
 
         $data['menu'] = $menu;
         $data['children'] = $page->children()->get();
@@ -56,9 +49,12 @@ class PageController extends Controller
         }
 
         // if a page doesn't have a title field, assign the page title as the title
+        // this ensures templates don't break if they try to load a page without a title attribute
         if (!$data['title']) {
             $data['title'] = $page->title;
         }
+
+        // increase page views by one for very simple analytics
 
         $page->views = $page->views + 1;
 

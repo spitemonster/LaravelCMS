@@ -42,7 +42,7 @@ export default {
             if (this.api_token === userData.api_token && this.users.length <= 1) {
                 data.intent = "delete"
                 data.type = "alert"
-                data.id = null
+                data.id = userData.user_id
                 data.msg = "You cannot delete your own account if you are the only user."
 
                 return Bus.$emit('alert', data)

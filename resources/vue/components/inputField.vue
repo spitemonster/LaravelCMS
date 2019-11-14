@@ -126,7 +126,7 @@ export default {
             editor.on('editor-change', (eventName, ...args) => {
                 let content = this.$el.querySelector('.ql-editor').innerHTML
 
-                if (editor.getSelection().index !== null) {
+                if (editor.getSelection() !== null) {
                     this.editorIndex = editor.getSelection().index
                 } else { this.editorIndex === 0 }
 

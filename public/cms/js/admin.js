@@ -2315,7 +2315,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
       editor.on('editor-change', function (eventName) {
         var content = _this.$el.querySelector('.ql-editor').innerHTML;
 
-        if (editor.getSelection().index !== null) {
+        if (editor.getSelection() !== null) {
           _this.editorIndex = editor.getSelection().index;
         } else {
           _this.editorIndex === 0;
@@ -3655,7 +3655,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.api_token === userData.api_token && this.users.length <= 1) {
         data.intent = "delete";
         data.type = "alert";
-        data.id = null;
+        data.id = userData.user_id;
         data.msg = "You cannot delete your own account if you are the only user.";
         return _js_admin_js__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('alert', data);
       }
@@ -24573,14 +24573,20 @@ var render = function() {
             _c("span", [
               _vm._v(
                 " " +
-                  _vm._s(
-                    _vm._f("moment")(page.created_at, "dddd, MMMM Do YYYY")
-                  ) +
+                  _vm._s(_vm._f("moment")(page.created_at, "MMMM Do YYYY")) +
                   " "
               )
             ]),
             _vm._v(" by "),
-            _c("span", [_vm._v(" " + _vm._s(page.updated_by.name) + " ")])
+            _c("span", [
+              _vm._v(
+                " " +
+                  _vm._s(
+                    page.updated_by ? page.updated_by.name : "User Not Found"
+                  ) +
+                  " "
+              )
+            ])
           ]),
           _vm._v(" "),
           _c(
@@ -24590,7 +24596,7 @@ var render = function() {
               _c(
                 "router-link",
                 {
-                  attrs: { tag: "span", to: "/admin/page/edit/" + page.page_id }
+                  attrs: { tag: "span", to: "/admin/edit/page/" + page.page_id }
                 },
                 [_c("a", [_vm._v("Edit Page")])]
               ),
@@ -24657,7 +24663,7 @@ var render = function() {
                               _vm._s(
                                 _vm._f("moment")(
                                   child.updated_at,
-                                  "dddd, MMMM Do YYYY"
+                                  "MMMM Do YYYY"
                                 )
                               ) +
                               " "
@@ -24665,7 +24671,15 @@ var render = function() {
                         ]),
                         _vm._v(" by "),
                         _c("span", [
-                          _vm._v(" " + _vm._s(child.updated_by.name) + " ")
+                          _vm._v(
+                            " " +
+                              _vm._s(
+                                page.updated_by
+                                  ? page.updated_by.name
+                                  : "User Not Found"
+                              ) +
+                              " "
+                          )
                         ])
                       ]),
                       _vm._v(" "),
@@ -24678,7 +24692,7 @@ var render = function() {
                             {
                               attrs: {
                                 tag: "span",
-                                to: "/admin/page/" + child.page_id + "/edit"
+                                to: "/admin/edit/page/" + child.page_id
                               }
                             },
                             [_c("a", [_vm._v("Edit Page")])]
@@ -24780,7 +24794,7 @@ var render = function() {
                 {
                   attrs: {
                     tag: "span",
-                    to: "/admin/template/edit/" + template.template_id
+                    to: "/admin/edit/template/" + template.template_id
                   }
                 },
                 [_c("a", [_vm._v("Edit Template")])]

@@ -6,7 +6,7 @@
                 <h3>{{ template.name }}</h3> Last Updated: <span> {{ template.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> </span>
             </div>
             <div class="card__utilities">
-                <router-link tag="span" :to="'/admin/template/edit/' + template.template_id"><a>Edit Template</a></router-link><button @click="alert(template)" class="delete">Delete Template<i class="la la-trash"></i></button>
+                <router-link tag="span" :to="'/admin/edit/template/' + template.template_id"><a>Edit Template</a></router-link><button @click="alert(template)" class="delete">Delete Template<i class="la la-trash"></i></button>
             </div>
         </div>
     </div>
