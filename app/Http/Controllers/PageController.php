@@ -15,6 +15,44 @@ use App\Http\Requests\PageCreationRequest;
 
 class PageController extends Controller
 {
+    private function makeTags($tagArray, $page_id) {
+        foreach ($tagArray as $tg) {
+            $t = trim($tg);
+            $testTag = Tag::where('name', $t)->first();
+
+            if ($t === '') {
+                return;
+            }
+            // test if tag already exists
+            // if so, don't create the tag, just make the association.
+            if ($testTag) {
+                $testPageTag = PageTag::where([['page_id', $page_id], ['tag_id', $testTag->tag_id]])->first();
+
+                if (!$testPageTag) {
+                    $pageTag = new PageTag;
+
+                    $pageTag->page_id = $page_id;
+                    $pageTag->tag_id = $testTag->tag_id;
+
+                    $pageTag->save();
+                }
+
+            } else {
+                $tag = new Tag;
+                $pageTag = new PageTag;
+
+                $tag->name = $t;
+
+                $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
+
+                $pageTag->page_id = $page_id;
+
+                $pageTag->save();
+                $tag->save();
+            }
+        }
+    }
+
     public function showPage($url = '')
     {
         $data = [];
@@ -84,30 +122,7 @@ class PageController extends Controller
 
         $page->user_id = $page->updated_user_id = Auth::user()->user_id;
 
-        foreach ($tags as $t) {
-            // test if tag already exists
-            $test = Tag::where('name', $t)->first();
-            // if so, don't create the tag, just make the association.
-            if ($test) {
-                $pageTag = new PageTag;
-                $pageTag->tag_id = $test->tag_id;
-                $pageTag->page_id = $page->page_id;
-
-                $pageTag->save();
-            } else {
-                $tag = new Tag;
-                $pageTag = new PageTag;
-
-                $tag->name = trim($t);
-
-                $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
-
-                $pageTag->page_id = $page->page_id;
-
-                $pageTag->save();
-                $tag->save();
-            }
-        }
+        $this->makeTags($tags, $page->page_id);
 
         foreach ($request->input('fields') as $field) {
             $fieldValue = new FieldValue;
@@ -161,38 +176,18 @@ class PageController extends Controller
         $page->updated_user_id = Auth::user()->user_id;
         $tags = explode(',', $request->input('tags'));
 
-        foreach ($tags as $tg) {
-            $t = trim($tg);
-            // test if tag already exists
-            $testTag = Tag::where('name', $t)->first();
+        // temporary behavior
+        // wipe a pages PageTags each time a page is updated
+        $currentPageTags = PageTag::where('page_id', $request->query('page_id'))->get();
 
-            // if so, don't create the tag, just make the association.
-            if ($testTag) {
-                $testPageTag = PageTag::where([['page_id', $page->page_id], ['tag_id', $testTag->tag_id]])->first();
-
-                if (!$testPageTag) {
-                    $pageTag = new PageTag;
-
-                    $pageTag->page_id = $page->page_id;
-                    $pageTag->tag_id = $testTag->tag_id;
-
-                    $pageTag->save();
-                }
-
-            } else {
-                $tag = new Tag;
-                $pageTag = new PageTag;
-
-                $tag->name = $t;
-
-                $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
-
-                $pageTag->page_id = $page->page_id;
-
-                $pageTag->save();
-                $tag->save();
-            }
+        foreach ($currentPageTags as $cpt) {
+            $cpt->delete();
         }
+
+        // and then recreate tags based on the input from the patch request
+        $this->makeTags($tags, $page->page_id);
+
+        // intent is to eventually replace this with checkboxes or something of the like instead of manually entered
 
         foreach ($request->input('fields') as $field) {
             $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
