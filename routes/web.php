@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\TestEmail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Uuid;
 // use Storage;
 // use App\Http\Middleware\CheckApiToken;
 // use \Uuid;
@@ -37,6 +38,54 @@ Route::get('/mail', function() {
     return 'Yep';
 });
 
+Route::get('/tags', function(Request $request) {
+    $data = [];
+
+    if ($request->query('tag_id')) {
+        $data['pages'] = PageTag::where('tag_id', $request->query('tag_id'))->first()->pages;
+    } elseif ($request->query('tag_name')) {
+        $data['pages'] = Tag::where('name', $request->query('tag_name'))->first()->pages;
+    } elseif ($request->query('page_id')) {
+        $data['tags'] = Tag::get();
+        $data['page_tags'] = PageTag::where('page_id', $request->query('page_id'))->get();
+    } else {
+        $data['tags'] = Tag::get();
+    }
+
+    return $data;
+});
+
+Route::post('/tag', function(Request $request) {
+    $test = Tag::where('name', $request->query('tag_name'))->first();
+    $res = [];
+
+    if ($test) {
+        $res['status'] = 'failure';
+        $res['message'] = 'Tag with this name already exists.';
+
+        return $res;
+    } elseif (preg_match('/\s/',$request->query('tag_name'))) {
+        $res['status'] = 'failure';
+        $res['message'] = 'Tag name cannot be empty.';
+
+        return $res;
+    }
+
+    $tag = new Tag;
+
+    $tag->name = $request->query('tag_name');
+    $tag->tag_id = Uuid::generate(4)->string;
+
+    $tag->save();
+
+    $res['status'] = 'success';
+    $res['message'] = 'Tag created';
+    $res['tag_name'] = $tag->name;
+    $res['tag_id'] = $tag->tag_id;
+
+    return $res;
+});
+
 Route::get('/tag', function(Request $request) {
 
     // if someone visits /tag either show them the pages related to that tag if given a name or id
@@ -47,6 +96,9 @@ Route::get('/tag', function(Request $request) {
         $data['pages'] = PageTag::where('tag_id', $request->query('tag_id'))->first()->pages;
     } elseif ($request->query('tag_name')) {
         $data['pages'] = Tag::where('name', $request->query('tag_name'))->first()->pages;
+    } elseif ($request->query('page_id')) {
+        $data['tags'] = Tag::get();
+        $data['page_tags'] = PageTag::where('page_id', $request->query('page_id'))->get();
     } else {
         $data['tags'] = Tag::get();
     }

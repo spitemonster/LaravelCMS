@@ -429,3 +429,12 @@ fieldset+* {
         }
     }
 }
+
+.tags fieldset {
+    margin-top: 1rem;
+    margin-bottom: 0;
+
+    label {
+        margin-top: 0;
+    }
+}

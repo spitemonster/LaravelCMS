@@ -16,13 +16,8 @@ use App\Http\Requests\PageCreationRequest;
 class PageController extends Controller
 {
     private function makeTags($tagArray, $page_id) {
-        foreach ($tagArray as $tg) {
-            $t = trim($tg);
-            $testTag = Tag::where('name', $t)->first();
-
-            if ($t === '') {
-                return;
-            }
+        foreach ($tagArray as $t) {
+            $testTag = Tag::where('tag_id', $t)->first();
             // test if tag already exists
             // if so, don't create the tag, just make the association.
             if ($testTag) {
@@ -37,19 +32,15 @@ class PageController extends Controller
                     $pageTag->save();
                 }
 
-            } else {
-                $tag = new Tag;
-                $pageTag = new PageTag;
-
-                $tag->name = $t;
-
-                $tag->tag_id = $pageTag->tag_id = Uuid::generate(4)->string;
-
-                $pageTag->page_id = $page_id;
-
-                $pageTag->save();
-                $tag->save();
             }
+        }
+    }
+
+    private function removeTags($tagArray, $page_id) {
+        foreach ($tagArray as $t) {
+            $pt = PageTag::where([['page_id', $page_id], ['tag_id', $t]]);
+
+            $pt->delete();
         }
     }
 
@@ -174,28 +165,28 @@ class PageController extends Controller
         $page->private = $request->input('private');
         $page->description = $request->input('description');
         $page->updated_user_id = Auth::user()->user_id;
-        $tags = explode(',', $request->input('tags'));
 
         // temporary behavior
         // wipe a pages PageTags each time a page is updated
-        $currentPageTags = PageTag::where('page_id', $request->query('page_id'))->get();
+        // $currentPageTags = PageTag::where('page_id', $request->query('page_id'))->get();
 
-        foreach ($currentPageTags as $cpt) {
-            $cpt->delete();
-        }
+        // foreach ($currentPageTags as $cpt) {
+        //     $cpt->delete();
+        // }
 
         // and then recreate tags based on the input from the patch request
-        $this->makeTags($tags, $page->page_id);
+        $this->makeTags($request->input('tags'), $page->page_id);
+        $this->removeTags($request->input('removeTags'), $page->page_id);
 
         // intent is to eventually replace this with checkboxes or something of the like instead of manually entered
 
-        foreach ($request->input('fields') as $field) {
-            $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
+        // foreach ($request->input('fields') as $field) {
+        //     $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
 
-            $fieldValue->content = $field['content'];
+        //     $fieldValue->content = $field['content'];
 
-            $fieldValue->save();
-        }
+        //     $fieldValue->save();
+        // }
 
         $page->save();
 

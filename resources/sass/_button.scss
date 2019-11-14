@@ -48,6 +48,19 @@
         height: 2rem;
     }
 
+    &-tiny {
+        @extend .btn-primary;
+
+        height: 1rem;
+        padding: 0 .25rem;
+        border: none;
+
+        &:hover {
+            background: $white;
+            color: $light-accent;
+        }
+    }
+
     // buttons with no text, only icons
     // as of writing, only occurs on delete button on media window
     &-icon {

@@ -472,6 +472,7 @@ button.delete:hover {
 .btn,
 .btn-primary,
 .btn-icon,
+.btn-tiny,
 .btn-small {
   display: inline-flex;
   justify-content: center;
@@ -489,6 +490,7 @@ button.delete:hover {
 
 .btn-primary,
 .btn-icon,
+.btn-tiny,
 .btn-small {
   border: 1px solid #BF68A0;
   color: #BF68A0;
@@ -497,6 +499,7 @@ button.delete:hover {
 
 .btn-primary:hover,
 .btn-icon:hover,
+.btn-tiny:hover,
 .btn-small:hover {
   color: #F6F6F2;
   background: #BF68A0;
@@ -504,6 +507,17 @@ button.delete:hover {
 
 .btn-small {
   height: 2rem;
+}
+
+.btn-tiny {
+  height: 1rem;
+  padding: 0 0.25rem;
+  border: none;
+}
+
+.btn-tiny:hover {
+  background: #F6F6F2;
+  color: #e4b7e5;
 }
 
 .btn-icon {
@@ -530,6 +544,7 @@ button.delete:hover {
 .btn.close,
 .close.btn-primary,
 .close.btn-small,
+.close.btn-tiny,
 .close.btn-icon {
   position: absolute;
   top: 0;
@@ -541,6 +556,7 @@ button.delete:hover {
 .btn.close:hover,
 .close.btn-primary:hover,
 .close.btn-small:hover,
+.close.btn-tiny:hover,
 .close.btn-icon:hover {
   color: #3A4755;
 }
@@ -548,6 +564,7 @@ button.delete:hover {
 .btn.insert,
 .insert.btn-primary,
 .insert.btn-small,
+.insert.btn-tiny,
 .insert.btn-icon {
   position: absolute;
   bottom: 0;
@@ -623,7 +640,7 @@ fieldset {
   margin: 2rem 0;
 }
 
-fieldset label {
+fieldset label:not(.checkbox) {
   position: absolute;
   left: 0;
   top: 4px;
@@ -677,6 +694,27 @@ fieldset textarea:valid ~ label {
   top: -1rem;
   padding-left: 0;
   font-size: 0.75rem;
+}
+
+fieldset.small {
+  width: 200px;
+}
+
+fieldset.small input {
+  font-size: 0.75rem;
+  height: 1.5rem;
+  width: 200px;
+  padding-left: 0.5rem;
+}
+
+fieldset.small label {
+  font-size: 0.75rem;
+}
+
+fieldset.small button.btn-tiny {
+  top: 3px;
+  right: -1.5rem;
+  margin: 0;
 }
 
 .input--wysiwyg {
@@ -763,6 +801,10 @@ fieldset textarea:valid ~ label {
 input:focus,
 select:focus {
   outline: none;
+}
+
+#newTag:invalid {
+  box-shadow: none;
 }
 
 .ql-img {
@@ -1394,5 +1436,14 @@ fieldset + * {
   content: "\2EA";
   position: relative;
   left: 0;
+}
+
+.tags fieldset {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.tags fieldset label {
+  margin-top: 0;
 }
 

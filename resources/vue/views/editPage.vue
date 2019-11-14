@@ -22,10 +22,16 @@
             <div class="content--wrapper">
                 <div class="content" id="tabContentOne">
                     <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
-                    <fieldset>
-                        <input type="text" id="tags" v-model="tags" required />
-                        <label for="tags">Tags (Comma Separated)</label>
-                    </fieldset>
+                    <div class="tags">
+                        <fieldset v-for="tag in tags">
+                            <label class="checkbox">{{ tag.name }}<input type="checkbox" name="tags" value="tag.tag_id" :checked="pageTags.includes(tag.tag_id)" @change="updateTags(tag.tag_id)"><span class="checkbox__box"></span></label>
+                        </fieldset>
+                        <fieldset class="small">
+                            <input type="text" id="newTag" name="newTag" class="small" required />
+                            <label for="newTag">Create New </label>
+                            <button class="btn btn-primary btn-tiny" @click="createNewTag">+</button>
+                        </fieldset>
+                    </div>
                     <div class="page-card__utilities">
                         <button @click="savePage" class="btn btn-primary btn--no-margin">Save Page</button>
                         <a :href="page.url" target="_blank">View Page</a>
@@ -61,11 +67,17 @@ export default {
             pageLoaded: false,
             page: {},
             fieldsValid: false,
-            tags: ''
+            tags: '',
+            pageTags: [],
+            selectedTags: [],
+            removeTags: []
         }
     },
     props: [],
     computed: {},
+    watch: {
+        tagObj() {}
+    },
     methods: {
         savePage() {
             // set variables to confirm fields are filled
@@ -73,7 +85,6 @@ export default {
             let url = document.querySelector('#pageUrl')
             let selected = document.querySelectorAll('.selected-image')
             let description = document.querySelector('#pageDescription')
-            let tags = document.querySelector('#tags');
             // start pageData variable
             let pageData = {}
 
@@ -109,7 +120,8 @@ export default {
             pageData.url = this.page.url.toLowerCase()
             pageData.menu = this.page.menu
             pageData.private = this.page.private
-            pageData.tags = tags.value;
+            pageData.tags = this.selectedTags;
+            pageData.removeTags = this.removeTags;
             // set fields object
             pageData.fields = []
 
@@ -164,6 +176,54 @@ export default {
             Bus.$emit('growl', growlerData);
             Bus.$emit('invalidField', fieldId);
         },
+        createNewTag() {
+            let newTag = document.querySelector('#newTag')
+
+            if (newTag.value === '' || /\s/g.test('    ')) {
+                let growlerData = {
+                    mode: 'error',
+                    message: 'Tag name cannot be empty.'
+                }
+
+                return Bus.$emit('growl', growlerData);
+            }
+
+            axios.post(`/tag?tag_name=${newTag.value}`)
+                .then((res) => {
+                    if (res.data.status === 'failure') {
+                        let growlerData = {
+                            mode: 'error',
+                            message: res.data.message
+                        }
+                        return Bus.$emit('growl', growlerData);
+                    }
+
+                    newTag.value = null
+                    newTag.setAttribute('valid', true)
+
+                    axios.get(`/tags`)
+                        .then((res) => {
+                            this.tags = res.data.tags;
+                        })
+                })
+        },
+        updateTags(tagId) {
+            if (this.selectedTags.includes(tagId)) {
+                this.selectedTags = this.selectedTags.filter(tag => tag !== tagId)
+
+                if (this.pageTags.includes(tagId)) {
+                    this.removeTags.push(tagId)
+                }
+            } else {
+                this.selectedTags.push(tagId)
+
+                if (this.removeTags.includes(tagId)) {
+                    this.removeTags = this.removeTags.filter(tag => tag !== tagId)
+                }
+            }
+
+            console.log('remove tags ', this.removeTags)
+        }
     },
     components: {
         inputField
@@ -178,18 +238,21 @@ export default {
                 this.page = res.data
                 this.fields = res.data.values
                 this.pageLoaded = true
-                for (let i = 0; i < res.data.tags.length; i++) {
-                    let tag = res.data.tags[i];
 
-                    if (i === 0) {
-                        tags = `${tags}${tag.name}`
-                    } else {
-                        tags = `${tags}, ${tag.name}`
-                    }
-                }
-                this.tags = tags;
+                res.data.tags.forEach((tag) => {
+                    this.pageTags.push(tag.tag_id)
+                })
 
+                this.selectedTags = this.pageTags
+
+                console.log(this.selectedTags)
             })
+
+        axios.get(`/tags`)
+            .then((res) => {
+                this.tags = res.data.tags;
+            })
+
     },
     mounted() {
 

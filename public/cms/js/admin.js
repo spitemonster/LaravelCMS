@@ -3045,6 +3045,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3056,19 +3062,24 @@ __webpack_require__.r(__webpack_exports__);
       pageLoaded: false,
       page: {},
       fieldsValid: false,
-      tags: ''
+      tags: '',
+      pageTags: [],
+      selectedTags: [],
+      removeTags: []
     };
   },
   props: [],
   computed: {},
+  watch: {
+    tagObj: function tagObj() {}
+  },
   methods: {
     savePage: function savePage() {
       // set variables to confirm fields are filled
       var name = document.querySelector('#pageName');
       var url = document.querySelector('#pageUrl');
       var selected = document.querySelectorAll('.selected-image');
-      var description = document.querySelector('#pageDescription');
-      var tags = document.querySelector('#tags'); // start pageData variable
+      var description = document.querySelector('#pageDescription'); // start pageData variable
 
       var pageData = {};
       selected.forEach(function (img) {
@@ -3100,7 +3111,8 @@ __webpack_require__.r(__webpack_exports__);
       pageData.url = this.page.url.toLowerCase();
       pageData.menu = this.page.menu;
       pageData.private = this.page.private;
-      pageData.tags = tags.value; // set fields object
+      pageData.tags = this.selectedTags;
+      pageData.removeTags = this.removeTags; // set fields object
 
       pageData.fields = []; // language here is a little tricky. field content is stored as 'values' in the database and returned as such
       // but it's easier to refer to them as 'fields' in this context
@@ -3146,44 +3158,90 @@ __webpack_require__.r(__webpack_exports__);
       };
       _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
       _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('invalidField', fieldId);
+    },
+    createNewTag: function createNewTag() {
+      var _this = this;
+
+      var newTag = document.querySelector('#newTag');
+
+      if (newTag.value === '' || /\s/g.test('    ')) {
+        var growlerData = {
+          mode: 'error',
+          message: 'Tag name cannot be empty.'
+        };
+        return _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', growlerData);
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/tag?tag_name=".concat(newTag.value)).then(function (res) {
+        if (res.data.status === 'failure') {
+          var _growlerData = {
+            mode: 'error',
+            message: res.data.message
+          };
+          return _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('growl', _growlerData);
+        }
+
+        newTag.value = null;
+        newTag.setAttribute('valid', true);
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/tags").then(function (res) {
+          _this.tags = res.data.tags;
+        });
+      });
+    },
+    updateTags: function updateTags(tagId) {
+      if (this.selectedTags.includes(tagId)) {
+        this.selectedTags = this.selectedTags.filter(function (tag) {
+          return tag !== tagId;
+        });
+
+        if (this.pageTags.includes(tagId)) {
+          this.removeTags.push(tagId);
+        }
+      } else {
+        this.selectedTags.push(tagId);
+
+        if (this.removeTags.includes(tagId)) {
+          this.removeTags = this.removeTags.filter(function (tag) {
+            return tag !== tagId;
+          });
+        }
+      }
+
+      console.log('remove tags ', this.removeTags);
     }
   },
   components: {
     inputField: _components_inputField_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   beforeCreate: function beforeCreate() {
-    var _this = this;
+    var _this2 = this;
 
     // as the page is loading, request the page data
     // once it's loaded, set pageLoaded to true and Robert is your mother's uncle
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/page?page_id=".concat(this.$route.params.page_id)).then(function (res) {
       var tags = '';
-      _this.page = res.data;
-      _this.fields = res.data.values;
-      _this.pageLoaded = true;
-
-      for (var i = 0; i < res.data.tags.length; i++) {
-        var tag = res.data.tags[i];
-
-        if (i === 0) {
-          tags = "".concat(tags).concat(tag.name);
-        } else {
-          tags = "".concat(tags, ", ").concat(tag.name);
-        }
-      }
-
-      _this.tags = tags;
+      _this2.page = res.data;
+      _this2.fields = res.data.values;
+      _this2.pageLoaded = true;
+      res.data.tags.forEach(function (tag) {
+        _this2.pageTags.push(tag.tag_id);
+      });
+      _this2.selectedTags = _this2.pageTags;
+      console.log(_this2.selectedTags);
+    });
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/tags").then(function (res) {
+      _this2.tags = res.data.tags;
     });
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     // sets CMD/CTRL+S as save
     document.addEventListener('keydown', function (e) {
       if (e.metaKey && e.which == 83) {
         e.preventDefault();
 
-        _this2.savePage();
+        _this3.savePage();
       }
     }); // because of how I opted to do input fields, this is how data is filled
     // get the field, compare to the page's fields; once it finds a match update its content
@@ -3191,7 +3249,7 @@ __webpack_require__.r(__webpack_exports__);
     _js_admin_js__WEBPACK_IMPORTED_MODULE_2__["default"].$on('fieldFill', function (field) {
       var targetField = field.dataset.fieldid;
 
-      _this2.page.values.forEach(function (f) {
+      _this3.page.values.forEach(function (f) {
         if (f.field_id === targetField) {
           f.content = field.value;
         }
@@ -24028,32 +24086,61 @@ var render = function() {
                     })
                   }),
                   _vm._v(" "),
-                  _c("fieldset", [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.tags,
-                          expression: "tags"
-                        }
-                      ],
-                      attrs: { type: "text", id: "tags", required: "" },
-                      domProps: { value: _vm.tags },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+                  _c(
+                    "div",
+                    { staticClass: "tags" },
+                    [
+                      _vm._l(_vm.tags, function(tag) {
+                        return _c("fieldset", [
+                          _c("label", { staticClass: "checkbox" }, [
+                            _vm._v(_vm._s(tag.name)),
+                            _c("input", {
+                              attrs: {
+                                type: "checkbox",
+                                name: "tags",
+                                value: "tag.tag_id"
+                              },
+                              domProps: {
+                                checked: _vm.pageTags.includes(tag.tag_id)
+                              },
+                              on: {
+                                change: function($event) {
+                                  return _vm.updateTags(tag.tag_id)
+                                }
+                              }
+                            }),
+                            _c("span", { staticClass: "checkbox__box" })
+                          ])
+                        ])
+                      }),
+                      _vm._v(" "),
+                      _c("fieldset", { staticClass: "small" }, [
+                        _c("input", {
+                          staticClass: "small",
+                          attrs: {
+                            type: "text",
+                            id: "newTag",
+                            name: "newTag",
+                            required: ""
                           }
-                          _vm.tags = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("label", { attrs: { for: "tags" } }, [
-                      _vm._v("Tags (Comma Separated)")
-                    ])
-                  ]),
+                        }),
+                        _vm._v(" "),
+                        _c("label", { attrs: { for: "newTag" } }, [
+                          _vm._v("Create New ")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary btn-tiny",
+                            on: { click: _vm.createNewTag }
+                          },
+                          [_vm._v("+")]
+                        )
+                      ])
+                    ],
+                    2
+                  ),
                   _vm._v(" "),
                   _c("div", { staticClass: "page-card__utilities" }, [
                     _c(
