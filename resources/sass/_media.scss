@@ -1,3 +1,41 @@
+.dropzone {
+    position: relative;
+    height: 100%;
+    box-sizing: content-box;
+    margin-top: -5px;
+    margin-left: -5px;
+    border: 5px dashed rgba($main-accent, 0);
+    transition: border-color 240ms ease-in-out;
+
+    &.highlighted {
+        border-color: rgba($main-accent, 1);
+
+        &::before {
+            z-index: 99;
+            opacity: 0.5;
+        }
+    }
+
+    &::before {
+        content: "Drop Files to Upload";
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: white;
+        justify-content: center;
+        align-items: center;
+        font-size: 3rem;
+        color: $main-accent;
+        z-index: -1;
+        opacity: 0;
+
+        transition: all 240ms ease-in-out;
+    }
+}
+
 .img-grid {
 
     display: grid;

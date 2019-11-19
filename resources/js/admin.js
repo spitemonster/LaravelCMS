@@ -12,6 +12,7 @@ import editTemplate from '../vue/views/editTemplate.vue'
 import viewUsers from '../vue/views/users.vue'
 import viewMedia from '../vue/views/viewMedia.vue'
 import editUser from '../vue/views/editUser.vue'
+import viewTags from '../vue/views/tags.vue'
 
 
 const Vue = window.Vue = require('vue')
@@ -38,7 +39,8 @@ const router = new Router({
         { path: '/admin/edit/template/:template_id', name: 'editTemplates', component: editTemplate },
         { path: '/admin/edit/user/:user_id', name: 'editUser', component: editUser },
         { path: '/admin/view/users', name: 'viewUsers', component: viewUsers },
-        { path: '/admin/view/media', name: 'viewMedia', component: viewMedia }
+        { path: '/admin/view/media', name: 'viewMedia', component: viewMedia },
+        { path: '/admin/view/tags', name: 'viewTags', component: viewTags }
     ]
 })
 

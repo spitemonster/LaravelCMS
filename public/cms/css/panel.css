@@ -151,10 +151,6 @@ p + p {
   flex-wrap: nowrap;
 }
 
-[class^=l-] > * {
-  flex: 1 1 auto;
-}
-
 .l-full > * {
   flex: 1 1 auto;
 }
@@ -197,6 +193,10 @@ p + p {
 
 .l-auto {
   flex: 1 1 auto;
+}
+
+.l-max--960 {
+  max-width: 960px;
 }
 
 @media (max-width: 1279px) {
@@ -894,6 +894,43 @@ input[type=radio] {
   padding: 0 1rem;
 }
 
+.dropzone {
+  position: relative;
+  height: 100%;
+  box-sizing: content-box;
+  margin-top: -5px;
+  margin-left: -5px;
+  border: 5px dashed rgba(191, 104, 160, 0);
+  transition: border-color 240ms ease-in-out;
+}
+
+.dropzone.highlighted {
+  border-color: #bf68a0;
+}
+
+.dropzone.highlighted::before {
+  z-index: 99;
+  opacity: 0.5;
+}
+
+.dropzone::before {
+  content: "Drop Files to Upload";
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: white;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: #BF68A0;
+  z-index: -1;
+  opacity: 0;
+  transition: all 240ms ease-in-out;
+}
+
 .img-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 250px));
@@ -1126,11 +1163,6 @@ a:hover {
   left: 0;
   transition: all 240ms ease-in;
   padding: 5rem;
-}
-
-.dashboard__body.animate {
-  -webkit-animation: bounce 2s 1 ease;
-          animation: bounce 2s 1 ease;
 }
 
 .dashboard__nav-toggle {

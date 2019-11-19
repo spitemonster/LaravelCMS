@@ -156,11 +156,6 @@ a {
         left: 0;
         transition: all 240ms ease-in;
         padding: 5rem;
-
-        &.animate {
-            animation: bounce 2s 1 ease;
-            // animation-iteration-count: 1;
-        }
     }
 
     &__nav-toggle {

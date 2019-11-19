@@ -1,6 +1,6 @@
 <template>
     <section class="page">
-        <h1>View Users</h1>
+        <h1>Users</h1>
         <div v-for="user in users" class="card">
             <div class="card__details">
                 <h3 class="user-card__name">{{ user.name }}</h3>

@@ -5,23 +5,20 @@
                 <router-link tag="li" to="/admin">
                     <a>Dashboard</a>
                 </router-link>
-                <router-link tag="li" to="/admin/create/template">
-                    <a>Create New Template</a>
-                </router-link>
                 <router-link tag="li" to="/admin/view/templates">
-                    <a>View Templates</a>
-                </router-link>
-                <router-link tag="li" to="/admin/create/page">
-                    <a>Create New Page</a>
+                    <a>Templates</a>
                 </router-link>
                 <router-link tag="li" to="/admin/view/pages">
-                    <a>View Pages</a>
+                    <a>Pages</a>
+                </router-link>
+                <router-link tag="li" to="/admin/view/tags">
+                    <a>Tags</a>
                 </router-link>
                 <router-link tag="li" to="/admin/view/users">
-                    <a>View Users</a>
+                    <a>Users</a>
                 </router-link>
                 <router-link tag="li" to="/admin/view/media">
-                    <a>View Media</a>
+                    <a>Media</a>
                 </router-link>
                 <li>
                     <a href="/logout">Log Out</a>

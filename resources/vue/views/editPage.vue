@@ -24,7 +24,7 @@
                     <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
                     <div class="tags">
                         <fieldset v-for="tag in tags">
-                            <label class="checkbox">{{ tag.name }}<input type="checkbox" name="tags" value="tag.tag_id" :checked="pageTags.includes(tag.tag_id)" @change="updateTags(tag.tag_id)"><span class="checkbox__box"></span></label>
+                            <label class="checkbox">{{ tag.tag_name }}<input type="checkbox" name="tags" value="tag.tag_id" :checked="pageTags.includes(tag.tag_id)" @change="updateTags(tag.tag_id)"><span class="checkbox__box"></span></label>
                         </fieldset>
                         <fieldset class="small">
                             <input type="text" id="newTag" name="newTag" class="small" required />
@@ -179,7 +179,7 @@ export default {
         createNewTag() {
             let newTag = document.querySelector('#newTag')
 
-            if (newTag.value === '' || /\s/g.test('    ')) {
+            if (newTag.value === '') {
                 let growlerData = {
                     mode: 'error',
                     message: 'Tag name cannot be empty.'
@@ -190,21 +190,20 @@ export default {
 
             axios.post(`/tag?tag_name=${newTag.value}`)
                 .then((res) => {
-                    if (res.data.status === 'failure') {
-                        let growlerData = {
-                            mode: 'error',
-                            message: res.data.message
-                        }
-                        return Bus.$emit('growl', growlerData);
+                    let growlerData = {
+                        mode: 'error',
+                        message: res.data.message
+                    }
+
+                    if (res.data.status === 'success') {
+                        growlerData.mode = 'success'
+                        this.tags = res.data.tags;
                     }
 
                     newTag.value = null
                     newTag.setAttribute('valid', true)
 
-                    axios.get(`/tags`)
-                        .then((res) => {
-                            this.tags = res.data.tags;
-                        })
+                    Bus.$emit('growl', growlerData)
                 })
         },
         updateTags(tagId) {
@@ -248,9 +247,9 @@ export default {
                 console.log(this.selectedTags)
             })
 
-        axios.get(`/tags`)
+        axios.get(`/tag`)
             .then((res) => {
-                this.tags = res.data.tags;
+                this.tags = res.data
             })
 
     },

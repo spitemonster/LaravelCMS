@@ -1,6 +1,9 @@
 <template>
     <div class="page">
-        <h1>View Templates</h1>
+        <div class="l-row l-max--960">
+            <h1>Templates</h1>
+            <router-link to="/admin/create/template" tag="button" class="btn btn-primary btn-small">Create New</router-link>
+        </div>
         <div class="card" v-for="template, k in templates" :key="k">
             <div class="card__details">
                 <h3>{{ template.name }}</h3> Last Updated: <span> {{ template.created_at | moment("dddd, MMMM Do YYYY") }} </span> by <span> </span>

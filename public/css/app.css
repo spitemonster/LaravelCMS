@@ -149,10 +149,6 @@ p + p {
   flex-wrap: nowrap;
 }
 
-[class^=l-] > * {
-  flex: 1 1 auto;
-}
-
 .l-full > * {
   flex: 1 1 auto;
 }
@@ -195,6 +191,10 @@ p + p {
 
 .l-auto {
   flex: 1 1 auto;
+}
+
+.l-max--960 {
+  max-width: 960px;
 }
 
 @media (max-width: 1279px) {

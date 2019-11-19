@@ -1,5 +1,5 @@
 <template>
-    <div class="page">
+    <div class="page dropzone">
         <h1>Media</h1>
         <div class="img-grid" v-if="media">
             <template v-for="m in media">
@@ -11,10 +11,6 @@
         </div>
         <div class="empty" v-else>
             <h3>No media to show.</h3>
-        </div>
-        <div class="button-row">
-            <input type="file" name="somethin" id="file">
-            <button class="btn" @click="uploadFiles()">Upload</button>
         </div>
     </div>
 </template>
@@ -42,8 +38,6 @@ export default {
                             arr.push(item);
                         })
 
-                        console.log(arr)
-
                         return this.media = arr
                     }
 
@@ -59,21 +53,65 @@ export default {
                 msg: 'WARNING: This will permanently delete this file. Any places where this content is linked may display an error.'
             }
 
-            Bus.$emit('alertDelete', fileData)
+            Bus.$emit('alert', fileData)
         },
-        uploadFiles() {
-            let f = document.querySelector('input[type="file"]');
+        uploadFile(file) {
+            Bus.$emit('uploadMedia', file)
+        },
+        preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        },
+        uploadFiles(files) {
+            [...files].forEach((file) => {
+                this.uploadFile(file)
+            })
+        },
+        highlight() {
+            let dropzone = document.querySelector('.dropzone');
 
-            Bus.$emit('uploadMedia', f.files[0])
+            dropzone.classList.add('highlighted');
+        },
+        unhighlight() {
+            let dropzone = document.querySelector('.dropzone');
+
+            dropzone.classList.remove('highlighted');
         }
     },
     mounted() {
+
+        let dropzone = document.querySelector('.dropzone');
+        let file = document.querySelector('#file');
+
         this.getMedia();
+
         Bus.$on('mediaUploaded', this.getMedia)
         Bus.$on('deleted', (type) => {
             if (type === 'media') {
                 this.getMedia()
             }
+        })
+
+        ;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.preventDefaults, false)
+        })
+
+        ;
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.highlight, false)
+        })
+
+        ;
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.unhighlight, false)
+        })
+
+        dropzone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            this.uploadFiles(files);
         })
     }
 }

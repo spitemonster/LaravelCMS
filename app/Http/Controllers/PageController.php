@@ -47,7 +47,7 @@ class PageController extends Controller
     public function showPage($url = '')
     {
         $data = [];
-        $page = Page::where('url', '/' . $url)->with('children')->first();
+        $page = Page::where('url', '/' . $url)->with(['children', 'tags'])->first();
         // gather all menu pages and return them with every page request
         $menu = Page::where([['menu', true], ['private', false]])->get(['title', 'url']);
 
@@ -58,19 +58,12 @@ class PageController extends Controller
 
         // find the template name so we know what to render with
         $templateName = Template::where('template_id', $page->template_id)->first()->name;
-        $tags = $page->tags()->get();
 
         // $data represents the fields and values. splitting them into the $data array allows them to be accessed by just the field name on the front end
 
         $data['menu'] = $menu;
-        $data['children'] = $page->children()->get();
-        $data['tags'] = [];
         $data['title'] = null;
-
-        foreach ($tags as $tag) {
-            array_push($data['tags'], $tag);
-        }
-
+        $data['tags'] = $page->tags;
         $data['description'] = $page->description;
 
         foreach($page->values as $field) {
@@ -89,6 +82,7 @@ class PageController extends Controller
 
         $page->save();
 
+        // return $page;
         return view(strtolower(str_replace(' ', '_', $templateName)), $data);
     }
 
@@ -212,7 +206,7 @@ class PageController extends Controller
 
         $page->delete();
 
-        $pages = Page::where('parent_id', null)->with('children')->get();
+        $pages = Page::with('children')->get();
         // return all remaining pages, specifically for the function in the createPages vue template
         $data = array(
             'status' => 'success',

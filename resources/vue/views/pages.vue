@@ -1,6 +1,9 @@
 <template>
     <div class="page">
-        <h1>View Pages</h1>
+        <div class="l-row l-max--960">
+            <h1>Pages</h1>
+            <router-link to="/admin/create/page" tag="button" class="btn btn-primary btn-small">Create New</router-link>
+        </div>
         <div class="cards">
             <div class="card" v-for="page, k in pages" :key="k">
                 <div class="card__details">
