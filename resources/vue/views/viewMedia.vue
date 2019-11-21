@@ -81,7 +81,6 @@ export default {
     mounted() {
 
         let dropzone = document.querySelector('.dropzone');
-        let file = document.querySelector('#file');
 
         this.getMedia();
 

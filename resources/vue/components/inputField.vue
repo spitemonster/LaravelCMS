@@ -34,13 +34,6 @@
                 <label>Alt Text <input type="text" name="img-alt" /></label>
             </div>
         </template>
-        <template v-else-if="fieldType === 'media'">
-            <form action="/media" method="POST" enctype="multipart/form-data">
-                <input type="file" id="file" name="file" accept="image/png, image/jpeg" @change="uploadFile">
-            </form>
-            <input type="hidden" :data-fieldid="fieldId" name="file" :value="content" id="fileUrl">
-            <h4>{{ content }}</h4>
-        </template>
     </div>
 </template>
 <script>
@@ -54,7 +47,9 @@ export default {
         return {
             invalid: false,
             pageId: null,
-            index: null
+            index: null,
+            files: [],
+            vf: []
         }
     },
     computed: {
@@ -66,7 +61,7 @@ export default {
             } else if (this.fieldType === 'media') {
                 return 'input--media'
             }
-        }
+        },
     },
     props: ['fieldType', 'fieldName', 'fieldId', 'fieldRequired', 'content'],
     methods: {
@@ -75,6 +70,28 @@ export default {
         },
         openMedia(fieldId) {
             Bus.$emit('openMedia', fieldId)
+        },
+        uploadFile(file) {
+            Bus.$emit('uploadMedia', file)
+        },
+        preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        },
+        uploadFiles(files) {
+            [...files].forEach((file) => {
+                this.uploadFile(file)
+            })
+        },
+        highlight() {
+            let dropzone = document.querySelector('.dropzone');
+
+            dropzone.classList.add('highlighted');
+        },
+        unhighlight() {
+            let dropzone = document.querySelector('.dropzone');
+
+            dropzone.classList.remove('highlighted');
         }
     },
     mounted() {
@@ -212,6 +229,8 @@ export default {
                 this.invalid = true;
             }
         })
+
+
     }
 }
 

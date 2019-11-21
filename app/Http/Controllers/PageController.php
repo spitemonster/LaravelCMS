@@ -7,6 +7,8 @@ use App\Template;
 use App\Tag;
 use App\User;
 use App\PageTag;
+use App\MediaPage;
+use App\Media;
 use Uuid;
 use Auth;
 
@@ -47,7 +49,9 @@ class PageController extends Controller
     public function showPage($url = '')
     {
         $data = [];
-        $page = Page::where('url', '/' . $url)->with(['children', 'tags'])->first();
+        $page = Page::where('url', '/' . $url)->with(['children', 'tags', 'media'])->first();
+
+        dd($page->media);
         // gather all menu pages and return them with every page request
         $menu = Page::where([['menu', true], ['private', false]])->get(['title', 'url']);
 
@@ -99,26 +103,60 @@ class PageController extends Controller
         $page->template_id = $request->input('template_id');
         $page->parent_id = $request->input('parent_id');
         $page->url = $request->input('url');
-        $page->page_id = $request->input('pageId') ? $request->input('pageId') : Uuid::generate(4)->string;
+        $page->page_id = Uuid::generate(4)->string;
         $page->menu = $request->input('menu');
         $page->private = $request->input('private');
         $page->description = $request->input('description');
         $tags = explode(',', $request->input('tags'));
 
         $page->user_id = $page->updated_user_id = Auth::user()->user_id;
-
         $this->makeTags($tags, $page->page_id);
 
-        foreach ($request->input('fields') as $field) {
+        foreach ($request->input('fields') as $f) {
+            $field = json_decode($f);
+
             $fieldValue = new FieldValue;
 
-            $fieldValue->field_id = $field['field_id'];
+            $fieldValue->field_id = $field->field_id;
             $fieldValue->page_id = $page->page_id;
-            $fieldValue->content = $field['content'];
-            $fieldValue->field_name = $field['field_name'];
-            $fieldValue->type = $field['type'];
+            $fieldValue->content = $field->content;
+            $fieldValue->field_name = $field->field_name;
+            $fieldValue->type = $field->type;
 
             $fieldValue->save();
+        }
+
+        function testFileName($f, $it = 1) {
+            $test = ($it > 1) ? $f . '-' . $it : $f;
+
+            $file = Media::where('filename', $test)->first();
+
+            if (!$file) {
+                return ($it > 1) ? '-' . $it : '';
+            }
+
+            return testFileName($f, ($it + 1));
+        }
+
+        foreach ($request->file('files') as $file) {
+            $fn = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $ext = $file->getClientOriginalExtension();
+            $m = new Media;
+            $mp = new MediaPage;
+            $filename = $fn . testFileName($fn);
+
+            $url = $file->storeAs('/', $filename . '.' . $ext, 'media');
+
+            $m->file_id = $mp->file_id = Uuid::generate(4)->string;
+            $m->belongs_to_page = true;
+            $m->url = '/media/' . $url;
+            $m->filename = $filename;
+            $m->ext = $ext;
+
+            $mp->page_id = $page->page_id;
+
+            $m->save();
+            $mp->save();
         }
 
         $page->save();
@@ -136,7 +174,7 @@ class PageController extends Controller
         if ($request->query('page_id')) {
 
             $page = Page::where('page_id', $request->query('page_id'))
-                ->with(['values', 'children', 'created_by', 'updated_by', 'tags'])
+                ->with(['values', 'children', 'created_by', 'updated_by', 'tags', 'media'])
                 ->first();
 
             return $page;
@@ -160,27 +198,17 @@ class PageController extends Controller
         $page->description = $request->input('description');
         $page->updated_user_id = Auth::user()->user_id;
 
-        // temporary behavior
-        // wipe a pages PageTags each time a page is updated
-        // $currentPageTags = PageTag::where('page_id', $request->query('page_id'))->get();
-
-        // foreach ($currentPageTags as $cpt) {
-        //     $cpt->delete();
-        // }
-
         // and then recreate tags based on the input from the patch request
         $this->makeTags($request->input('tags'), $page->page_id);
         $this->removeTags($request->input('removeTags'), $page->page_id);
 
         // intent is to eventually replace this with checkboxes or something of the like instead of manually entered
 
-        // foreach ($request->input('fields') as $field) {
-        //     $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
-
-        //     $fieldValue->content = $field['content'];
-
-        //     $fieldValue->save();
-        // }
+        foreach ($request->input('fields') as $field) {
+            $fieldValue = $page->values()->where('field_id', $field['field_id'])->first();
+            $fieldValue->content = $field['content'];
+            $fieldValue->save();
+        }
 
         $page->save();
 

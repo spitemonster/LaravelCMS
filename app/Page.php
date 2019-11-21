@@ -36,4 +36,8 @@ class Page extends Model
     public function tags() {
         return $this->hasManyThrough(Tag::class, PageTag::class, 'page_id', 'tag_id', 'page_id', 'tag_id');
     }
+
+    public function media() {
+        return $this->hasManyThrough(Media::class, MediaPage::class, 'page_id', 'file_id', 'page_id', 'file_id');
+    }
 }

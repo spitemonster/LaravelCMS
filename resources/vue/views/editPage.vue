@@ -22,6 +22,11 @@
             <div class="content--wrapper">
                 <div class="content" id="tabContentOne">
                     <inputField v-for="field in page.values" :fieldType="field.type" :fieldId="field.field_id" :fieldName="field.field_name" :fieldRequired="field.required" :key="field.field_id" :content="field.content"></inputField>
+                    <fieldset>
+                        <div class="page-dropzone">
+                            <img v-for="file in page.media" :src="file.url" class="thumbnail" />
+                        </div>
+                    </fieldset>
                     <div class="tags">
                         <fieldset v-for="tag in tags">
                             <label class="checkbox">{{ tag.tag_name }}<input type="checkbox" name="tags" value="tag.tag_id" :checked="pageTags.includes(tag.tag_id)" @change="updateTags(tag.tag_id)"><span class="checkbox__box"></span></label>
@@ -279,4 +284,11 @@ export default {
 
 </script>
 <style lang="css">
+.thumbnail {
+    height: 50px;
+    width: 50px;
+    object-position: center;
+    object-fit: cover;
+}
+
 </style>

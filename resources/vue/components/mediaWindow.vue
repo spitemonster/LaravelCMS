@@ -1,5 +1,5 @@
 <template>
-    <div class="media-window">
+    <div class="media-window dropzone">
         <div class="img-grid" v-if="media">
             <template v-for="m in media">
                 <div class="img-grid__image" :data-fileid="m.file_id" :data-src="m.url" :data-alt="m.alt_text" @click="selectFile">
@@ -9,9 +9,7 @@
             </template>
         </div>
         <div class="button-row">
-            <input type="file" name="somethin" id="file">
-            <button class="btn" @click="uploadFiles()">Upload</button>
-            <button class="btn" @click="insertFiles()">Insert</button>
+            <button @click="insertFiles()">Insert</button>
         </div>
         <button class="btn close" @click="closeWindow()">X</button>
     </div>
@@ -92,8 +90,64 @@ export default {
 
             Bus.$emit('alertDelete', fileData)
         },
+        uploadFile(file) {
+            Bus.$emit('uploadMedia', file)
+        },
+        preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        },
+        uploadFiles(files) {
+            [...files].forEach((file) => {
+                this.uploadFile(file)
+            })
+        },
+        highlight() {
+            let dropzone = document.querySelector('.dropzone');
+
+            dropzone.classList.add('highlighted');
+        },
+        unhighlight() {
+            let dropzone = document.querySelector('.dropzone');
+
+            dropzone.classList.remove('highlighted');
+        }
     },
     mounted() {
+
+        let dropzone = document.querySelector('.dropzone');
+
+        this.getMedia();
+
+        Bus.$on('mediaUploaded', this.getMedia)
+        Bus.$on('deleted', (type) => {
+            if (type === 'media') {
+                this.getMedia()
+            }
+        })
+
+        ;
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.preventDefaults, false)
+        })
+
+        ;
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.highlight, false)
+        })
+
+        ;
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, this.unhighlight, false)
+        })
+
+        dropzone.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            this.uploadFiles(files);
+        })
+
         this.getMedia()
 
         // when a new image/media is added, refresh the list
